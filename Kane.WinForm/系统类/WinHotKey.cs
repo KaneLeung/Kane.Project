@@ -1,38 +1,33 @@
 ﻿#region << 版 本 注 释 >>
 /*-----------------------------------------------------------------
-* 项目名称 ：Kane.Extension
+* 项目名称 ：Kane.WinForm
 * 项目描述 ：通用扩展工具
 * 类 名 称 ：WinHotKey
 * 类 描 述 ：Win系统热键类扩展
 * 所在的域 ：KK-MAGICBOOK
-* 命名空间 ：Kane.Extension
+* 命名空间 ：Kane.WinForm
 * 机器名称 ：KK-MAGICBOOK 
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
-* 创建时间 ：2019/10/16 23:22:16
-* 更新时间 ：2019/10/16 23:22:16
+* 创建时间 ：2019/10/18 21:22:16
+* 更新时间 ：2019/10/18 21:22:16
 * 版 本 号 ：v1.0.0.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
+using Kane.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-#if !NETCOREAPP2_1
 using System.Windows.Forms;
-#endif
 
-namespace Kane.Extension
+namespace Kane.WinForm
 {
-#if NETCOREAPP2_1
-    public class WinHotKey
-#else
     public class WinHotKey : IMessageFilter
-#endif
     {
         #region 使用方法
         //public void HowToUse()
@@ -117,10 +112,8 @@ namespace Kane.Extension
         /// <param name="flags">标识热键是否在按Alt、Ctrl、Shift、Windows等键时才会生效</param>
         /// <param name="key">定义热键的内容</param>
         /// <returns>是否注册成功</returns>
-#if !NETCOREAPP2_1
         [DllImport("user32", SetLastError = true)]
         public static extern bool RegisterHotKey(IntPtr hWnd, int atom, KeyFlags flags, Keys key);
-#endif
         #endregion
 
         #region 取消全局热键 + UnregisterHotKey(IntPtr hWnd, int atom); 
@@ -161,12 +154,8 @@ namespace Kane.Extension
         /// <param name="handle">窗体句柄</param>
         public WinHotKey(IntPtr handle)
         {
-#if NETCOREAPP2_1
-            throw new Exception("Netcore2.1不支持。");
-#else
             hWnd = handle;
             Application.AddMessageFilter(this);
-#endif
         }
         #endregion
 
@@ -178,9 +167,6 @@ namespace Kane.Extension
         /// <param name="Key">定义热键的内容</param>
         /// <param name="name">可定义对应的名称</param>
         /// <returns>是否注册成功</returns>
-#if NETCOREAPP2_1
-        public bool RegisterHotkey() => throw new Exception("Netcore2.1不支持。");
-#else
         public bool RegisterHotkey(KeyFlags keyflags, Keys Key, string name = "")
         {
             name = name.IsValuable() ? name : Guid.NewGuid().ToString("N");
@@ -192,7 +178,6 @@ namespace Kane.Extension
             }
             else return false;
         }
-#endif
         #endregion
 
         #region 注销全部全局热键 + UnregisterHotkeys()
@@ -201,9 +186,6 @@ namespace Kane.Extension
         /// </summary>
         public void UnregisterHotkeys()
         {
-#if NETCOREAPP2_1
-            throw new Exception("Netcore2.1不支持。");
-#else
             List<int> removeList = new List<int>();
             foreach (var dic in RegisterdHotKeys)
             {
@@ -222,7 +204,6 @@ namespace Kane.Extension
             }
             if (RegisterdHotKeys.Count == 0)
                 Application.RemoveMessageFilter(this);
-#endif
         }
         #endregion
 
@@ -250,9 +231,6 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="m">消息句柄</param>
         /// <returns>是否过滤</returns>
-#if NETCOREAPP2_1
-        public bool PreFilterMessage() => throw new Exception("Netcore2.1不支持。");
-#else
         public bool PreFilterMessage(ref Message m)
         {
             if (m.Msg == WM_HOTKEY)
@@ -265,7 +243,6 @@ namespace Kane.Extension
             }
             return false;
         }
-#endif
         #endregion
 
         #region 根据名称查找对应的HotKeyID,找不到时返回-1 + GetHotKeyID(string name)

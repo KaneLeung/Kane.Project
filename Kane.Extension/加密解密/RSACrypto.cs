@@ -91,22 +91,21 @@ namespace Kane.Extension
         /// <returns></returns>
         public static RSAKey CreateRsaKey(RsaSize rsaSize = RsaSize.R2048)
         {
-            using (RSA rsa = RSA.Create())
+            using RSA rsa = RSA.Create();
+            rsa.KeySize = (int)rsaSize;
+            string publicKey = rsa.ToJsonString(false);
+            string privateKey = rsa.ToJsonString(true);
+            return new RSAKey()
             {
-                rsa.KeySize = (int)rsaSize;
-                string publicKey = rsa.ToJsonString(false);
-                string privateKey = rsa.ToJsonString(true);
-                return new RSAKey()
-                {
-                    PublicKey = publicKey,
-                    PrivateKey = privateKey,
-                    Exponent = rsa.ExportParameters(false).Exponent.ByteToHex(),
-                    Modulus = rsa.ExportParameters(false).Modulus.ByteToHex()
-                };
-            }
+                PublicKey = publicKey,
+                PrivateKey = privateKey,
+                Exponent = rsa.ExportParameters(false).Exponent.ByteToHex(),
+                Modulus = rsa.ExportParameters(false).Modulus.ByteToHex()
+            };
         }
         #endregion
 
+#if !NET40 && !NET45
         #region RSA非对称加密，默认使用SHA512哈希算法加密填充
         /// <summary>
         /// RSA非对称加密，默认使用SHA512哈希算法加密填充
@@ -127,19 +126,36 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string RSAEncrypt(string value, string publicKey, RSAEncryptionPadding padding)
         {
-            using (RSA rsa = RSA.Create())
-            {
-                rsa.FromJsonString(publicKey);
-                var maxLength = GetMaxRsaEncryptLength(rsa, padding);
-                var rawBytes = Encoding.UTF8.GetBytes(value);
-                if (rawBytes.Length > maxLength)
-                    throw new Exception($"'{value}' is out of max length({maxLength}).");
-                byte[] encryptBytes = rsa.Encrypt(rawBytes, padding);
-                return encryptBytes.ByteToHex();
-            }
+            using RSA rsa = RSA.Create();
+            rsa.FromJsonString(publicKey);
+            var maxLength = GetMaxRsaEncryptLength(rsa, padding);
+            var rawBytes = Encoding.UTF8.GetBytes(value);
+            if (rawBytes.Length > maxLength)
+                throw new Exception($"'{value}' is out of max length({maxLength}).");
+            byte[] encryptBytes = rsa.Encrypt(rawBytes, padding);
+            return encryptBytes.ByteToHex();
         }
         #endregion
+#else
+        #region RSA非对称加密，Net45或以下没有使用填充
+        /// <summary>
+        /// RSA非对称加密，Net45或以下没有使用填充
+        /// </summary>
+        /// <param name="value">要加密的数据</param>
+        /// <param name="publicKey">公钥</param>
+        /// <returns></returns>
+        public static string RSAEncrypt(string value, string publicKey)
+        {
+            using RSA rsa = RSA.Create();
+            rsa.FromJsonString(publicKey);
+            var rawBytes = Encoding.UTF8.GetBytes(value);
+            byte[] encryptBytes = rsa.EncryptValue(rawBytes);
+            return encryptBytes.ByteToHex();
+        }
+        #endregion
+#endif
 
+#if !NET40 && !NET45
         #region RSA解密，默认使用SHA512哈希算法加密填充
         /// <summary>
         /// RSA解密，默认使用SHA512哈希算法加密填充
@@ -169,7 +185,28 @@ namespace Kane.Extension
             }
         }
         #endregion
+#else
+        #region RSA解密，Net45或以下没有使用填充
+        /// <summary>
+        /// RSA解密，Net45或以下没有使用填充
+        /// </summary>
+        /// <param name="value">要解密的数据，十六进制字符串</param>
+        /// <param name="privateKey">私钥</param>
+        /// <returns></returns>
+        public static string RSADecrypt(string value, string privateKey)
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                rsa.FromJsonString(privateKey);
+                byte[] valueBytes = StringHelper.HexToByte(value);
+                byte[] outBytes = rsa.DecryptValue(valueBytes);
+                return Encoding.UTF8.GetString(outBytes);
+            }
+        }
+        #endregion
+#endif
 
+#if !NET40 && !NET45
         #region 计算加密码最大长度
         private static int GetMaxRsaEncryptLength(RSA rsa, RSAEncryptionPadding padding)
         {
@@ -187,6 +224,7 @@ namespace Kane.Extension
             return maxLength;
         }
         #endregion
+#endif
 
         #region RSA扩展方法，将Json字符串转成RSA参数
         /// <summary>

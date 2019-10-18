@@ -234,29 +234,22 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string TimeDiff(this DateTime datetime, DateTime point)
         {
-            TimeSpan ts = datetime - point;
-            var tag = ts > TimeSpan.Parse("0") ? "后" : "前";
-            var days = ts.Days;
+            TimeSpan timeSpan = datetime - point;
+            var tag = timeSpan > TimeSpan.Parse("0") ? "后" : "前";
+            var days = timeSpan.Days;
             if (days != 0)
             {
                 days = days < 0 ? days * -1 : days;
-                if (days >= 365)
-                    return $"{days / 365}年{tag}";
-                else if (days >= 30)
-                    return $"{days / 30}个月{tag}";
-                else if (days >= 7)
-                    return $"{days / 7}周{tag}";
-                else
-                    return $"{days}天{tag}";
+                if (days >= 365) return $"{days / 365}年{tag}";
+                else if (days >= 30) return $"{days / 30}个月{tag}";
+                else if (days >= 7) return $"{days / 7}周{tag}";
+                else return $"{days}天{tag}";
             }
-            var hours = ts.Hours;
-            if (hours != 0)
-                return $"{(hours = hours < 0 ? hours * -1 : hours)}小时{tag}";
-            var minutes = ts.Minutes;
-            if (minutes != 0)
-                return $"{(minutes < 0 ? minutes * -1 : minutes)}分钟{tag}";
-            var seconds = ts.Seconds;
-            return $"{(seconds < 0 ? seconds * -1 : seconds)}秒{tag}";
+            if (timeSpan.Hours != 0)
+                return $"{(timeSpan.Hours < 0 ? timeSpan.Hours * -1 : timeSpan.Hours)}小时{tag}";
+            if (timeSpan.Minutes != 0)
+                return $"{(timeSpan.Minutes < 0 ? timeSpan.Minutes * -1 : timeSpan.Minutes)}分钟{tag}";
+            return $"{(timeSpan.Seconds < 0 ? timeSpan.Seconds * -1 : timeSpan.Seconds)}秒{tag}";
         }
         #endregion
     }
