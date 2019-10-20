@@ -40,12 +40,10 @@ namespace Kane.WinForm
         //        if (hotKeyID == hotkey.GetHotKeyID("测试一"))
         //        {
         //            //Do something
-        //            //new MessageForm("点击热键", "Crtl+Shift+6").ShowDialog();
         //        }
         //        if (hotKeyID == hotkey.GetHotKeyID("测试二"))
         //        {
         //            //Do something
-        //            //new MessageForm("点击热键", "Crtl+Shift+7").ShowDialog();
         //        }
         //    };
         //} 

@@ -136,6 +136,7 @@ namespace Kane.Extension
         public static object CreateInstance(this Type t) => Activator.CreateInstance(t);
         #endregion
 
+#if !NET40
         #region 根据类的名称,属性列表创建型实例。 + CreateInstance(string className, List<PropInfo> propInfos)
         /// <summary>  
         /// 根据类的名称,属性列表创建型实例。  
@@ -184,16 +185,13 @@ namespace Kane.Extension
             //创建TypeBuilder。  
             TypeBuilder typeBuilder = moduleBuilder.DefineType(className, TypeAttributes.Public);
             //创建类型。
-#if NET40
-            Type result = typeBuilder.CreateType();
-#else
             Type result = typeBuilder.CreateTypeInfo();
-#endif
             //保存程序集,以便可以被Ildasm.exe解析,或被测试程序引用。  
             //builder.Save(myAsmName.Name + ".dll");  
             return result;
         }
         #endregion
+
 
         #region 添加属性到类型的实例 + AddProp(this Type classType, List<PropInfo> propInfos)
         /// <summary>  
@@ -252,11 +250,7 @@ namespace Kane.Extension
             var result = AddProp(originType, propInfos).CreateInstance();
             foreach (var originProperty in originType.GetProperties())
             {
-#if NET40
-                result.SetPropValue(originProperty.Name, originProperty.GetValue(obj, null));
-#else
                 result.SetPropValue(originProperty.Name, originProperty.GetValue(obj));
-#endif
             }
             foreach (var prop in newProps)
             {
@@ -312,6 +306,8 @@ namespace Kane.Extension
         }
         #endregion
 
+
+
         #region 删除对象的属性并返回新对象实例 + DeleteProp(this object obj, string property)
         /// <summary>
         /// 删除对象的属性并返回新对象实例
@@ -340,11 +336,7 @@ namespace Kane.Extension
             var newInstance = type.CreateInstance();
             foreach (var prop in newInstance.GetProps())
             {
-#if NET40
-                newInstance.SetPropValue(prop.Name, originProps.FirstOrDefault(k => k.Name.Equals(prop.Name)).GetValue(obj, null));
-#else
                 newInstance.SetPropValue(prop.Name, originProps.FirstOrDefault(k => k.Name.Equals(prop.Name)).GetValue(obj));
-#endif
             }
             return newInstance;
         }
@@ -459,16 +451,13 @@ namespace Kane.Extension
             //把lcpi中定义的属性加入到TypeBuilder。将清空其它的成员。其功能有待扩展,使其不影响其它成员。  
             AddPropToTypeBuilder(typeBuilder, propInfos);
             //创建类型。
-#if NET40
-            Type result = typeBuilder.CreateType();
-#else
             Type result = typeBuilder.CreateTypeInfo();
-#endif
             //保存程序集,以便可以被Ildasm.exe解析,或被测试程序引用。  
-            //myAsmBuilder.Save(myAsmName.Name + ".dll");  
+            //builder.Save(name.Name + ".dll");  
             return result;
         }
         #endregion
+#endif
 
         #region 自定义的属性信息类型 + PropInfo
         /// <summary>  
