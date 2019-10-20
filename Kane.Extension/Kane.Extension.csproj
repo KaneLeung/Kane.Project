@@ -35,8 +35,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="系统类\" />
-  </ItemGroup>
-
 </Project>

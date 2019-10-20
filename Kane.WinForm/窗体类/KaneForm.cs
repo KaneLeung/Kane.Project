@@ -395,7 +395,7 @@ namespace Kane.WinForm
         /// <param name="e"></param>
         private void Title_DoubleClick(object sender, EventArgs e)
         {
-            if (!LockSize)  this.MaxNormalSwitch();
+            if (!LockSize || ShowMaximized)  this.MaxNormalSwitch();
         }
         #endregion
 
