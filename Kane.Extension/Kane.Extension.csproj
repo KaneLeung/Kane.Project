@@ -3,6 +3,19 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;netcoreapp3.0;net40;net45;net46;net47;net48</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Kane.Extension.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Kane Leung</Authors>
+    <Company />
+    <Product />
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Copyright>MIT License</Copyright>
+    <PackageProjectUrl>https://github.com/KaneLeung/KK.Project</PackageProjectUrl>
+    <RepositoryUrl>git@github.com:KaneLeung/KK.Project.git</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>包含常用的基本扩展，具体请看源码</Description>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.1'">
@@ -33,6 +46,13 @@
 
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
