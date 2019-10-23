@@ -11,8 +11,8 @@
     <Product />
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>MIT License</Copyright>
-    <PackageProjectUrl>https://github.com/KaneLeung/KK.Project</PackageProjectUrl>
-    <RepositoryUrl>git@github.com:KaneLeung/KK.Project.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/KaneLeung/Kane.Project</PackageProjectUrl>
+    <RepositoryUrl>git@github.com:KaneLeung/Kane.Project.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Description>包含常用的基本扩展，具体请看源码</Description>

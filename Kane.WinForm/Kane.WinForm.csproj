@@ -11,8 +11,8 @@
     <Description>自定义窗体和一些自定的用户控件</Description>
     <Copyright>MIT License</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/KaneLeung/KK.Project</PackageProjectUrl>
-    <RepositoryUrl>git@github.com:KaneLeung/KK.Project.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/KaneLeung/Kane.Project</PackageProjectUrl>
+    <RepositoryUrl>git@github.com:KaneLeung/Kane.Project.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
