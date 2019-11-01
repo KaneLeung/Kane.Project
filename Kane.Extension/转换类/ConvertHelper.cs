@@ -82,5 +82,7 @@ namespace Kane.Extension
         /// <returns></returns>
         public static decimal ToRoundDec<T>(this T value, int digits = 2, int returnValue = 0) => Math.Round(value.ToDec(returnValue), digits);
         #endregion
+
+
     }
 }

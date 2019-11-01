@@ -19,6 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -183,6 +184,15 @@ namespace Kane.Extension
         /// <param name="value">要转的字符串</param>
         /// <returns></returns>
         public static byte[] ToBase64Bytes(this string value) => Convert.FromBase64String(value);
+        #endregion
+
+        #region 将字符串【true】【是】【1】【ok】【yes】转换为Bool类型 + ToBool(this string val
+        /// <summary>
+        /// 将字符串【true】【是】【1】【ok】【yes】转换为Bool类型
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool ToBool(this string value) => new string[] { "true", "是", "1", "ok", "yes" }.Any(k => k == value.ToLower());
         #endregion
     }
 }
