@@ -38,6 +38,7 @@ namespace Kane.WinFormTest
             this.LB_Title = new System.Windows.Forms.Label();
             this.TB_Input = new KaneTextBox();
             this.BTN_Message = new System.Windows.Forms.Button();
+            this.BTN_Password = new System.Windows.Forms.Button();
             // 
             // BTN_Normal
             // 
@@ -85,6 +86,16 @@ namespace Kane.WinFormTest
             this.BTN_Message.UseVisualStyleBackColor = true;
             this.BTN_Message.Click += new System.EventHandler(this.BTN_Message_Click);
             // 
+            // BTN_Password
+            // 
+            this.BTN_Password.Location = new System.Drawing.Point(3, 283);
+            this.BTN_Password.Name = "BTN_Password";
+            this.BTN_Password.Size = new System.Drawing.Size(141, 45);
+            this.BTN_Password.TabIndex = 0;
+            this.BTN_Password.Text = "密码窗体";
+            this.BTN_Password.UseVisualStyleBackColor = true;
+            this.BTN_Password.Click += new System.EventHandler(this.BTN_Password_Click);
+            // 
             // TB_Console
             // 
             this.TB_Console.Location = new System.Drawing.Point(155, 111);
@@ -125,6 +136,7 @@ namespace Kane.WinFormTest
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.BTN_Message);
+            this.Controls.Add(this.BTN_Password);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Title = "主窗体（自定义标题）";
@@ -143,5 +155,6 @@ namespace Kane.WinFormTest
         private System.Windows.Forms.Label LB_Title;
         private KaneTextBox TB_Input;
         private System.Windows.Forms.Button BTN_Message;
+        private System.Windows.Forms.Button BTN_Password;
     }
 }

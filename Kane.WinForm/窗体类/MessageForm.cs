@@ -116,7 +116,7 @@ namespace Kane.WinForm
             this.BTN_OK.Size = new Size(88, 30);
             this.BTN_OK.Text = "确　认";
             this.BTN_OK.Font = new Font(Font.FontFamily, 10F, Font.Style, Font.Unit, 134);
-            this.BTN_Cancel.TextAlign = ContentAlignment.MiddleCenter;
+            this.BTN_OK.TextAlign = ContentAlignment.MiddleCenter;
             this.BTN_OK.UseVisualStyleBackColor = true;
             this.BTN_OK.Click += new EventHandler(BTN_OK_Click);
             // 
@@ -206,7 +206,7 @@ namespace Kane.WinForm
         #endregion
 
         #region 设置内容文本 + SetContent(string value)
-        public void SetContent(string value) => this.LB_Content.Text = value; 
+        public void SetContent(string value) => this.LB_Content.Text = value;
         #endregion
 
         #region 释放资源 + Dispose(bool disposing)
