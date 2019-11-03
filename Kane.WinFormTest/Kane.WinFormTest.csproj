@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kane.WinForm" Version="1.0.1" />
+    <ProjectReference Include="..\Kane.WinForm\Kane.WinForm.csproj" />
   </ItemGroup>
 
 </Project>

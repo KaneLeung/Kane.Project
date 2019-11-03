@@ -50,5 +50,12 @@ namespace Kane.WinFormTest
             KEYBOARD_HOOK.Unhook();
             MOUSE_HOOK.Unhook();
         }
+
+        private void BTN_Message_Click(object sender, EventArgs e)
+        {
+            var message = new MessageForm("Hello World", "This is message windows form.");
+            //message.SetFont(this.Font);
+            message.ShowDialog();
+        }
     }
 }

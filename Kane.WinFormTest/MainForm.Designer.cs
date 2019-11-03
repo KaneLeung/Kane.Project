@@ -37,6 +37,7 @@ namespace Kane.WinFormTest
             this.TB_Console = new System.Windows.Forms.TextBox();
             this.LB_Title = new System.Windows.Forms.Label();
             this.TB_Input = new KaneTextBox();
+            this.BTN_Message = new System.Windows.Forms.Button();
             // 
             // BTN_Normal
             // 
@@ -74,6 +75,16 @@ namespace Kane.WinFormTest
             this.button4.Text = "无边框窗体";
             this.button4.UseVisualStyleBackColor = true;
             // 
+            // BTN_Message
+            // 
+            this.BTN_Message.Location = new System.Drawing.Point(3, 233);
+            this.BTN_Message.Name = "BTN_Message";
+            this.BTN_Message.Size = new System.Drawing.Size(141, 45);
+            this.BTN_Message.TabIndex = 0;
+            this.BTN_Message.Text = "消息窗体";
+            this.BTN_Message.UseVisualStyleBackColor = true;
+            this.BTN_Message.Click += new System.EventHandler(this.BTN_Message_Click);
+            // 
             // TB_Console
             // 
             this.TB_Console.Location = new System.Drawing.Point(155, 111);
@@ -81,6 +92,7 @@ namespace Kane.WinFormTest
             this.TB_Console.Name = "TB_Console";
             this.TB_Console.Size = new System.Drawing.Size(634, 331);
             this.TB_Console.TabIndex = 1;
+            this.TB_Console.ReadOnly = true;
             // 
             // LB_Title
             // 
@@ -112,6 +124,7 @@ namespace Kane.WinFormTest
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button4);
+            this.Controls.Add(this.BTN_Message);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Title = "主窗体（自定义标题）";
@@ -129,5 +142,6 @@ namespace Kane.WinFormTest
         private System.Windows.Forms.TextBox TB_Console;
         private System.Windows.Forms.Label LB_Title;
         private KaneTextBox TB_Input;
+        private System.Windows.Forms.Button BTN_Message;
     }
 }

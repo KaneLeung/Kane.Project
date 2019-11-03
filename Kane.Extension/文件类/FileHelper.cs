@@ -88,6 +88,7 @@ namespace Kane.Extension
         /// 字符串 "s* "path搜索以字母 "s" 开头的所有名称。 searchPattern
         /// *红星   此位置中的零个或多个字符。
         /// ? (问号)	此位置中的零个或一个字符。
+        /// https://docs.microsoft.com/zh-cn/dotnet/api/system.io.directory.getdirectories?view=netcore-3.0#System_IO_Directory_GetDirectories_System_String_System_String_System_IO_SearchOption_
         /// </summary>
         /// <param name="path">要获取文件的目录</param>
         /// <param name="pattern">与目录的名称匹配的搜索字符串。 此参数可以包含有效文本和通配符的组合，但不支持正则表达式。</param>
