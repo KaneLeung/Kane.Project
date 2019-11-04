@@ -67,7 +67,7 @@ namespace Kane.WinFormTest
 
         private void BTN_Prompt_Click(object sender, EventArgs e)
         {
-            var prompt = new PromptForm("Hello World", "This is password windows form.");
+            var prompt = new PromptForm("Hello World", "This is prompt windows form.");
             //prompt.SetFont(this.Font);
             prompt.ShowDialog();
         }

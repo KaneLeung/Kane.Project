@@ -266,6 +266,22 @@ namespace Kane.WinForm
         }
         #endregion
 
+        #region 统一设计窗体字体 + SetFont(Font font)
+        /// <summary>
+        /// 统一设计窗体字体
+        /// </summary>
+        /// <param name="font"></param>
+        public void SetFont(Font font)
+        {
+            this.LB_Title.Font = new Font(font.FontFamily, 13F, font.Style, font.Unit, 134);
+            this.LB_Content.Font = new Font(font.FontFamily, 10.5F, font.Style, font.Unit, 134);
+            this.TB_Content.Font = new Font(font.FontFamily, 12F, font.Style, font.Unit, 134);
+            this.LB_Error.Font = new Font(font.FontFamily, 12F, font.Style, font.Unit, 134);
+            this.BTN_OK.Font = new Font(font.FontFamily, 10F, font.Style, font.Unit, 134);
+            this.BTN_Cancel.Font = new Font(font.FontFamily, 10F, font.Style, font.Unit, 134);
+        }
+        #endregion
+
         #region 释放资源 + Dispose(bool disposing)
         /// <summary>
         /// 释放资源
