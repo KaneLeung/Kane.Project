@@ -136,7 +136,7 @@ namespace Kane.WinForm
             this.LB_Error.ForeColor = Color.Firebrick;
             this.LB_Error.Location = new Point(332, 84);
             this.LB_Error.Name = "LB_Error";
-            this.LB_Error.Size = new Size(205, 21);
+            this.LB_Error.Size = new Size(205, 25);
             if (CONFIRM_MODE)
             {
                 // 

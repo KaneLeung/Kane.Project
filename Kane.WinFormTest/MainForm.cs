@@ -64,5 +64,12 @@ namespace Kane.WinFormTest
             //password.SetFont(this.Font);
             password.ShowDialog();
         }
+
+        private void BTN_Prompt_Click(object sender, EventArgs e)
+        {
+            var prompt = new PromptForm("Hello World", "This is password windows form.");
+            //prompt.SetFont(this.Font);
+            prompt.ShowDialog();
+        }
     }
 }
