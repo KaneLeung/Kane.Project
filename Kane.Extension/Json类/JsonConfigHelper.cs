@@ -10,7 +10,7 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/11/15 23:56:17
-* 更新时间 ：2019/11/15 23:56:17
+* 更新时间 ：2019/11/20 23:56:17
 * 版 本 号 ：v1.0.0.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
@@ -26,6 +26,7 @@ using System.Text;
 using System.Text.Json;
 #else
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 #endif
 
 namespace Kane.Extension
@@ -148,7 +149,7 @@ namespace Kane.Extension
 
         #region 根据多个关键词遍历JsonPropertys所有子类 + GetElements(IEnumerable<JsonProperty> properties, string[] keys, List<JsonElement> result, int index = 0)
         /// <summary>
-        /// 根据JsonPropertys遍历所有子类 + GetElements(IEnumerable<JsonProperty> properties, string[] keys, List<JsonElement> result, int index = 0)
+        /// 根据JsonPropertys遍历所有子类
         /// </summary>
         /// <param name="properties"></param>
         /// <param name="keys"></param>
@@ -268,18 +269,6 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 在JSON字符串中修改或添加新的Json元素,默认使用UTF8编码 + SetValue<T>(string source, string keys, T value)
-        /// <summary>
-        /// 在JSON字符串中修改或添加新的Json元素,默认使用UTF8编码
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source">源数据，可以是Json字符串或文件路径</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
-        /// <param name="value">修改或添加的内容</param>
-        /// <returns>修改后或添加后的Json字符串</returns>
-        public string SetValue<T>(string source, string keys, T value) => SetValue(source, Encoding.UTF8, keys, value);
-        #endregion
-
         #region 在JSON字符串中修改或添加新的Json元素 + SetValue<T>(string source, Encoding encoding, string keys, T value)
         /// <summary>
         /// 在JSON字符串中修改或添加新的Json元素
@@ -313,54 +302,6 @@ namespace Kane.Extension
             {
                 throw;
             }
-        }
-        #endregion
-
-        #region 在原有的JSON字符串中修改或添加新的Json元素，并保存到原来加载的文件上 + SetValueSaveFile<T>(string keys, T value)
-        /// <summary>
-        /// 在原有的JSON字符串中修改或添加新的Json元素，并保存到原来加载的文件上
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
-        /// <param name="value">修改或添加的内容</param>
-        /// <returns>修改后或添加后的Json字符串</returns>
-        public string SetValueSaveFile<T>(string keys, T value)
-        {
-            SetValue(keys, value);
-            SaveFile();
-            return JSON_DATA;
-        }
-        #endregion
-
-        #region 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，默认UTF8编码 + SetValueSaveFile<T>(string source, string keys, T value, string path)
-        /// <summary>
-        /// 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，默认UTF8编码
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source">源数据，可以是Json字符串或文件路径</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
-        /// <param name="value">修改或添加的内容</param>
-        /// <param name="path">保存的文件路径+文件名</param>
-        /// <returns>修改后的Json字符串</returns>
-        public string SetValueSaveFile<T>(string source, string keys, T value, string path) => SetValueSaveFile(source, Encoding.UTF8, keys, value, path);
-        #endregion
-
-        #region 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，可指定编码 + SetValueSaveFile<T>(string source, Encoding encoding, string keys, T value, string path)
-        /// <summary>
-        /// 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，可指定编码
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source">源数据，可以是Json字符串或文件路径</param>
-        /// <param name="encoding">编码</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
-        /// <param name="value">修改或添加的内容</param>
-        /// <param name="path">保存的文件路径+文件名</param>
-        /// <returns>修改后的Json字符串</returns>
-        public string SetValueSaveFile<T>(string source, Encoding encoding, string keys, T value, string path)
-        {
-            var data = SetValue<T>(source, encoding, keys, value);
-            File.WriteAllText(path, data, encoding);
-            return data;
         }
         #endregion
 
@@ -512,41 +453,423 @@ namespace Kane.Extension
         }
         #endregion
 #else
+        #region 根据关键词，获取对应的值 + GetValue<T>(string keys, T returnValue = default)
+        /// <summary>
+        /// 根据关键词，获取对应的值，关键词可用 Key1:Key2:Key3进行遍历，
+        /// 如果最后一级是Int值，可以取数组的索引对应的值
+        /// 最大深度为64
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="returnValue">失败返回值</param>
+        /// <returns></returns>
         public T GetValue<T>(string keys, T returnValue = default)
         {
-            throw new Exception("待开发");
+            try
+            {
+                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                //if (keyValues.Length > 64) throw new Exception("最大深度为64层");//Json.Net 测试过720层没问题
+                var rootData = JObject.Parse(JSON_DATA);
+                if (keyValues.Length > 1)
+                {
+                    if (int.TryParse(keyValues.LastOrDefault(), out int index))//最后一位是数字
+                    {
+                        string[] tempKeys = new string[keyValues.Length - 1];
+                        Array.Copy(keyValues, tempKeys, keyValues.Length - 1);
+                        var temp = rootData.SelectToken(string.Join(".", tempKeys));
+                        if (temp.Type == JTokenType.Array)
+                        {
+                            var itemList = temp.ToObject<List<T>>();
+                            if (itemList.Count >= index + 1) return itemList[index];
+                        }
+                    }
+                    return rootData.SelectToken(string.Join(".", keyValues)).ToObject<T>() ?? returnValue;
+                }
+                else
+                {
+                    List<JToken> result = new List<JToken>();
+                    GetJTokens(rootData.Properties(), keys, result);
+                    if (result.Count > 0) return result.FirstOrDefault().ToObject<T>();
+                    else return default;
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine(ex.Message);
+#endif
+                throw;
+                //return returnValue;
+            }
         }
+        #endregion
 
+        #region 根据JProperty遍历所有子类 + GetJTokens(IEnumerable<JProperty> properties, string key, List<JToken> result)
+        /// <summary>
+        /// 根据JProperty遍历所有子类
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <param name="key"></param>
+        /// <param name="result"></param>
+        private static void GetJTokens(IEnumerable<JProperty> properties, string key, List<JToken> result)
+        {
+            foreach (JProperty item in properties)
+            {
+                if (item.Name == key) result.Add(item.Value);
+                if (item.Value.Type == JTokenType.Object) GetJTokens(((JObject)item.Value).Properties(), key, result);
+            }
+        }
+        #endregion
+
+        #region 在原有的JSON字符串中修改或添加新的Json元素 + SetValue<T>(string keys, T value)
+        /// <summary>
+        /// 在原有的JSON字符串中修改或添加新的Json元素
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="value">修改或添加的内容</param>
+        /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValue<T>(string keys, T value)
         {
-            throw new Exception("待开发");
-        }
+            try
+            {
+                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                StringWriter stringWriter = new StringWriter();
+                using JsonWriter writer = new JsonTextWriter(stringWriter) { Formatting = Formatting.Indented };
+                writer.WriteStartObject();
+                if (JSON_DATA.IsValuable())
+                {
+                    var rootData = JObject.Parse(JSON_DATA);
+                    WriteJsonObject(writer, keyValues, rootData.Properties(), value);
+                }
+                else WriteJsonObject(writer, keyValues, new List<JProperty>(), value);
+                writer.WriteEndObject();
+                writer.Flush();
+                JSON_DATA = stringWriter.GetStringBuilder().ToString();
+                return JSON_DATA;
 
-        public string SetValue<T>(string source, string keys, T value)
-        {
-            throw new Exception("待开发");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+        #endregion
 
+        #region 在JSON字符串中修改或添加新的Json元素 + SetValue<T>(string source, Encoding encoding, string keys, T value)
+        /// <summary>
+        /// 在JSON字符串中修改或添加新的Json元素
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">源数据，可以是Json字符串或文件路径</param>
+        /// <param name="encoding">编码</param>
+        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="value">修改或添加的内容</param>
+        /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValue<T>(string source, Encoding encoding, string keys, T value)
         {
-            throw new Exception("待开发");
+            try
+            {
+                if (File.Exists(source)) source = File.ReadAllText(source, encoding);
+                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                StringWriter stringWriter = new StringWriter();
+                using JsonWriter writer = new JsonTextWriter(stringWriter) { Formatting = Formatting.Indented };
+                writer.WriteStartObject();
+                if (source.IsValuable())
+                {
+                    var rootData = JObject.Parse(source);
+                    WriteJsonObject(writer, keyValues, rootData.Properties(), value);
+                }
+                else WriteJsonObject(writer, keyValues, new List<JProperty>(), value);
+                writer.WriteEndObject();
+                writer.Flush();
+                return stringWriter.GetStringBuilder().ToString();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+        #endregion
 
+        #region JsonWriter写对象方法 + WriteJsonObject<T>(JsonWriter write, string[] keys, IEnumerable<JProperty> properties, T value, bool flag = false, int index = 0)
+        /// <summary>
+        /// JsonWriter写对象方法
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="write">JsonWriter写入器</param>
+        /// <param name="keys">关键词，可以是多个，用【:】冒号分割</param>
+        /// <param name="properties">Json属性</param>
+        /// <param name="value">要写入的值</param>
+        /// <param name="flag">查找到目标标志</param>
+        /// <param name="index">当前关键词索引</param>
+        private static void WriteJsonObject<T>(JsonWriter write, string[] keys, IEnumerable<JProperty> properties, T value, bool flag = false, int index = 0)
+        {
+            foreach (var item in properties)
+            {
+                if (keys.Length <= index || (keys.Length > index && item.Name != keys[index]))//如果Index大于Keys的范围，或在Key[index]不等于当前
+                {
+                    switch (item.Value.Type)
+                    {
+                        case JTokenType.Object:
+                            write.WritePropertyName(item.Name);
+                            write.WriteStartObject();
+                            WriteJsonObject(write, keys, ((JObject)item.Value).Properties(), value, flag, index + 1);
+                            write.WriteEndObject();
+                            break;
+                        case JTokenType.Array:
+                            write.WritePropertyName(item.Name);
+                            write.WriteStartArray();
+                            WriteJsonArray(write, keys, item.Value.Children(), value, flag);
+                            write.WriteEndArray();
+                            break;
+                        case JTokenType.Property:
+                            write.WritePropertyName(item.Value.ToString());
+                            break;
+                        case JTokenType.Comment:
+                            write.WritePropertyName(item.Name);
+                            write.WriteComment(item.Value.ToString());
+                            break;
+                        case JTokenType.Integer:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<int>());
+                            break;
+                        case JTokenType.Float:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<float>());
+                            break;
+                        case JTokenType.String:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<string>());
+                            break;
+                        case JTokenType.Boolean:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<bool>());
+                            break;
+                        case JTokenType.Null:
+                            write.WritePropertyName(item.Name);
+                            write.WriteNull();
+                            break;
+                        case JTokenType.Date:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<DateTime>());
+                            break;
+                        case JTokenType.Raw:
+                            write.WritePropertyName(item.Name);
+                            write.WriteRaw(item.Value.ToString());
+                            break;
+                        case JTokenType.Bytes:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<byte>());
+                            break;
+                        case JTokenType.Guid:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<Guid>());
+                            break;
+                        case JTokenType.Uri:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<Uri>());
+                            break;
+                        case JTokenType.TimeSpan:
+                            write.WritePropertyName(item.Name);
+                            write.WriteValue(item.Value.ToObject<TimeSpan>());
+                            break;
+                        case JTokenType.None:
+                        case JTokenType.Constructor:
+                        case JTokenType.Undefined:
+                        default:
+                            break;
+                    }
+                }
+                else if (keys.Length > index && item.Name == keys[index]) //在Keys的范围内存在
+                {
+                    var type = typeof(T);
+                    write.WritePropertyName(item.Name);
+                    if (type.Equals(typeof(string))) write.WriteValue(value.ToString());
+                    else if (type.Equals(typeof(DateTime))) write.WriteValue(value.ToString());
+                    else if (type.Equals(typeof(short))) write.WriteValue((short)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(int))) write.WriteValue((int)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(long))) write.WriteValue((long)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(double))) write.WriteValue((double)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(decimal))) write.WriteValue((decimal)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(bool))) write.WriteValue((bool)Convert.ChangeType(value, type));
+                    else //如果是集合类型，则继续递归
+                    {
+                        var temp = JsonConvert.SerializeObject(value);
+                        write.WriteStartObject();
+                        WriteJsonObject(write, keys, JObject.Parse(temp).Properties(), value, true, index + 1);
+                        write.WriteEndObject();
+                    }
+                }
+            }
+            if (keys.Length > index && !properties.Any(k => k.Name == keys[index]) && (flag || index == 0))//在范围内，并且不存在，则创建
+            {
+                if (keys.Length == index + 1)//如果是最后一个Key
+                {
+                    var type = typeof(T);
+                    write.WritePropertyName(keys[index]);
+                    if (type.Equals(typeof(string))) write.WriteValue(value.ToString());
+                    else if (type.Equals(typeof(DateTime))) write.WriteValue(value.ToString());
+                    else if (type.Equals(typeof(short))) write.WriteValue((short)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(int))) write.WriteValue((int)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(long))) write.WriteValue((long)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(double))) write.WriteValue((double)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(decimal))) write.WriteValue((decimal)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(bool))) write.WriteValue((bool)Convert.ChangeType(value, type));
+                    else //如果是集合类型，则继续递归
+                    {
+                        var temp = JsonConvert.SerializeObject(value);
+                        write.WriteStartObject();
+                        WriteJsonObject(write, keys, JObject.Parse(temp).Properties(), value, true, index + 1);
+                        write.WriteEndObject();
+                    }
+                }
+                else //如果不是最后一个Key,则创建对象，并继续递归下一级
+                {
+                    write.WritePropertyName(keys[index]);
+                    write.WriteStartObject();
+                    WriteJsonObject(write, keys, new List<JProperty>(), value, true, index + 1);
+                    write.WriteEndObject();
+                }
+            }
+        }
+        #endregion
+
+        #region JsonWriter写数组方法 + WriteJsonArray<T>(JsonWriter write, string[] keys, IEnumerable<JToken> tokens, T value, bool flag = false, int index = 0)
+        /// <summary>
+        /// JsonWriter写数组方法
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="write">JsonWriter写入器</param>
+        /// <param name="keys">关键词，可以是多个，用【:】冒号分割</param>
+        /// <param name="elements">Json元素</param>
+        /// <param name="value">要写入的值</param>
+        /// <param name="flag">查找到目标标志</param>
+        /// <param name="index">当前关键词索引</param>
+        private static void WriteJsonArray<T>(JsonWriter write, string[] keys, IEnumerable<JToken> tokens, T value, bool flag = false, int index = 0)
+        {
+            foreach (var item in tokens)
+            {
+                switch (item.Type)
+                {
+                    case JTokenType.Object:
+                        write.WriteStartObject();
+                        WriteJsonObject(write, keys, ((JObject)item).Properties(), value, flag, index);
+                        write.WriteEndObject();
+                        break;
+                    case JTokenType.Array:
+                        write.WriteStartArray();
+                        WriteJsonArray(write, keys, ((JArray)item).Children(), value, flag, index);
+                        write.WriteEndArray();
+                        break;
+                    case JTokenType.Property:
+                        write.WritePropertyName(item.ToString());
+                        break;
+                    case JTokenType.Comment:
+                        write.WriteComment(item.ToString());
+                        break;
+                    case JTokenType.Integer:
+                        write.WriteValue(item.ToObject<int>());
+                        break;
+                    case JTokenType.Float:
+                        write.WriteValue(item.ToObject<float>());
+                        break;
+                    case JTokenType.String:
+                        write.WriteValue(item.ToObject<string>());
+                        break;
+                    case JTokenType.Boolean:
+                        write.WriteValue(item.ToObject<bool>());
+                        break;
+                    case JTokenType.Null:
+                        write.WriteNull();
+                        break;
+                    case JTokenType.Date:
+                        write.WriteValue(item.ToObject<DateTime>());
+                        break;
+                    case JTokenType.Raw:
+                        write.WriteRaw(item.ToString());
+                        break;
+                    case JTokenType.Bytes:
+                        write.WriteValue(item.ToObject<byte>());
+                        break;
+                    case JTokenType.Guid:
+                        write.WriteValue(item.ToObject<Guid>());
+                        break;
+                    case JTokenType.Uri:
+                        write.WriteValue(item.ToObject<Uri>());
+                        break;
+                    case JTokenType.TimeSpan:
+                        write.WriteValue(item.ToObject<TimeSpan>());
+                        break;
+                    case JTokenType.None:
+                    case JTokenType.Constructor:
+                    case JTokenType.Undefined:
+                    default:
+                        break;
+                }
+            }
+        }
+        #endregion
+#endif
+        #region 在JSON字符串中修改或添加新的Json元素,默认使用UTF8编码 + SetValue<T>(string source, string keys, T value)
+        /// <summary>
+        /// 在JSON字符串中修改或添加新的Json元素,默认使用UTF8编码
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">源数据，可以是Json字符串或文件路径</param>
+        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="value">修改或添加的内容</param>
+        /// <returns>修改后或添加后的Json字符串</returns>
+        public string SetValue<T>(string source, string keys, T value) => SetValue(source, Encoding.UTF8, keys, value);
+        #endregion
+
+        #region 在原有的JSON字符串中修改或添加新的Json元素，并保存到原来加载的文件上 + SetValueSaveFile<T>(string keys, T value)
+        /// <summary>
+        /// 在原有的JSON字符串中修改或添加新的Json元素，并保存到原来加载的文件上
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="value">修改或添加的内容</param>
+        /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValueSaveFile<T>(string keys, T value)
         {
-            throw new Exception("待开发");
+            SetValue(keys, value);
+            SaveFile();
+            return JSON_DATA;
         }
+        #endregion
 
-        public string SetValueSaveFile<T>(string source, string keys, T value, string path)
-        {
-            throw new Exception("待开发");
-        }
+        #region 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，默认UTF8编码 + SetValueSaveFile<T>(string source, string keys, T value, string path)
+        /// <summary>
+        /// 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，默认UTF8编码
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">源数据，可以是Json字符串或文件路径</param>
+        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="value">修改或添加的内容</param>
+        /// <param name="path">保存的文件路径+文件名</param>
+        /// <returns>修改后的Json字符串</returns>
+        public string SetValueSaveFile<T>(string source, string keys, T value, string path) => SetValueSaveFile(source, Encoding.UTF8, keys, value, path);
+        #endregion
 
+        #region 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，可指定编码 + SetValueSaveFile<T>(string source, Encoding encoding, string keys, T value, string path)
+        /// <summary>
+        /// 加载文件或Json字符串，并修改或添加新的Json元素，并保存到指定文件，可指定编码
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">源数据，可以是Json字符串或文件路径</param>
+        /// <param name="encoding">编码</param>
+        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="value">修改或添加的内容</param>
+        /// <param name="path">保存的文件路径+文件名</param>
+        /// <returns>修改后的Json字符串</returns>
         public string SetValueSaveFile<T>(string source, Encoding encoding, string keys, T value, string path)
         {
-            throw new Exception("待开发");
+            var data = SetValue<T>(source, encoding, keys, value);
+            File.WriteAllText(path, data, encoding);
+            return data;
         }
-#endif
+        #endregion
 
         #region 按加载文件的路径保存Json数据 + SaveFile()
         /// <summary>
