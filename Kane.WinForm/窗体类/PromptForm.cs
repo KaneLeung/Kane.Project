@@ -81,6 +81,7 @@ namespace Kane.WinForm
             this.LB_Title.Margin = new Padding(0);
             this.LB_Title.Name = "LB_Title";
             this.LB_Title.Size = new Size(507, 26);
+            this.LB_Title.AutoSize = true;
             this.LB_Title.Text = "这个是标题 ，可以是很长很长";
             this.LB_Title.TextAlign = ContentAlignment.MiddleLeft;
             // 

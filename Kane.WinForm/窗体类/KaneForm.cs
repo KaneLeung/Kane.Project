@@ -32,9 +32,9 @@ namespace Kane.WinForm
         [Browsable(true), Description("是否显示自定义图片图标"), EditorBrowsable(EditorBrowsableState.Always)]
         public bool ShowImageIcon { get; set; } = true;
         [Description("ICON图标")]
-        public Image IconImage { get; set; } = GetResourceImage("ICON_BLACK");
+        public Image IconImage { get; set; } = Common.GetResourceImage("ICON_BLACK");
         [Description("非活动时ICON图标")]
-        public Image DeactivateIconImage { get; set; } = GetResourceImage("ICON_GREY");
+        public Image DeactivateIconImage { get; set; } = Common.GetResourceImage("ICON_GREY");
         [Description("窗体标题背景颜色")]
         public Color TitleBackColor { get; set; } = Color.Transparent;
         [Description("窗体标题")]
@@ -42,7 +42,7 @@ namespace Kane.WinForm
         [Description("窗体标题对齐方向")]
         public ContentAlignment TitleAlign { get; set; } = ContentAlignment.MiddleCenter;
         [Description("窗体标题字体")]
-        public Font TitleFont { get; set; } = new Font("微软雅黑", 10.5F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+        public Font TitleFont { get; set; } = new Font("微软雅黑", 10.5F, FontStyle.Regular, GraphicsUnit.Point, 134);
         [Description("是否显示设置按钮")]
         public bool ShowSetting { get; set; } = false;
         [Description("是否显示最小化按钮")]
@@ -70,7 +70,7 @@ namespace Kane.WinForm
         private bool ACTIVATED_STATE = true;
         private readonly PictureBox MAX_ICON = new PictureBox()
         {
-            Image = GetResourceImage("MAXIMIZE_BLACK"),//生成类库时，记得加图标入资源文件
+            Image = Common.GetResourceImage("MAXIMIZE_BLACK"),//生成类库时，记得加图标入资源文件
             Size = ICON_SIZE,
             Tag = "MAXIMIZE_",
             Margin = ZERO_PADDING,
@@ -78,10 +78,6 @@ namespace Kane.WinForm
             Padding = ZERO_PADDING,
             Anchor = AnchorStyles.Top | AnchorStyles.Right,
         };
-        #endregion
-
-        #region 根据名称获取资源文件
-        private static Image GetResourceImage(string name) => (Image)Properties.Resources.ResourceManager.GetObject(name);
         #endregion
 
         #region 重写Dispose + Dispose(bool disposing)
@@ -135,7 +131,7 @@ namespace Kane.WinForm
                     {
                         ((PictureBox)item).Image = IconImage;
                     }
-                    else ((PictureBox)item).Image = GetResourceImage($"{item.Tag?.ToString()}BLACK");
+                    else ((PictureBox)item).Image = Common.GetResourceImage($"{item.Tag?.ToString()}BLACK");
                 }
             }
         }
@@ -154,7 +150,7 @@ namespace Kane.WinForm
                     {
                         ((PictureBox)item).Image = DeactivateIconImage;
                     }
-                    else ((PictureBox)item).Image = GetResourceImage($"{item.Tag?.ToString()}GREY");
+                    else ((PictureBox)item).Image = Common.GetResourceImage($"{item.Tag?.ToString()}GREY");
                 }
             }
         }
@@ -187,7 +183,7 @@ namespace Kane.WinForm
             {
                 PictureBox icon = new PictureBox()
                 {
-                    Image = GetResourceImage("CLOSE_BLACK"),//生成类库时，记得加图标入资源文件
+                    Image = Common.GetResourceImage("CLOSE_BLACK"),//生成类库时，记得加图标入资源文件
                     Size = ICON_SIZE,
                     Tag = "CLOSE_",
                     Margin = ZERO_PADDING,
@@ -213,7 +209,7 @@ namespace Kane.WinForm
             {
                 PictureBox icon = new PictureBox()
                 {
-                    Image = GetResourceImage("MINUS_BLACK"),//生成类库时，记得加图标入资源文件
+                    Image = Common.GetResourceImage("MINUS_BLACK"),//生成类库时，记得加图标入资源文件
                     Size = ICON_SIZE,
                     Tag = "MINUS_",
                     Margin = ZERO_PADDING,
@@ -231,7 +227,7 @@ namespace Kane.WinForm
             {
                 PictureBox icon = new PictureBox()
                 {
-                    Image = GetResourceImage("SETTING_BLACK"),//生成类库时，记得加图标入资源文件
+                    Image = Common.GetResourceImage("SETTING_BLACK"),//生成类库时，记得加图标入资源文件
                     Size = ICON_SIZE,
                     Tag = "SETTING_",
                     Margin = ZERO_PADDING,
@@ -248,7 +244,7 @@ namespace Kane.WinForm
             var title = new Label()//加入标题栏
             {
                 Font = TitleFont,
-                Anchor = ((AnchorStyles)(((AnchorStyles.Top | AnchorStyles.Left) | AnchorStyles.Right))),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                 Location = new Point(ShowImageIcon ? 30 : 0, 0),
                 Margin = ZERO_PADDING,
                 Padding = new Padding(3, 1, 3, 1),
@@ -297,14 +293,14 @@ namespace Kane.WinForm
         {
             var temp = sender as PictureBox;
             temp.BackColor = Color.FromArgb(255, 18, 150, 219);
-            temp.Image = GetResourceImage("SETTING_BLACK");
+            temp.Image = Common.GetResourceImage("SETTING_BLACK");
         }
 
         private void BTN_Setting_Leave(object sender, EventArgs e)
         {
             var temp = sender as PictureBox;
             temp.BackColor = Color.Transparent;
-            temp.Image = ACTIVATED_STATE ? GetResourceImage("SETTING_BLACK") : GetResourceImage("SETTING_GREY");
+            temp.Image = ACTIVATED_STATE ? Common.GetResourceImage("SETTING_BLACK") : Common.GetResourceImage("SETTING_GREY");
         }
         #endregion
 
@@ -322,14 +318,14 @@ namespace Kane.WinForm
         {
             var temp = sender as PictureBox;
             temp.BackColor = Color.FromArgb(255, 232, 17, 35);
-            temp.Image = GetResourceImage("MINUS_BLACK");
+            temp.Image = Common.GetResourceImage("MINUS_BLACK");
         }
 
         private void BTN_Min_Leave(object sender, EventArgs e)
         {
             var temp = sender as PictureBox;
             temp.BackColor = Color.Transparent;
-            temp.Image = ACTIVATED_STATE ? GetResourceImage("MINUS_BLACK") : GetResourceImage("MINUS_GREY");
+            temp.Image = ACTIVATED_STATE ? Common.GetResourceImage("MINUS_BLACK") : Common.GetResourceImage("MINUS_GREY");
         }
         #endregion
 
@@ -348,8 +344,8 @@ namespace Kane.WinForm
             var temp = sender as PictureBox;
             temp.BackColor = Color.FromArgb(255, 18, 150, 219);
             if (this.WindowState == FormWindowState.Maximized)
-                temp.Image = GetResourceImage("MINIMIZE_BLACK");
-            else temp.Image = GetResourceImage("MAXIMIZE_BLACK");
+                temp.Image = Common.GetResourceImage("MINIMIZE_BLACK");
+            else temp.Image = Common.GetResourceImage("MAXIMIZE_BLACK");
         }
 
         private void BTN_Max_Leave(object sender, EventArgs e)
@@ -357,8 +353,8 @@ namespace Kane.WinForm
             var temp = sender as PictureBox;
             temp.BackColor = Color.Transparent;
             if (this.WindowState == FormWindowState.Maximized)
-                temp.Image = ACTIVATED_STATE ? GetResourceImage("MINIMIZE_BLACK") : GetResourceImage("MINIMIZE_GREY");
-            else temp.Image = ACTIVATED_STATE ? GetResourceImage("MAXIMIZE_BLACK") : GetResourceImage("MAXIMIZE_GREY");
+                temp.Image = ACTIVATED_STATE ? Common.GetResourceImage("MINIMIZE_BLACK") : Common.GetResourceImage("MINIMIZE_GREY");
+            else temp.Image = ACTIVATED_STATE ? Common.GetResourceImage("MAXIMIZE_BLACK") : Common.GetResourceImage("MAXIMIZE_GREY");
         }
         #endregion
 
@@ -376,14 +372,14 @@ namespace Kane.WinForm
         {
             var temp = sender as PictureBox;
             temp.BackColor = Color.FromArgb(255, 232, 17, 35);
-            temp.Image = GetResourceImage("CLOSE_WHITE");
+            temp.Image = Common.GetResourceImage("CLOSE_WHITE");
         }
 
         private void BTN_Close_Leave(object sender, EventArgs e)
         {
             var temp = sender as PictureBox;
             temp.BackColor = Color.Transparent;
-            temp.Image = ACTIVATED_STATE ? GetResourceImage("CLOSE_BLACK") : GetResourceImage("CLOSE_GREY");
+            temp.Image = ACTIVATED_STATE ? Common.GetResourceImage("CLOSE_BLACK") : Common.GetResourceImage("CLOSE_GREY");
         }
         #endregion
 
@@ -395,7 +391,7 @@ namespace Kane.WinForm
         /// <param name="e"></param>
         private void Title_DoubleClick(object sender, EventArgs e)
         {
-            if (!LockSize || ShowMaximized)  this.MaxNormalSwitch();
+            if (!LockSize || ShowMaximized) this.MaxNormalSwitch();
         }
         #endregion
 
@@ -410,7 +406,7 @@ namespace Kane.WinForm
                 this.SuspendLayout();
                 this.WindowState = FormWindowState.Normal;
                 this.Padding = new Padding(1);
-                MAX_ICON.Image = GetResourceImage("MAXIMIZE_BLACK");//切换图标
+                MAX_ICON.Image = Common.GetResourceImage("MAXIMIZE_BLACK");//切换图标
                 MAX_ICON.Tag = "MAXIMIZE_";
                 this.ResumeLayout();
             }
@@ -421,7 +417,7 @@ namespace Kane.WinForm
                 this.MaximumSize = new Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
                 this.WindowState = FormWindowState.Maximized;
                 this.Padding = ZERO_PADDING;
-                MAX_ICON.Image = GetResourceImage("MINIMIZE_BLACK");//切换图标
+                MAX_ICON.Image = Common.GetResourceImage("MINIMIZE_BLACK");//切换图标
                 MAX_ICON.Tag = "MINIMIZE_";
                 this.ResumeLayout();
             }

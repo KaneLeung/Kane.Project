@@ -15,9 +15,9 @@
     <RepositoryUrl>git@github.com:KaneLeung/Kane.Project.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
+    <Version>1.0.3</Version>
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
@@ -28,7 +28,7 @@
       <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\3.0.0\ref\netcoreapp3.0\System.Resources.Extensions.dll</HintPath>
     </Reference>
     <PackageReference Include="System.Drawing.Common">
-      <Version>4.6.0</Version>
+      <Version>4.6.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Win32.Registry">
       <Version>4.6.0</Version>
@@ -78,7 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kane.Extension" Version="1.0.1" />
+    <PackageReference Include="Kane.Extension" Version="1.0.3" />
   </ItemGroup>
   
 </Project>

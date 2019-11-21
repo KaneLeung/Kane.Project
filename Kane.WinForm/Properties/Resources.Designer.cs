@@ -93,6 +93,16 @@ namespace Kane.WinForm.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap ERROR_RED {
+            get {
+                object obj = ResourceManager.GetObject("ERROR_RED", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap ICON_BLACK {
             get {
                 object obj = ResourceManager.GetObject("ICON_BLACK", resourceCulture);
