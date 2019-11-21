@@ -15,7 +15,7 @@ namespace Kane.WinFormTest
         static void Main()
         {
 #if !NET472
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

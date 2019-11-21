@@ -40,13 +40,25 @@ namespace Kane.WinForm
         private Button BTN_OK;
         private Button BTN_Cancel;
         private bool CONFIRM_MODE = false;
+#if NETCOREAPP3_0
+        private static readonly int NETCORE_OFFSET = 8;//Netcore使用SetHighDpiMode(HighDpiMode.PerMonitorV2)时的偏移值
+#else
+        private static readonly int NETCORE_OFFSET = 0;
+#endif
         #endregion
 
         #region 公有成员
         public event Func<string, (bool state, string message)> FuncCheckValues;
         #endregion
 
-        #region 构造函数
+        #region 密码输入窗体的构造函数 + PasswordForm(string title, string subTitle, bool ConfirmMode = false, string secondTitle = "")
+        /// <summary>
+        /// 密码输入窗体的构造函数
+        /// </summary>
+        /// <param name="title">主标题</param>
+        /// <param name="subTitle">副标题</param>
+        /// <param name="ConfirmMode">是否开启确认密码模式</param>
+        /// <param name="secondTitle">第三标题</param>
         public PasswordForm(string title, string subTitle, bool ConfirmMode = false, string secondTitle = "")
         {
             CONFIRM_MODE = ConfirmMode;
@@ -90,7 +102,6 @@ namespace Kane.WinForm
             this.LB_Title.Name = "LB_Title";
             this.LB_Title.Size = new Size(507, 26);
             this.LB_Title.AutoSize = true;
-            this.LB_Title.Text = "这个是标题 ，可以是很长很长";
             this.LB_Title.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // LB_Password
@@ -113,6 +124,7 @@ namespace Kane.WinForm
             this.TB_Password.Name = "TB_Password";
             this.TB_Password.PasswordChar = '●';
             this.TB_Password.Size = new Size(269, 29);
+            this.TB_Password.BringToFront();
             this.TB_Password.TextChanged += new EventHandler(this.TB_Password_TextChanged);
             this.TB_Password.KeyDown += new KeyEventHandler(this.TB_Password_KeyDown);
             // 
@@ -122,7 +134,7 @@ namespace Kane.WinForm
             this.BTN_PasswordClear.BackColor = Color.Transparent;
             this.BTN_PasswordClear.Font = new Font(Font.FontFamily, 12F, Font.Style, Font.Unit, 134);
             this.BTN_PasswordClear.ForeColor = SystemColors.AppWorkspace;
-            this.BTN_PasswordClear.Location = new Point(304, 82);
+            this.BTN_PasswordClear.Location = new Point(304, 84);
             this.BTN_PasswordClear.Margin = new Padding(0);
             this.BTN_PasswordClear.Name = "BTN_PasswordClear";
             this.BTN_PasswordClear.Size = new Size(29, 27);
@@ -133,9 +145,9 @@ namespace Kane.WinForm
             // 
             this.LB_Error.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             this.LB_Error.BackColor = Color.Transparent;
-            this.LB_Error.Font = new Font(Font.FontFamily, 12F, Font.Style, Font.Unit, 134);
+            this.LB_Error.Font = new Font(Font.FontFamily, 10F, Font.Style, Font.Unit, 134);
             this.LB_Error.ForeColor = Color.Firebrick;
-            this.LB_Error.Location = new Point(332, 84);
+            this.LB_Error.Location = new Point(328, 86);
             this.LB_Error.Name = "LB_Error";
             this.LB_Error.Size = new Size(205, 25);
             if (CONFIRM_MODE)
@@ -146,7 +158,7 @@ namespace Kane.WinForm
                 this.LB_Confirm.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 this.LB_Confirm.AutoEllipsis = true;
                 this.LB_Confirm.Font = new Font(Font.FontFamily, 10.5F, Font.Style, Font.Unit, 134);
-                this.LB_Confirm.Location = new Point(30, 111);
+                this.LB_Confirm.Location = new Point(30, 111 + NETCORE_OFFSET);
                 this.LB_Confirm.Margin = new Padding(0);
                 this.LB_Confirm.Name = "LB_Confirm";
                 this.LB_Confirm.Size = new Size(507, 21);
@@ -156,7 +168,7 @@ namespace Kane.WinForm
                 // TB_Confirm
                 // 
                 this.TB_Confirm.Font = new Font(Font.FontFamily, 12F, Font.Style, Font.Unit, 134);
-                this.TB_Confirm.Location = new Point(35, 133);
+                this.TB_Confirm.Location = new Point(35, 133 + NETCORE_OFFSET);
                 this.TB_Confirm.Name = "TB_Confirm";
                 this.TB_Confirm.PasswordChar = '●';
                 this.TB_Confirm.Size = new Size(269, 29);
@@ -168,7 +180,7 @@ namespace Kane.WinForm
                 this.BTN_ConfirmClear.BackColor = Color.Transparent;
                 this.BTN_ConfirmClear.Font = new Font(Font.FontFamily, 12F, Font.Style, Font.Unit, 134);
                 this.BTN_ConfirmClear.ForeColor = SystemColors.AppWorkspace;
-                this.BTN_ConfirmClear.Location = new Point(304, 136);
+                this.BTN_ConfirmClear.Location = new Point(304, 136 + NETCORE_OFFSET);
                 this.BTN_ConfirmClear.Margin = new Padding(0);
                 this.BTN_ConfirmClear.Name = "BTN_ConfirmClear";
                 this.BTN_ConfirmClear.Size = new Size(29, 27);
@@ -178,7 +190,7 @@ namespace Kane.WinForm
             // BTN_OK
             // 
             this.BTN_OK.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.BTN_OK.Location = new Point(351, 182);
+            this.BTN_OK.Location = new Point(351, 182 + NETCORE_OFFSET);
             this.BTN_OK.Name = "BTN_OK";
             this.BTN_OK.Size = new Size(88, 30);
             this.BTN_OK.Text = "确　认";
@@ -190,7 +202,7 @@ namespace Kane.WinForm
             // BTN_Cancel
             // 
             this.BTN_Cancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            this.BTN_Cancel.Location = new Point(459, 182);
+            this.BTN_Cancel.Location = new Point(459, 182 + NETCORE_OFFSET);
             this.BTN_Cancel.Name = "BTN_Cancel";
             this.BTN_Cancel.Size = new Size(88, 30);
             this.BTN_Cancel.Text = "取　消";
@@ -202,7 +214,7 @@ namespace Kane.WinForm
             // PasswordForm
             // 
             this.AutoScaleMode = AutoScaleMode.None;
-            this.ClientSize = new Size(567, 232);
+            this.ClientSize = new Size(567, 232 + NETCORE_OFFSET);
             this.Controls.Add(this.LB_Title);
             this.Controls.Add(this.LB_Password);
             this.Controls.Add(this.TB_Password);
@@ -249,13 +261,13 @@ namespace Kane.WinForm
         {
             if (TB_Password.Text.Length < 1)
             {
-                LB_Error.Text = "密码不能为空，请重新输入";
+                LB_Error.Text = "密码不能为空";
                 TB_Password.Focus();
                 return;
             }
             if (CONFIRM_MODE && TB_Confirm.Text.Length < 1)
             {
-                LB_Error.Text = "确认密码不能为空，请重新输入";
+                LB_Error.Text = "确认密码不能为空";
                 TB_Confirm.Focus();
                 return;
             }
