@@ -73,9 +73,29 @@ namespace Kane.WinForm.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap CLOSE_BLACK_12 {
+            get {
+                object obj = ResourceManager.GetObject("CLOSE_BLACK_12", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap CLOSE_GREY {
             get {
                 object obj = ResourceManager.GetObject("CLOSE_GREY", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap CLOSE_RED_12 {
+            get {
+                object obj = ResourceManager.GetObject("CLOSE_RED_12", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
