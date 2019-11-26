@@ -14,7 +14,7 @@ namespace Kane.WinFormTest
         [STAThread]
         static void Main()
         {
-#if !NET472
+#if !NET47
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 #endif
             Application.EnableVisualStyles();
