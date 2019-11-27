@@ -21,21 +21,16 @@ using Kane.Extension;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-
 using System.Text;
 using System.Windows.Forms;
-#if NETCOREAPP3_0
 using System.Drawing;
-#else
-using System.Drawing;
-#endif
 
 namespace Kane.WinForm
 {
     public class KaneTabControl : TabControl
     {
-#region 使用到的枚举
-#region 图标方向，目前只开发到横向模式，纵向模式待开发
+        #region 使用到的枚举
+        #region 图标方向，目前只开发到横向模式，纵向模式待开发
         /// <summary>
         /// 图标方向，目前只开发到横向模式，纵向模式待开发
         /// </summary>
@@ -46,9 +41,9 @@ namespace Kane.WinForm
             [Description("横向模式")]
             Horizontal = 1,
         }
-#endregion
+        #endregion
 
-#region 选项卡标签标题对齐方向
+        #region 选项卡标签标题对齐方向
         /// <summary>
         /// 选项卡标签标题对齐方向
         /// </summary>
@@ -67,9 +62,9 @@ namespace Kane.WinForm
             /// </summary>
             Far = 2
         }
-#endregion
+        #endregion
 
-#region 选项卡标签是否显示右上角关闭按钮
+        #region 选项卡标签是否显示右上角关闭按钮
         /// <summary>
         /// 选项卡标签是否显示右上角关闭按钮
         /// </summary>
@@ -86,9 +81,9 @@ namespace Kane.WinForm
             [Description("总是显示")]
             Always = 1,
         }
-#endregion
+        #endregion
 
-#region 预设颜色方案和自定义方案
+        #region 预设颜色方案和自定义方案
         /// <summary>
         /// 预设颜色方案和自定义方案
         /// </summary>
@@ -135,10 +130,10 @@ namespace Kane.WinForm
             [Description("预设东哥红")]
             DefaultDRed = 6,
         }
-#endregion
-#endregion
+        #endregion
+        #endregion
 
-#region 可配置选项
+        #region 可配置选项
         [Browsable(true), Description("图标显示方向"), EditorBrowsable(EditorBrowsableState.Always)]
         public IconDirection Mode { get; set; } = IconDirection.Horizontal;
         [Browsable(true), Description("颜色方案，选中自定义颜色自定义才生效"), EditorBrowsable(EditorBrowsableState.Always)]
@@ -204,9 +199,9 @@ namespace Kane.WinForm
 
         [Browsable(true), Description("点击关闭按钮事件"), EditorBrowsable(EditorBrowsableState.Always)]
         public event EventHandler CloseButtonClickEvent;
-#endregion
+        #endregion
 
-#region 私有变量
+        #region 私有变量
         /// <summary>
         /// 预设方案的颜色
         /// </summary>
@@ -222,9 +217,9 @@ namespace Kane.WinForm
         private readonly int CLOSE_IMAGE_WIDTH = 12;//关闭图标边长
         private bool HOVERED = false;//是否鼠标经过关闭按钮标志
         private int HOVER_INDEX = -1;//当经过关闭按钮时，所有的选项卡标签Index 
-#endregion
+        #endregion
 
-#region 构造函数 + KaneTabControl()
+        #region 构造函数 + KaneTabControl()
         public KaneTabControl()
         {
             base.SetStyle(
@@ -240,9 +235,9 @@ namespace Kane.WinForm
             this.MouseDown += TabMouseDown;
             this.MouseMove += TabMouseMove;
         }
-#endregion
+        #endregion
 
-#region 自定义OnPaint + OnPaint(PaintEventArgs e)
+        #region 自定义OnPaint + OnPaint(PaintEventArgs e)
         protected override void OnPaint(PaintEventArgs e)
         {
             Pen pen = Pens.Transparent;
@@ -376,10 +371,10 @@ namespace Kane.WinForm
                 }
             }
             pen.Dispose();
-        } 
-#endregion
+        }
+        #endregion
 
-#region 鼠标点击选项卡标签关闭按钮时事件 + TabMouseDown(object sender, MouseEventArgs e)
+        #region 鼠标点击选项卡标签关闭按钮时事件 + TabMouseDown(object sender, MouseEventArgs e)
         private void TabMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && ShowCloseButton != CloseState.None)//是鼠标右击，并且是显示关闭按钮
@@ -394,9 +389,9 @@ namespace Kane.WinForm
                 }
             }
         }
-#endregion
+        #endregion
 
-#region 鼠标经过选项卡标签关闭按钮时事件 + TabMouseMove(object sender, MouseEventArgs e)
+        #region 鼠标经过选项卡标签关闭按钮时事件 + TabMouseMove(object sender, MouseEventArgs e)
         private void TabMouseMove(object sender, MouseEventArgs e)
         {
             if (ShowCloseButton != CloseState.None)
@@ -419,7 +414,7 @@ namespace Kane.WinForm
                     this.OnPaint(new PaintEventArgs(this.CreateGraphics(), this.ClientRectangle));
                 }
             }
-        } 
-#endregion
+        }
+        #endregion
     }
 }
