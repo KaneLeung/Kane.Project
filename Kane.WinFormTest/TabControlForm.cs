@@ -16,5 +16,15 @@ namespace Kane.WinFormTest
         {
             InitializeComponent();
         }
+
+        public void Form_Load(object sender, EventArgs e)
+        {
+            this.propertyGrid1.SelectedObject = this.tabControl1;
+        }
+
+        public void PropertyValue_Changed(object s, PropertyValueChangedEventArgs e)
+        {
+            this.tabControl1.Refresh();
+        }
     }
 }

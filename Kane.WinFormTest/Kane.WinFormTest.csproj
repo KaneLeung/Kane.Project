@@ -5,9 +5,8 @@
     <TargetFrameworks>net47;netcoreapp3.0;</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\Kane.Extension\Kane.Extension.csproj" />
     <ProjectReference Include="..\Kane.WinForm\Kane.WinForm.csproj" />
   </ItemGroup>
 
