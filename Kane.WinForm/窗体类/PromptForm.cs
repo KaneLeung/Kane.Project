@@ -35,7 +35,8 @@ namespace Kane.WinForm
         private Label LB_Error;
         private Button BTN_OK;
         private Button BTN_Cancel;
-        private bool MULTI_LINE = false;
+        private readonly bool MULTI_LINE;
+        private readonly bool REQUIRED;
         #endregion
 
         #region 公有成员
@@ -43,9 +44,17 @@ namespace Kane.WinForm
         #endregion
 
         #region 构造函数
-        public PromptForm(string title, string content, bool multiLine = false)
+        /// <summary>
+        /// PromptForm构造函数
+        /// </summary>
+        /// <param name="title">标题</param>
+        /// <param name="content">内容</param>
+        /// <param name="multiLine">是否显示多行</param>
+        /// <param name="required">是否为必填</param>
+        public PromptForm(string title, string content, bool multiLine = false,bool required = true)
         {
             MULTI_LINE = multiLine;
+            REQUIRED = required;
             InitializeComponent();
             this.Paint += (object sender, PaintEventArgs e) =>
             {
@@ -190,7 +199,7 @@ namespace Kane.WinForm
         #region 点击确认按钮事件 + BTN_OK_Click(object sender, EventArgs e)
         private void BTN_OK_Click(object sender, EventArgs e)
         {
-            if (TB_Content.Text.Length < 1)
+            if (REQUIRED && TB_Content.Text.TrimStart().TrimEnd().Length < 1)
             {
                 LB_Error.Text = "必填信息为空，请输入。";
                 TB_Content.Focus();

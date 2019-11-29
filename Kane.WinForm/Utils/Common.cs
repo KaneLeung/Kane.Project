@@ -26,7 +26,7 @@ namespace Kane.WinForm
 {
     internal static class Common
     {
-        #region 根据名称获取资源文件
+        #region 根据名称获取图像资源文件
         internal static Image GetResourceImage(string name) => (Image)Properties.Resources.ResourceManager.GetObject(name);
         #endregion
     }
