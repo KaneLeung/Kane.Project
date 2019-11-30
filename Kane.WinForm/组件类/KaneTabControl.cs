@@ -10,7 +10,7 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/11/26 21:27:59
-* 更新时间 ：2019/11/26 21:27:59
+* 更新时间 ：2019/11/30 23:27:59
 * 版 本 号 ：v1.0.0.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
@@ -234,6 +234,7 @@ namespace Kane.WinForm
             this.Margin = new Padding(0);
             this.MouseDown += TabMouseDown;
             this.MouseMove += TabMouseMove;
+            this.MouseLeave += TabMouseLeave;
         }
         #endregion
 
@@ -245,8 +246,11 @@ namespace Kane.WinForm
             {
                 pen = new Pen(ColorStyle == Style.Custom ? BottomInkBarColor : DEFAULT_COLOR[(int)ColorStyle], BottomInkBarWidth);
                 //e.Graphics.DrawRectangle(Pens.Blue, ClientRectangle.X + 1, ClientRectangle.Y + 1, this.Width - 3, this.ItemSize.Height - 1);//【调试】TabItem除去边框后范围
-                e.Graphics.DrawLine(pen, ClientRectangle.X + ((SelectedIndex == 0 && !ShowSlectedTabBorder) ? 2 : 1), //不显示选中标签时边框向右偏移+1
-                    ClientRectangle.Y + 1 + ItemSize.Height, this.Width - 1, ClientRectangle.Y + 1 + ItemSize.Height);//TabItem除去边框后范围
+                var selectRect = this.GetTabRect(this.SelectedIndex);
+                e.Graphics.DrawLine(pen, ClientRectangle.X + ((SelectedIndex == 0 && !ShowSlectedTabBorder) ? 2 : 1), ClientRectangle.Y + 1 + ItemSize.Height,
+                    selectRect.X, ClientRectangle.Y + 1 + ItemSize.Height);//不显示选中标签时边框向右偏移+1
+                e.Graphics.DrawLine(pen, selectRect.Right-1, ClientRectangle.Y + 1 + ItemSize.Height,
+                    this.Width - 1, ClientRectangle.Y + 1 + ItemSize.Height);
             }
             for (int i = 0; i < this.TabCount; i++)
             {
@@ -415,6 +419,17 @@ namespace Kane.WinForm
                 }
             }
         }
+        #endregion
+
+        #region 鼠标移出控件和关闭按钮时事件 + TabMouseLeave(object sender, EventArgs e)
+        private void TabMouseLeave(object sender, EventArgs e)
+        {
+            if (HOVERED && ShowCloseButton != CloseState.None)
+            {
+                HOVERED = false;
+                this.OnPaint(new PaintEventArgs(this.CreateGraphics(), this.ClientRectangle));
+            }
+        } 
         #endregion
     }
 }
