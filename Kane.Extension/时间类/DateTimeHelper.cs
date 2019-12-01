@@ -139,7 +139,7 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 将秒转换成时长字符串 + GetRunTime(int second)
+        #region 将秒转换成时长字符串，包含天、时、分、秒 + GetRunTime(int second)
         /// <summary>
         /// 将秒转换成运行时间
         /// </summary>
@@ -154,6 +154,22 @@ namespace Kane.Extension
             int day = hour / 24;
             hour %= 24;
             return string.Format("{0}天{1:00}小时{2:00}分{3:00}秒", day, hour, min, second);
+        }
+        #endregion
+
+        #region 将秒转换成时长字符串,没有天数，只有时、分、秒 + TimeStringNoDays(int second)
+        /// <summary>
+        /// 将秒转换成时长字符串,没有天数，只有时分秒
+        /// </summary>
+        /// <param name="second">秒</param>
+        /// <returns></returns>
+        public static string TimeStringNoDays(int second)
+        {
+            int min = second / 60;
+            second %= 60;
+            int hour = min / 60;
+            min %= 60;
+            return string.Format("{0:00}小时{1:00}分{2:00}秒", hour, min, second);
         }
         #endregion
 
