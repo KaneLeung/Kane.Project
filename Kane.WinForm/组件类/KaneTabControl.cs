@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Linq;
 
 namespace Kane.WinForm
 {
@@ -196,6 +197,8 @@ namespace Kane.WinForm
         public Image CloseImage { get; set; } = Common.GetResourceImage("CLOSE_BLACK_12");
         [Browsable(true), Description("自定义鼠标经过时关闭图标，12像素"), EditorBrowsable(EditorBrowsableState.Always)]
         public Image CloseHoverImage { get; set; } = Common.GetResourceImage("CLOSE_RED_12");
+        [Browsable(true), Description("隐藏关闭按钮的标签索引"), EditorBrowsable(EditorBrowsableState.Always)]
+        public IEnumerable<int> HideCloseButtonIndex { get; set; } = new List<int>();
 
         [Browsable(true), Description("点击关闭按钮事件"), EditorBrowsable(EditorBrowsableState.Always)]
         public event EventHandler CloseButtonClickEvent;
@@ -242,6 +245,7 @@ namespace Kane.WinForm
         protected override void OnPaint(PaintEventArgs e)
         {
             Pen pen = Pens.Transparent;
+            #region 绘制底部墨水条
             if (ShowBottomInkBar)//显示底部墨水条
             {
                 pen = new Pen(ColorStyle == Style.Custom ? BottomInkBarColor : DEFAULT_COLOR[(int)ColorStyle], BottomInkBarWidth);
@@ -249,15 +253,16 @@ namespace Kane.WinForm
                 var selectRect = this.GetTabRect(this.SelectedIndex);
                 e.Graphics.DrawLine(pen, ClientRectangle.X + ((SelectedIndex == 0 && !ShowSlectedTabBorder) ? 2 : 1), ClientRectangle.Y + 1 + ItemSize.Height,
                     selectRect.X, ClientRectangle.Y + 1 + ItemSize.Height);//不显示选中标签时边框向右偏移+1
-                e.Graphics.DrawLine(pen, selectRect.Right-1, ClientRectangle.Y + 1 + ItemSize.Height,
+                e.Graphics.DrawLine(pen, selectRect.Right - 1, ClientRectangle.Y + 1 + ItemSize.Height,
                     this.Width - 1, ClientRectangle.Y + 1 + ItemSize.Height);
-            }
+            } 
+            #endregion
             for (int i = 0; i < this.TabCount; i++)
             {
                 var offset = i == SelectedIndex ? 0 : 2;//非选中向下偏移值
-                var tabRect = this.GetTabRect(i);//2,2 非选中的选项卡标签
+                var tabRect = this.GetTabRect(i);//2,2 当前Index的选项卡标签
                 //e.Graphics.DrawRectangle(Pens.Red, tabRect.X - 1, tabRect.Y - 1, tabItem.Width, tabItem.Height - 1);//【调试】背景
-                //开始重绘图标******************************
+                #region 开始绘制图标
                 //e.Graphics.DrawRectangle(Pens.Black, tabRect.X + 4, tabRect.Y + 2, tabItem.Height - 7, tabItem.Height - 7);//【调试】Icon
                 bool hasIcon = false;
                 if (this.ImageList != null)//绑定的ImageList不为空，并且开启显示图标
@@ -284,25 +289,11 @@ namespace Kane.WinForm
                 //    e.Graphics.DrawImage(icon, tabRect.X + 4, tabRect.Y + 2 + offset, tabItem.Height - 7, tabItem.Height - 7);
                 //    hasIcon = true;
                 //}
-                //******************************重绘图标结束
-                //重绘关闭图标开始******************************
-                if (ShowCloseButton != CloseState.None)
-                {
-                    uint topInkBarOffset = ShowSelectedTopInkBar ? (SelectedTopInkBarWidth - 2) < 0 ? 0 : SelectedTopInkBarWidth - 2 : 0;
-                    //e.Graphics.DrawRectangle(Pens.BurlyWood, tabRect.Right - 11, tabRect.Y, 10, 10);//【调试】Close图标
-                    if (HOVERED && HOVER_INDEX == i)
-                    {
-                        e.Graphics.DrawImage(CloseHoverImage, tabRect.Right - CLOSE_IMAGE_WIDTH - 1, tabRect.Y + topInkBarOffset + offset, CLOSE_IMAGE_WIDTH, CLOSE_IMAGE_WIDTH);
-                    }
-                    else
-                    {
-                        e.Graphics.FillRectangle(new SolidBrush(SystemColors.Control), tabRect.Right - CLOSE_IMAGE_WIDTH - 1, tabRect.Y + topInkBarOffset + offset, CLOSE_IMAGE_WIDTH, CLOSE_IMAGE_WIDTH);
-                        e.Graphics.DrawImage(CloseImage, tabRect.Right - CLOSE_IMAGE_WIDTH - 1, tabRect.Y + topInkBarOffset + offset, CLOSE_IMAGE_WIDTH, CLOSE_IMAGE_WIDTH);
-                    }
-
-                }
-                //******************************重绘关闭图标结束
-                //重绘标题开始******************************
+                #endregion
+                #region 绘制关闭图标结束
+                PaintCloseButton(e.Graphics,i);
+                #endregion
+                #region 绘制标题开始
                 var fontX = tabRect.X + +(hasIcon ? ItemSize.Height - 1 : 6);
                 //SizeF textSize = TextRenderer.MeasureText(this.TabPages[i].Text, this.Font);//获取文本长宽
                 //e.Graphics.DrawRectangle(Pens.Yellow, fontX, tabRect.Y + 2 +2 , tabItem.Width - (2 + 4 + tabItem.Height - 7 + 2) - 11, tabItem.Height - 7);//【调试】标题Rec
@@ -315,8 +306,8 @@ namespace Kane.WinForm
                 //e.Graphics.DrawString(TabPages[i].Text, Font, SystemBrushes.ControlText, new RectangleF(fontX, tabRect.Y + 2 + 2 + offset, tabItem.Width - (2 + 4 + (hasIcon ? (tabItem.Height - 7) : 0) + 2) - 11, tabItem.Height - 7), format);
                 e.Graphics.DrawString(TabPages[i].Text, Font, SystemBrushes.ControlText,
                     new RectangleF(fontX, tabRect.Y + 4 + offset, ItemSize.Width - (hasIcon ? (ItemSize.Height + 12) : 19), ItemSize.Height - 7), format);
-                //******************************重绘标题结束
-                //重绘标签页左右边框开始******************************
+                #endregion
+                #region 绘制标签页左右边框开始
                 if (i == SelectedIndex)
                 {
                     if (ShowSlectedTabBorder)
@@ -351,7 +342,8 @@ namespace Kane.WinForm
                         e.Graphics.DrawLine(pen, tabRect.X - 1 + tabRect.Width, tabRect.Y + 2, tabRect.X - 1 + tabRect.Width, tabRect.Y - 1 + tabRect.Height - 2);
                     }
                 }
-
+                #endregion
+                #region 绘制标签墨水条
                 if (i == SelectedIndex)//选中的标签绘制墨水条
                 {
                     if (ShowSelectedTopInkBar)//是否显示选中标签顶部墨水条
@@ -372,7 +364,8 @@ namespace Kane.WinForm
                         pen = new Pen(ColorStyle == Style.Custom ? TopInkBarColor : SystemColors.GrayText, TopInkBarWidth);
                         e.Graphics.DrawLine(pen, tabRect.X, tabRect.Y + 2, tabRect.X + ItemSize.Width - 1, tabRect.Y + 2);
                     }
-                }
+                } 
+                #endregion
             }
             pen.Dispose();
         }
@@ -381,7 +374,7 @@ namespace Kane.WinForm
         #region 鼠标点击选项卡标签关闭按钮时事件 + TabMouseDown(object sender, MouseEventArgs e)
         private void TabMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && ShowCloseButton != CloseState.None)//是鼠标右击，并且是显示关闭按钮
+            if (e.Button == MouseButtons.Left && ShowCloseButton != CloseState.None && !HideCloseButtonIndex.Any(k=>k==SelectedIndex))//是鼠标右击，并且是显示关闭按钮
             {
                 //计算关闭区域   
                 Rectangle tabRect = this.GetTabRect(this.SelectedIndex);
@@ -389,7 +382,7 @@ namespace Kane.WinForm
                 if (e.X >= (tabRect.Right - CLOSE_IMAGE_WIDTH - 1) && e.X < tabRect.Right && e.Y >= tabRect.Y && e.Y <= tabRect.Y + CLOSE_IMAGE_WIDTH)
                 {
                     CloseButtonClickEvent?.Invoke(this, e);
-                    Console.WriteLine($"点击关闭按钮事件，当前坐标为{e.X},{e.Y}，点击关闭的选项卡Index为【{this.SelectedIndex}】");
+                    //Console.WriteLine($"点击关闭按钮事件，当前坐标为{e.X},{e.Y}，点击关闭的选项卡Index为【{this.SelectedIndex}】");
                 }
             }
         }
@@ -403,19 +396,22 @@ namespace Kane.WinForm
                 bool flag = false;
                 for (int i = 0; i < this.TabCount; i++)
                 {
-                    var tabRect = this.GetTabRect(i);
-                    if (e.X >= (tabRect.Right - CLOSE_IMAGE_WIDTH - 1) && e.X < tabRect.Right && e.Y >= tabRect.Y && e.Y <= tabRect.Y + CLOSE_IMAGE_WIDTH)
+                    if (!HideCloseButtonIndex.Any(k => k == i))
                     {
-                        HOVER_INDEX = i;
-                        flag = true;
-                        break;
+                        var tabRect = this.GetTabRect(i);
+                        if (e.X >= (tabRect.Right - CLOSE_IMAGE_WIDTH - 1) && e.X < tabRect.Right && e.Y >= tabRect.Y && e.Y <= tabRect.Y + CLOSE_IMAGE_WIDTH)
+                        {
+                            HOVER_INDEX = i;
+                            flag = true;
+                            break;
+                        }
                     }
                 }
                 if (flag != HOVERED)//发生改变时，触发OnPaint
                 {
                     HOVERED = flag;
                     //Console.WriteLine($"状态发生改变，当前坐标为{e.X},{e.Y}");
-                    this.OnPaint(new PaintEventArgs(this.CreateGraphics(), this.ClientRectangle));
+                    RepaintCloseButton(this.CreateGraphics());
                 }
             }
         }
@@ -427,9 +423,48 @@ namespace Kane.WinForm
             if (HOVERED && ShowCloseButton != CloseState.None)
             {
                 HOVERED = false;
-                this.OnPaint(new PaintEventArgs(this.CreateGraphics(), this.ClientRectangle));
+                RepaintCloseButton(this.CreateGraphics());
+            }
+        }
+        #endregion
+
+        #region 重绘关闭按钮方法 + RepaintCloseButton(Graphics graphics)
+        private void RepaintCloseButton(Graphics graphics)
+        {
+            //Console.WriteLine("RepaintCloseButton");
+            for (int i = 0; i < this.TabCount; i++)
+            {
+                PaintCloseButton(graphics, i);
             }
         } 
+        #endregion
+
+        #region 绘制关闭按钮 + PaintCloseButton(Graphics graphics, Rectangle tabRect, int tabIndex)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="graphics">绘图对象</param>
+        /// <param name="tabRect">标签矩形</param>
+        /// <param name="tabIndex">标签Index</param>
+        private void PaintCloseButton(Graphics graphics, int tabIndex)
+        {
+            if (ShowCloseButton != CloseState.None && !HideCloseButtonIndex.Any(k => k == tabIndex))
+            {
+                var tabRect = this.GetTabRect(tabIndex);//2,2 当前Index的选项卡标签
+                var offset = tabIndex == SelectedIndex ? 0 : 2;//非选中向下偏移值
+                uint topInkBarOffset = ShowSelectedTopInkBar ? (SelectedTopInkBarWidth - 2) < 0 ? 0 : SelectedTopInkBarWidth - 2 : 0;
+                //e.Graphics.DrawRectangle(Pens.BurlyWood, tabRect.Right - 11, tabRect.Y, 10, 10);//【调试】Close图标
+                if (HOVERED && HOVER_INDEX == tabIndex)
+                {
+                    graphics.DrawImage(CloseHoverImage, tabRect.Right - CLOSE_IMAGE_WIDTH - 1, tabRect.Y + topInkBarOffset + offset, CLOSE_IMAGE_WIDTH, CLOSE_IMAGE_WIDTH);
+                }
+                else
+                {
+                    graphics.FillRectangle(new SolidBrush(SystemColors.Control), tabRect.Right - CLOSE_IMAGE_WIDTH - 1, tabRect.Y + topInkBarOffset + offset, CLOSE_IMAGE_WIDTH, CLOSE_IMAGE_WIDTH);
+                    graphics.DrawImage(CloseImage, tabRect.Right - CLOSE_IMAGE_WIDTH - 1, tabRect.Y + topInkBarOffset + offset, CLOSE_IMAGE_WIDTH, CLOSE_IMAGE_WIDTH);
+                }
+            }
+        }
         #endregion
     }
 }
