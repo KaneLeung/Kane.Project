@@ -31,11 +31,11 @@ namespace Kane.WinFormTest
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.BTN_OnlyInt = new NumberTextBox();
-            this.BTN_PositiveInt = new NumberTextBox();
+            this.TB_OnlyInt = new NumberTextBox();
+            this.TB_PositiveInt = new NumberTextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.BTN_Decimal = new NumberTextBox();
-            this.BTN_PositiveDecimal = new NumberTextBox();
+            this.TB_Decimal = new NumberTextBox();
+            this.TB_PositiveDecimal = new NumberTextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -80,11 +80,11 @@ namespace Kane.WinFormTest
             this.tableLayoutPanel1.Controls.Add(this.label3, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBox3, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.BTN_PositiveInt, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.BTN_OnlyInt, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.TB_PositiveInt, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.TB_OnlyInt, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBox6, 5, 1);
-            this.tableLayoutPanel1.Controls.Add(this.BTN_PositiveDecimal, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.BTN_Decimal, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.TB_PositiveDecimal, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.TB_Decimal, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label11, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.label10, 0, 3);
@@ -108,26 +108,26 @@ namespace Kane.WinFormTest
             this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 450);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // BTN_OnlyInt
+            // TB_OnlyInt
             // 
-            this.BTN_OnlyInt.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BTN_OnlyInt.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.BTN_OnlyInt.Location = new System.Drawing.Point(103, 3);
-            this.BTN_OnlyInt.Name = "BTN_OnlyInt";
-            this.BTN_OnlyInt.NoDecimal = true;
-            this.BTN_OnlyInt.Size = new System.Drawing.Size(160, 23);
-            this.BTN_OnlyInt.TabIndex = 0;
+            this.TB_OnlyInt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TB_OnlyInt.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TB_OnlyInt.Location = new System.Drawing.Point(103, 3);
+            this.TB_OnlyInt.Name = "TB_OnlyInt";
+            this.TB_OnlyInt.NoDecimal = true;
+            this.TB_OnlyInt.Size = new System.Drawing.Size(160, 23);
+            this.TB_OnlyInt.TabIndex = 0;
             // 
-            // BTN_PositiveInt
+            // TB_PositiveInt
             // 
-            this.BTN_PositiveInt.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BTN_PositiveInt.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.BTN_PositiveInt.Location = new System.Drawing.Point(369, 3);
-            this.BTN_PositiveInt.Name = "BTN_PositiveInt";
-            this.BTN_PositiveInt.NoDecimal = true;
-            this.BTN_PositiveInt.NoNegative = true;
-            this.BTN_PositiveInt.Size = new System.Drawing.Size(160, 23);
-            this.BTN_PositiveInt.TabIndex = 1;
+            this.TB_PositiveInt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TB_PositiveInt.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TB_PositiveInt.Location = new System.Drawing.Point(369, 3);
+            this.TB_PositiveInt.Name = "TB_PositiveInt";
+            this.TB_PositiveInt.NoDecimal = true;
+            this.TB_PositiveInt.NoNegative = true;
+            this.TB_PositiveInt.Size = new System.Drawing.Size(160, 23);
+            this.TB_PositiveInt.TabIndex = 1;
             // 
             // textBox3
             // 
@@ -138,26 +138,26 @@ namespace Kane.WinFormTest
             this.textBox3.Size = new System.Drawing.Size(162, 23);
             this.textBox3.TabIndex = 2;
             // 
-            // BTN_Decimal
+            // TB_Decimal
             // 
-            this.BTN_Decimal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BTN_Decimal.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.BTN_Decimal.Location = new System.Drawing.Point(103, 32);
-            this.BTN_Decimal.Name = "BTN_Decimal";
-            this.BTN_Decimal.NoDecimal = false;
-            this.BTN_Decimal.Size = new System.Drawing.Size(160, 23);
-            this.BTN_Decimal.TabIndex = 3;
+            this.TB_Decimal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TB_Decimal.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TB_Decimal.Location = new System.Drawing.Point(103, 32);
+            this.TB_Decimal.Name = "TB_Decimal";
+            this.TB_Decimal.NoDecimal = false;
+            this.TB_Decimal.Size = new System.Drawing.Size(160, 23);
+            this.TB_Decimal.TabIndex = 3;
             // 
-            // BTN_PositiveDecimal
+            // TB_PositiveDecimal
             // 
-            this.BTN_PositiveDecimal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BTN_PositiveDecimal.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.BTN_PositiveDecimal.Location = new System.Drawing.Point(369, 32);
-            this.BTN_PositiveDecimal.Name = "BTN_PositiveDecimal";
-            this.BTN_PositiveDecimal.NoDecimal = false;
-            this.BTN_PositiveDecimal.NoNegative = true;
-            this.BTN_PositiveDecimal.Size = new System.Drawing.Size(160, 23);
-            this.BTN_PositiveDecimal.TabIndex = 4;
+            this.TB_PositiveDecimal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TB_PositiveDecimal.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.TB_PositiveDecimal.Location = new System.Drawing.Point(369, 32);
+            this.TB_PositiveDecimal.Name = "TB_PositiveDecimal";
+            this.TB_PositiveDecimal.NoDecimal = false;
+            this.TB_PositiveDecimal.NoNegative = true;
+            this.TB_PositiveDecimal.Size = new System.Drawing.Size(160, 23);
+            this.TB_PositiveDecimal.TabIndex = 4;
             // 
             // textBox6
             // 
@@ -398,11 +398,11 @@ namespace Kane.WinFormTest
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TextBox textBox6;
-        private NumberTextBox BTN_PositiveDecimal;
-        private NumberTextBox BTN_Decimal;
+        private NumberTextBox TB_PositiveDecimal;
+        private NumberTextBox TB_Decimal;
         private System.Windows.Forms.TextBox textBox3;
-        private NumberTextBox BTN_PositiveInt;
-        private NumberTextBox BTN_OnlyInt;
+        private NumberTextBox TB_PositiveInt;
+        private NumberTextBox TB_OnlyInt;
         private System.Windows.Forms.TextBox textBox11;
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.TextBox textBox9;

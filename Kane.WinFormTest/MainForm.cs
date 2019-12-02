@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kane.WinForm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,6 +31,12 @@ namespace Kane.WinFormTest
         private void BTN_Decimal_Click(object sender, EventArgs e)
         {
             new InputForm().ShowDialog();
+        }
+
+        private void BTN_NumberForm_Click(object sender, EventArgs e)
+        {
+            var numberForm = new NumberForm("请输入一个数字", "",3, false, true,false,true);
+            numberForm.ShowDialog();
         }
     }
 }

@@ -32,6 +32,7 @@
             this.BTN_CustomForm = new System.Windows.Forms.Button();
             this.BTN_CustomTabControl = new System.Windows.Forms.Button();
             this.BTN_Decimal = new System.Windows.Forms.Button();
+            this.BTN_NumberForm = new System.Windows.Forms.Button();
             this.TLP_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,6 +46,7 @@
             this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
             this.TLP_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
+            this.TLP_Main.Controls.Add(this.BTN_NumberForm, 3, 0);
             this.TLP_Main.Controls.Add(this.BTN_CustomForm, 0, 0);
             this.TLP_Main.Controls.Add(this.BTN_CustomTabControl, 1, 0);
             this.TLP_Main.Controls.Add(this.BTN_Decimal, 2, 0);
@@ -98,6 +100,17 @@
             this.BTN_Decimal.UseVisualStyleBackColor = true;
             this.BTN_Decimal.Click += new System.EventHandler(this.BTN_Decimal_Click);
             // 
+            // BTN_NumberForm
+            // 
+            this.BTN_NumberForm.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.BTN_NumberForm.Location = new System.Drawing.Point(363, 3);
+            this.BTN_NumberForm.Name = "BTN_NumberForm";
+            this.BTN_NumberForm.Size = new System.Drawing.Size(114, 45);
+            this.BTN_NumberForm.TabIndex = 3;
+            this.BTN_NumberForm.Text = "数字输入窗体";
+            this.BTN_NumberForm.UseVisualStyleBackColor = true;
+            this.BTN_NumberForm.Click += new System.EventHandler(this.BTN_NumberForm_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -119,5 +132,6 @@
         private System.Windows.Forms.Button BTN_CustomForm;
         private System.Windows.Forms.Button BTN_CustomTabControl;
         private System.Windows.Forms.Button BTN_Decimal;
+        private System.Windows.Forms.Button BTN_NumberForm;
     }
 }

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace Kane.WinForm
 {
@@ -30,7 +31,7 @@ namespace Kane.WinForm
         #region 私有成员
         private Label LB_Title;
         private Label LB_Content;
-        private TextBox TB_Content;
+        private NumberTextBox TB_Content;
         private Label BTN_ContentClear;
         private Label LB_Error;
         private Button BTN_OK;
@@ -41,6 +42,9 @@ namespace Kane.WinForm
 
         #region 公有成员
         public event Func<string, (bool state, string message)> FuncCheckValues;
+        private bool NoDecimal= false;
+        private bool NoNegative = false;
+        private uint? Precision;
         #endregion
 
         #region 构造函数
@@ -51,10 +55,13 @@ namespace Kane.WinForm
         /// <param name="content">内容</param>
         /// <param name="multiLine">是否显示多行</param>
         /// <param name="required">是否为必填</param>
-        public NumberForm(string title, string content, bool multiLine = false, bool required = true)
+        public NumberForm(string title, string content, uint? precisionm, bool multiLine = false, bool required = true,bool noDecimal =false, bool noNegative = false)
         {
             MULTI_LINE = multiLine;
             REQUIRED = required;
+            Precision = precisionm;
+            NoDecimal = noDecimal;
+            NoNegative = noNegative;
             InitializeComponent();
             this.Paint += (object sender, PaintEventArgs e) =>
             {
@@ -75,7 +82,7 @@ namespace Kane.WinForm
         {
             this.LB_Title = new Label();
             this.LB_Content = new Label();
-            this.TB_Content = new TextBox();
+            this.TB_Content = new NumberTextBox();
             this.BTN_ContentClear = new Label();
             this.LB_Error = new Label();
             this.BTN_OK = new Button();
@@ -114,6 +121,9 @@ namespace Kane.WinForm
             this.TB_Content.Name = "TB_Content";
             this.TB_Content.Size = new Size(269, MULTI_LINE ? 80 : 29);//29
             this.TB_Content.Multiline = MULTI_LINE;
+            this.TB_Content.NoDecimal = NoDecimal;
+            this.TB_Content.NoNegative = NoNegative;
+            this.TB_Content.Precision = Precision;
             this.TB_Content.TextChanged += new EventHandler(this.TB_Content_TextChanged);
             this.TB_Content.KeyDown += new KeyEventHandler(this.TB_Content_KeyDown);
             // 
