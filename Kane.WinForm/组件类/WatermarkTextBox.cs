@@ -2,7 +2,7 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.WinForm
 * 项目描述 ：通用扩展工具
-* 类 名 称 ：KaneTextBox
+* 类 名 称 ：WatermarkTextBox
 * 类 描 述 ：带水印文本输入框
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.WinForm
@@ -26,10 +26,10 @@ using System.Windows.Forms;
 
 namespace Kane.WinForm
 {
-    public class KaneTextBox : TextBox
+    public class WatermarkTextBox : TextBox
     {
         private string _Watermark;
-        [DefaultValue("")]
+        [Browsable(true), DefaultValue(""), Description("水印文本"), EditorBrowsable(EditorBrowsableState.Always)]
         public string Watermark
         {
             get { return _Watermark; }

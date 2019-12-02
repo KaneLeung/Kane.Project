@@ -26,5 +26,10 @@ namespace Kane.WinFormTest
         {
             new TabControlForm().ShowDialog();
         }
+
+        private void BTN_Decimal_Click(object sender, EventArgs e)
+        {
+            new InputForm().ShowDialog();
+        }
     }
 }

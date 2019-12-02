@@ -436,10 +436,10 @@ namespace Kane.WinForm
             {
                 PaintCloseButton(graphics, i);
             }
-        } 
+        }
         #endregion
 
-        #region 绘制关闭按钮 + PaintCloseButton(Graphics graphics, Rectangle tabRect, int tabIndex)
+        #region 绘制关闭按钮 + PaintCloseButton(Graphics graphics, int tabIndex)
         /// <summary>
         /// 
         /// </summary>

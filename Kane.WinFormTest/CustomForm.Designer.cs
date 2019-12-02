@@ -36,7 +36,7 @@ namespace Kane.WinFormTest
             this.button4 = new System.Windows.Forms.Button();
             this.TB_Console = new System.Windows.Forms.TextBox();
             this.LB_Title = new System.Windows.Forms.Label();
-            this.TB_Input = new KaneTextBox();
+            this.TB_Input = new WatermarkTextBox();
             this.BTN_Message = new System.Windows.Forms.Button();
             this.BTN_Password = new System.Windows.Forms.Button();
             this.BTN_Prompt = new System.Windows.Forms.Button();
@@ -165,7 +165,7 @@ namespace Kane.WinFormTest
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox TB_Console;
         private System.Windows.Forms.Label LB_Title;
-        private KaneTextBox TB_Input;
+        private WatermarkTextBox TB_Input;
         private System.Windows.Forms.Button BTN_Message;
         private System.Windows.Forms.Button BTN_Password;
         private System.Windows.Forms.Button BTN_Prompt;
