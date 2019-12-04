@@ -176,14 +176,14 @@ namespace Kane.Extension
         public static string ToBase64String(this byte[] value) => Convert.ToBase64String(value);
         #endregion
 
-        #region 字符串转成字节数组 + ToBase64Bytes(this string value)
+        #region Base64字符串转成字节数组 + Base64ToBytes(this string value)
         /// <summary>
-        /// 字符串转成字节数组
+        /// Base64字符串转成字节数组
         /// 常见错误【Base-64 字符数组或字符串的长度无效，输入的不是有效的Base-64字符串，因为它包含非Base-64 字符、两个以上的填充字符，或者填充字符间包含非法字符。】
         /// </summary>
         /// <param name="value">要转的字符串</param>
         /// <returns></returns>
-        public static byte[] ToBase64Bytes(this string value) => Convert.FromBase64String(value);
+        public static byte[] Base64ToBytes(this string value) => Convert.FromBase64String(value);
         #endregion
 
         #region 将字符串【true】【是】【1】【ok】【yes】转换为Bool类型 + ToBool(this string val

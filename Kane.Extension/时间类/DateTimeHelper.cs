@@ -139,7 +139,7 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 将秒转换成时长字符串，包含天、时、分、秒 + GetRunTime(int second)
+        #region 将秒转换成时长字符串，包含天、时、分、秒 + TimeString(int second)
         /// <summary>
         /// 将秒转换成运行时间
         /// </summary>
