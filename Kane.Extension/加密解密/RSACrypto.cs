@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-#if NETCOREAPP3_0
+#if (NETCOREAPP3_0 || NETCOREAPP3_1)
 using System.Text.Json;
 #else
 using Newtonsoft.Json;
@@ -237,7 +237,7 @@ namespace Kane.Extension
             RSAParameters parameters = new RSAParameters();
             try
             {
-#if NETCOREAPP3_0
+#if (NETCOREAPP3_0 || NETCOREAPP3_1)
                 var paramsJson = JsonSerializer.Deserialize<RSAParametersJson>(jsonString);
 #else
                 var paramsJson = JsonConvert.DeserializeObject<RSAParametersJson>(jsonString);
@@ -280,7 +280,7 @@ namespace Kane.Extension
                 InverseQ = parameters.InverseQ.IsNotNull() ? Convert.ToBase64String(parameters.InverseQ) : null,
                 D = parameters.D.IsNotNull() ? Convert.ToBase64String(parameters.D) : null
             };
-#if NETCOREAPP3_0
+#if (NETCOREAPP3_0 || NETCOREAPP3_1)
             return JsonSerializer.Serialize(parasJson);
 #else
             return JsonConvert.SerializeObject(parasJson);
