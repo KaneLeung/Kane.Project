@@ -38,5 +38,11 @@ namespace Kane.WinFormTest
             var numberForm = new NumberForm("请输入一个数字", "",3, false, true,false,true);
             numberForm.ShowDialog();
         }
+
+        private void BTN_TreeviewComboBox_Click(object sender, EventArgs e)
+        {
+            var testForm = new TestForm();
+            testForm.ShowDialog();
+        }
     }
 }

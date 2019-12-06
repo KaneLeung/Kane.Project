@@ -80,5 +80,9 @@
   <ItemGroup>
     <PackageReference Include="Kane.Extension" Version="1.0.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   
 </Project>
