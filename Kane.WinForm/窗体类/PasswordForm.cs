@@ -40,7 +40,7 @@ namespace Kane.WinForm
         private Button BTN_OK;
         private Button BTN_Cancel;
         private bool CONFIRM_MODE = false;
-#if NETCOREAPP3_0
+#if ( NETCOREAPP3_0 || NETCOREAPP3_1 )
         private static readonly int NETCORE_OFFSET = 8;//Netcore使用SetHighDpiMode(HighDpiMode.PerMonitorV2)时的偏移值
 #else
         private static readonly int NETCORE_OFFSET = 0;

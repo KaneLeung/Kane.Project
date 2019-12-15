@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using Kane.Extension;
 
 namespace Kane.WinForm
 {
@@ -44,11 +45,28 @@ namespace Kane.WinForm
             ThisDropDown.Width = this.Width;
             ThisDropDown.Items.Add(TreeViewHost);
         }
+
+        #region TreeView点击选中节点事件 + TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         public void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             this.Text = TreeView.SelectedNode.Text;
+            this.SelectedText = TreeView.SelectedNode.Text;
+            this.SelectedValue = TreeView.SelectedNode.Tag;
             ThisDropDown.Close();
         }
+        #endregion
+
+        #region 设置Combox的数据 + SetComboBoxData<T>(T data, string value, string text, int? selectedIndex, string selectedValue)
+        public void SetComboBoxData<T>(T data, string value, string text, string selectedValue = "", int? selectedIndex = null)
+        {
+            this.DataSource = data;
+            this.ValueMember = value;
+            this.DisplayMember = text;
+            if (selectedIndex.HasValue) this.SelectedIndex = (int)selectedIndex;
+            else if (selectedValue.IsValuable()) this.SelectedValue = SelectedValue;
+            else this.SelectedIndex = -1;//什么也不选
+        } 
+        #endregion
 
         public TreeView TreeView
         {
