@@ -63,7 +63,6 @@ namespace Kane.WinForm
 
         #region 私有变量
         private readonly Panel HeaderPanel = new Panel();
-        private readonly IContainer COMPONENTS = null;
         private Point MOVE_POINT;
         private static readonly Size ICON_SIZE = new Size(30, 30);
         private static readonly Padding ZERO_PADDING = new Padding(0);
@@ -81,11 +80,7 @@ namespace Kane.WinForm
         #endregion
 
         #region 重写Dispose + Dispose(bool disposing)
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (COMPONENTS != null)) COMPONENTS.Dispose();
-            base.Dispose(disposing);
-        }
+        protected override void Dispose(bool disposing)=> base.Dispose(disposing);
         #endregion
 
         #region 构造函数
@@ -98,10 +93,10 @@ namespace Kane.WinForm
             HeaderPanel.MouseDown += Title_MouseDown;
 
             this.AutoScaleDimensions = new SizeF(7F, 17F);
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleMode = AutoScaleMode.None;
             this.ClientSize = new Size(388, 388);
             this.Controls.Add(HeaderPanel);
-            this.Font = new Font("微软雅黑", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(134)));
+            this.Font = new Font("微软雅黑", 9F, FontStyle.Regular, GraphicsUnit.Point, 134);
             this.FormBorderStyle = FormBorderStyle.None;
             //this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Padding = new Padding(1);

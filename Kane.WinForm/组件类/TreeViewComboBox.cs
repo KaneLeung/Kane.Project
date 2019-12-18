@@ -49,7 +49,7 @@ namespace Kane.WinForm
         #region TreeView点击选中节点事件 + TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         public void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            this.Text = TreeView.SelectedNode.Text;
+            this.Text = string.Empty;
             this.SelectedText = TreeView.SelectedNode.Text;
             this.SelectedValue = TreeView.SelectedNode.Tag;
             ThisDropDown.Close();
@@ -57,6 +57,15 @@ namespace Kane.WinForm
         #endregion
 
         #region 设置Combox的数据 + SetComboBoxData<T>(T data, string value, string text, int? selectedIndex, string selectedValue)
+        /// <summary>
+        /// 设置Combox的数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data">数据源</param>
+        /// <param name="value">ValueMember</param>
+        /// <param name="text">DisplayMember</param>
+        /// <param name="selectedValue">默认选中值</param>
+        /// <param name="selectedIndex">默认选中Index</param>
         public void SetComboBoxData<T>(T data, string value, string text, string selectedValue = "", int? selectedIndex = null)
         {
             this.DataSource = data;

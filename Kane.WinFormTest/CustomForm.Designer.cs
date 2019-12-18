@@ -137,7 +137,7 @@ namespace Kane.WinFormTest
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.TB_Input);
             this.Controls.Add(this.LB_Title);
@@ -149,6 +149,7 @@ namespace Kane.WinFormTest
             this.Controls.Add(this.BTN_Message);
             this.Controls.Add(this.BTN_Password);
             this.Controls.Add(this.BTN_Prompt);
+            this.LockSize = false;
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Title = "主窗体（自定义标题）";
