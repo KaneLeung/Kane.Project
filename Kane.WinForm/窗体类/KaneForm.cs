@@ -80,7 +80,7 @@ namespace Kane.WinForm
         #endregion
 
         #region 重写Dispose + Dispose(bool disposing)
-        protected override void Dispose(bool disposing)=> base.Dispose(disposing);
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
         #endregion
 
         #region 构造函数
