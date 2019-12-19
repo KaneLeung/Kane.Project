@@ -15,9 +15,9 @@
     <RepositoryUrl>git@github.com:KaneLeung/Kane.Project.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.0.6.0</AssemblyVersion>
-    <FileVersion>1.0.6.0</FileVersion>
-    <Version>1.0.6</Version>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
+    <Version>1.0.7</Version>
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
@@ -93,7 +93,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kane.Extension" Version="1.0.3" />
+    <PackageReference Include="Kane.Extension" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
