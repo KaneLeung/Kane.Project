@@ -10,7 +10,7 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:08:22
-* 更新时间 ：2019/10/16 23:08:22
+* 更新时间 ：2019/12/19 10:42:22
 * 版 本 号 ：v1.0.0.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
@@ -28,112 +28,90 @@ namespace Kane.Extension
 {
     public static class ClassHelper
     {
-        public static readonly BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        public const BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
-        #region 获取类所有的属性信息 + GetProps(this object obj)
+        #region 获取类所有的属性信息 + GetProps<T>(this T target)
         /// <summary>
         /// 获取类所有的属性信息
         /// </summary>
-        /// <param name="obj">反射对象</param>
+        /// <param name="target">反射对象</param>
         /// <returns>属性信息</returns>
-        public static PropertyInfo[] GetProps(this object obj)
-        {
-            return obj.GetType().GetProperties(BINDING_FLAGS);
-        }
+        public static PropertyInfo[] GetProps<T>(this T target) => target.GetType().GetProperties(BINDING_FLAGS);
         #endregion
 
-        #region 获取类的单个属性 + GetProp<T>(this object obj, string name) where T : class
-        /// <summary>
-        /// 获取类的单个属性
-        /// </summary>
-        /// <param name="obj">反射对象</param>
-        /// <param name="name">属性名</param>
-        /// <typeparam name="T">约束返回的T必须是引用类型</typeparam>
-        /// <returns>T类型</returns>
-        public static T GetProp<T>(this object obj, string name)
-        {
-            PropertyInfo fieldInfo = obj.GetType().GetProperty(name, BINDING_FLAGS);
-            return (T)fieldInfo.GetValue(obj, null);
-        }
-        #endregion
-
-        #region 获取属性的值 + GetPropValue<T>(this object obj, string name)
+        #region 获取属性的值 + GetPropValue<T>(this object target, string name)
         /// <summary>
         /// 获取属性的值
         /// </summary>
-        /// <param name="obj">反射对象</param>
+        /// <param name="target">反射对象</param>
         /// <param name="name">属性名</param>
         /// <returns>属性值</returns>
-        public static T GetPropValue<T>(this object obj, string name)
+        public static T GetPropValue<T>(this object target, string name)
         {
-            PropertyInfo fieldInfo = obj.GetType().GetProperty(name, BINDING_FLAGS);
-            return (T)fieldInfo.GetValue(obj, null);
+            PropertyInfo fieldInfo = target.GetType().GetProperty(name, BINDING_FLAGS);
+            return (T)fieldInfo.GetValue(target, null);
         }
         #endregion
 
-        #region 设置属性的值 + SetPropValue(this object obj, string name, object value)
+        #region 设置属性的值 + SetPropValue<T, K>(this T target, string name, K value)
         /// <summary>
         /// 设置属性的值
         /// </summary>
-        /// <param name="obj">反射对象</param>
+        /// <param name="target">反射对象</param>
         /// <param name="name">属性名</param>
         /// <param name="value">值</param>
-        public static void SetPropValue(this object obj, string name, object value)
+        public static void SetPropValue<T, K>(this T target, string name, K value)
         {
-            PropertyInfo fieldInfo = obj.GetType().GetProperty(name, BINDING_FLAGS);
-            value = Convert.ChangeType(value, fieldInfo.PropertyType);
-            fieldInfo.SetValue(obj, value, null);
+            PropertyInfo fieldInfo = target.GetType().GetProperty(name, BINDING_FLAGS);
+            fieldInfo.SetValue(target, Convert.ChangeType(value, fieldInfo.PropertyType), null);
         }
         #endregion
 
-        #region 获取所有的字段信息 + GetFields(this object obj)
+        #region 获取所有的字段信息 + GetFields<T>(this T target)
         /// <summary>
         /// 获取所有的字段信息
         /// </summary>
-        /// <param name="obj">反射对象</param>
+        /// <param name="target">反射对象</param>
         /// <returns>字段信息</returns>
-        public static FieldInfo[] GetFields(this object obj)
-        {
-            return obj.GetType().GetFields(BINDING_FLAGS);
-        }
+        public static FieldInfo[] GetFields<T>(this T target) => target.GetType().GetFields(BINDING_FLAGS);
         #endregion
 
-        #region 获取单个字段 + GetField<T>(this object obj, string name) where T : class
+        #region 获取单个字段的值 + GetFieldValue<T>(this object target, string name) where T : class
         /// <summary>
-        /// 获取单个字段
+        /// 获取单个字段的值
         /// </summary>
-        /// <param name="obj">反射对象</param>
+        /// <param name="target">反射对象</param>
         /// <param name="name">字段名</param>
         /// <typeparam name="T">约束返回的T</typeparam>
         /// <returns>T类型</returns>
-        public static T GetField<T>(this object obj, string name)
+        public static T GetFieldValue<T>(this object target, string name)
         {
-            FieldInfo fieldInfo = obj.GetType().GetField(name, BINDING_FLAGS);
-            return (T)fieldInfo.GetValue(obj);
+            FieldInfo fieldInfo = target.GetType().GetField(name, BINDING_FLAGS);
+            return (T)fieldInfo.GetValue(target);
         }
         #endregion
 
-        #region 设置单个字段 + SetField(this object obj, string name, object value)
+        #region 设置单个字段的值 + SetFieldValue<T, K>(this T target, string name, K value)
         /// <summary>
-        /// 设置单个字段
+        /// 设置单个字段的值
         /// </summary>
-        /// <param name="obj">反射对象</param>
+        /// <param name="target">反射对象</param>
         /// <param name="name">字段名</param>
         /// <param name="value">值</param>
-        public static void SetField(this object obj, string name, object value)
+        public static void SetFieldValue<T, K>(this T target, string name, K value)
         {
-            FieldInfo fieldInfo = obj.GetType().GetField(name, BINDING_FLAGS);
-            fieldInfo.SetValue(obj, value);
+            FieldInfo fieldInfo = target.GetType().GetField(name, BINDING_FLAGS);
+            fieldInfo.SetValue(target, value);
         }
         #endregion
 
-        #region 根据类的类型型创建类实例 + CreateInstance(this Type t)
+        #region 根据类的类型型创建类实例 + CreateInstance(this Type target)
         /// <summary>  
         /// 根据类的类型型创建类实例。  
         /// </summary>  
-        /// <param name="t">将要创建的类型。</param>  
+        /// <param name="target">将要创建的类型。</param>  
         /// <returns>返回创建的类实例。</returns>  
-        public static object CreateInstance(this Type t) => Activator.CreateInstance(t);
+        public static object CreateInstance(this Type target) => Activator.CreateInstance(target);
         #endregion
 
 #if !NET40
@@ -226,31 +204,31 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 给对象实例添加新属性并返回新对象实例 + AddProp(this object obj, PropInfo propInfo)
+        #region 给对象实例添加新属性并返回新对象实例 + AddProp(this object target, PropInfo propInfo)
         /// <summary>
         /// 给对象实例添加新属性并返回新对象实例
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="target"></param>
         /// <param name="propInfo">自定义属性对象</param>
         /// <returns></returns>
-        public static object AddProp(this object obj, PropInfo propInfo) => AddProp(obj, new List<PropInfo>() { propInfo });
+        public static object AddProp(this object target, PropInfo propInfo) => AddProp(target, new List<PropInfo>() { propInfo });
         #endregion
 
-        #region 给对象实例添加新属性并返回新对象实例 + AddProp(this object obj, List<PropInfo> propInfos)
+        #region 给对象实例添加新属性并返回新对象实例 + AddProp(this object target, List<PropInfo> propInfos)
         /// <summary>
         /// 给对象实例添加新属性并返回新对象实例
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="target"></param>
         /// <param name="propInfos">自定义属性对象集合</param>
         /// <returns></returns>
-        public static object AddProp(this object obj, List<PropInfo> propInfos)
+        public static object AddProp(this object target, List<PropInfo> propInfos)
         {
-            Type originType = obj.GetType();
+            Type originType = target.GetType();
             var newProps = propInfos.ToDictionary(i => i.PropName, i => i.PropValue);
             var result = AddProp(originType, propInfos).CreateInstance();
             foreach (var originProperty in originType.GetProperties())
             {
-                result.SetPropValue(originProperty.Name, originProperty.GetValue(obj));
+                result.SetPropValue(originProperty.Name, originProperty.GetValue(target));
             }
             foreach (var prop in newProps)
             {
@@ -260,17 +238,17 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 给对象实例添加新属性并返回新对象实例 + AddProp(this object obj, string propName, object propValue)
+        #region 给对象实例添加新属性并返回新对象实例 + AddProp(this object target, string propName, object propValue)
         /// <summary>
         /// 给对象实例添加新属性并返回新对象实例
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="target"></param>
         /// <param name="propName">属性名</param>
         /// <param name="propValue">属性值</param>
         /// <returns></returns>
-        public static object AddProp(this object obj, string propName, object propValue)
+        public static object AddProp(this object target, string propName, object propValue)
         {
-            return AddProp(obj, new List<PropInfo>() { new PropInfo(propValue.GetType(), propName, propValue) });
+            return AddProp(target, new List<PropInfo>() { new PropInfo(propValue.GetType(), propName, propValue) });
         }
         #endregion
 
@@ -308,27 +286,27 @@ namespace Kane.Extension
 
 
 
-        #region 删除对象的属性并返回新对象实例 + DeleteProp(this object obj, string property)
+        #region 删除对象的属性并返回新对象实例 + DeleteProp(this object target, string property)
         /// <summary>
         /// 删除对象的属性并返回新对象实例
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="target">目标对象</param>
         /// <param name="property">属性名</param>
         /// <returns></returns>
-        public static object DeleteProp(this object obj, string property) => DeleteProp(obj, new List<string>() { property });
+        public static object DeleteProp(this object target, string property) => DeleteProp(target, new List<string>() { property });
         #endregion
 
-        #region 删除对象的属性并返回新对象实例 + DeleteProp(this object obj, List<string> propNames)
+        #region 删除对象的属性并返回新对象实例 + DeleteProp(this object target, List<string> propNames)
         /// <summary>
         /// 删除对象的属性并返回新对象实例
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="target"></param>
         /// <param name="propNames">属性名集合</param>
         /// <returns></returns>
-        public static object DeleteProp(this object obj, List<string> propNames)
+        public static object DeleteProp(this object target, List<string> propNames)
         {
-            PropertyInfo[] originProps = obj.GetType().GetProperties();
-            Type type = obj.GetType();
+            PropertyInfo[] originProps = target.GetType().GetProperties();
+            Type type = target.GetType();
             foreach (string name in propNames)
             {
                 type = type.DeleteProp(name);
@@ -336,7 +314,7 @@ namespace Kane.Extension
             var newInstance = type.CreateInstance();
             foreach (var prop in newInstance.GetProps())
             {
-                newInstance.SetPropValue(prop.Name, originProps.FirstOrDefault(k => k.Name.Equals(prop.Name)).GetValue(obj));
+                newInstance.SetPropValue(prop.Name, originProps.FirstOrDefault(k => k.Name.Equals(prop.Name)).GetValue(target));
             }
             return newInstance;
         }
@@ -352,8 +330,7 @@ namespace Kane.Extension
         {
             foreach (PropertyInfo pi in type.GetProperties())
             {
-                PropInfo cpi = new PropInfo(pi.PropertyType, pi.Name);
-                propInfos.Add(cpi);
+                propInfos.Add(new PropInfo(pi.PropertyType, pi.Name));
             }
         }
         #endregion
@@ -369,11 +346,7 @@ namespace Kane.Extension
             List<PropInfo> propInfos = new List<PropInfo>();
             foreach (PropertyInfo pi in type.GetProperties())
             {
-                if (removeList.Any(k => k != pi.Name))
-                {
-                    PropInfo cpi = new PropInfo(pi.PropertyType, pi.Name);
-                    propInfos.Add(cpi);
-                }
+                if (removeList.Any(k => k != pi.Name)) propInfos.Add(new PropInfo(pi.PropertyType, pi.Name));
             }
             return propInfos;
         }
@@ -504,8 +477,7 @@ namespace Kane.Extension
             {
                 get
                 {
-                    if (PropName.Length < 1)
-                        return "";
+                    if (PropName.Length < 1) return "";
                     return PropName.Substring(0, 1).ToLower() + PropName.Substring(1);
                 }
             }
