@@ -246,7 +246,7 @@ namespace Kane.WinForm
         {
             Pen pen = Pens.Transparent;
             #region 绘制底部墨水条
-            if (ShowBottomInkBar)//显示底部墨水条
+            if (ShowBottomInkBar && SelectedIndex >= 0)//显示底部墨水条
             {
                 pen = new Pen(ColorStyle == Style.Custom ? BottomInkBarColor : DEFAULT_COLOR[(int)ColorStyle], BottomInkBarWidth);
                 //e.Graphics.DrawRectangle(Pens.Blue, ClientRectangle.X + 1, ClientRectangle.Y + 1, this.Width - 3, this.ItemSize.Height - 1);//【调试】TabItem除去边框后范围
@@ -255,7 +255,7 @@ namespace Kane.WinForm
                     selectRect.X, ClientRectangle.Y + 1 + ItemSize.Height);//不显示选中标签时边框向右偏移+1
                 e.Graphics.DrawLine(pen, selectRect.Right - 1, ClientRectangle.Y + 1 + ItemSize.Height,
                     this.Width - 1, ClientRectangle.Y + 1 + ItemSize.Height);
-            } 
+            }
             #endregion
             for (int i = 0; i < this.TabCount; i++)
             {
@@ -291,10 +291,10 @@ namespace Kane.WinForm
                 //}
                 #endregion
                 #region 绘制关闭图标结束
-                PaintCloseButton(e.Graphics,i);
+                PaintCloseButton(e.Graphics, i);
                 #endregion
                 #region 绘制标题开始
-                var fontX = tabRect.X + +(hasIcon ? ItemSize.Height - 1 : 6);
+                var fontX = tabRect.X + (hasIcon ? ItemSize.Height - 1 : 6);
                 //SizeF textSize = TextRenderer.MeasureText(this.TabPages[i].Text, this.Font);//获取文本长宽
                 //e.Graphics.DrawRectangle(Pens.Yellow, fontX, tabRect.Y + 2 +2 , tabItem.Width - (2 + 4 + tabItem.Height - 7 + 2) - 11, tabItem.Height - 7);//【调试】标题Rec
                 var format = new StringFormat
@@ -364,7 +364,7 @@ namespace Kane.WinForm
                         pen = new Pen(ColorStyle == Style.Custom ? TopInkBarColor : SystemColors.GrayText, TopInkBarWidth);
                         e.Graphics.DrawLine(pen, tabRect.X, tabRect.Y + 2, tabRect.X + ItemSize.Width - 1, tabRect.Y + 2);
                     }
-                } 
+                }
                 #endregion
             }
             pen.Dispose();
@@ -374,7 +374,7 @@ namespace Kane.WinForm
         #region 鼠标点击选项卡标签关闭按钮时事件 + TabMouseDown(object sender, MouseEventArgs e)
         private void TabMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && ShowCloseButton != CloseState.None && !HideCloseButtonIndex.Any(k=>k==SelectedIndex))//是鼠标右击，并且是显示关闭按钮
+            if (e.Button == MouseButtons.Left && ShowCloseButton != CloseState.None && !HideCloseButtonIndex.Any(k => k == SelectedIndex))//是鼠标右击，并且是显示关闭按钮
             {
                 //计算关闭区域   
                 Rectangle tabRect = this.GetTabRect(this.SelectedIndex);
