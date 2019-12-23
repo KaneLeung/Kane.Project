@@ -244,7 +244,7 @@ namespace Kane.WinForm
         #region 自定义OnPaint + OnPaint(PaintEventArgs e)
         protected override void OnPaint(PaintEventArgs e)
         {
-            Pen pen = Pens.Transparent;
+            Pen pen = new Pen(Color.Transparent);
             #region 绘制底部墨水条
             if (ShowBottomInkBar && SelectedIndex >= 0)//显示底部墨水条
             {
