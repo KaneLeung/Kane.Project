@@ -20,6 +20,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace Kane.WinForm
@@ -98,6 +99,20 @@ namespace Kane.WinForm
             catch { }
             return themeMode;
         }
+        #endregion
+
+        #region 获取屏幕DPI值 + GetScreenDpi()
+        /// <summary>
+        /// 获取屏幕DPI值
+        /// </summary>
+        /// <returns></returns>
+        public static int GetScreenDpi()
+        {
+            Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
+            int dpi = (int)graphics.DpiX;
+            graphics.Dispose();
+            return dpi;
+        } 
         #endregion
     }
 }
