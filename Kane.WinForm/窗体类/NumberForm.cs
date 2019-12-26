@@ -3,7 +3,7 @@
 * 项目名称 ：Kane.WinForm
 * 项目描述 ：通用扩展工具
 * 类 名 称 ：NumberForm
-* 类 描 述 ：数字窗体
+* 类 描 述 ：自定义数字窗体
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.WinForm
 * 机器名称 ：KK-MAGICBOOK 
@@ -26,6 +26,9 @@ using System.ComponentModel;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 自定义数字窗体
+    /// </summary>
     public class NumberForm : KaneForm
     {
         #region 私有成员
@@ -42,19 +45,22 @@ namespace Kane.WinForm
 
         #region 公有成员
         public event Func<string, (bool state, string message)> FuncCheckValues;
-        private bool NoDecimal= false;
-        private bool NoNegative = false;
-        private uint? Precision;
+        private readonly bool NoDecimal= false;
+        private readonly bool NoNegative = false;
+        private readonly uint? Precision;
         #endregion
 
         #region 构造函数
         /// <summary>
-        /// PromptForm构造函数
+        /// NumberForm构造函数
         /// </summary>
         /// <param name="title">标题</param>
         /// <param name="content">内容</param>
-        /// <param name="multiLine">是否显示多行</param>
-        /// <param name="required">是否为必填</param>
+        /// <param name="precisionm">小数位数</param>
+        /// <param name="multiLine">是否多行</param>
+        /// <param name="required">是否必填</param>
+        /// <param name="noDecimal">是否整数</param>
+        /// <param name="noNegative">是否非负数</param>
         public NumberForm(string title, string content, uint? precisionm, bool multiLine = false, bool required = true,bool noDecimal =false, bool noNegative = false)
         {
             MULTI_LINE = multiLine;

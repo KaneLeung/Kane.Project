@@ -25,6 +25,9 @@ using System.Text;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 系统环境扩展类
+    /// </summary>
     public class EnvironmentEx
     {
         #region 获取操作系统版本 + GetOSVersion()

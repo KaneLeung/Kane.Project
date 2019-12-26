@@ -444,7 +444,6 @@ namespace Kane.WinForm
         /// 
         /// </summary>
         /// <param name="graphics">绘图对象</param>
-        /// <param name="tabRect">标签矩形</param>
         /// <param name="tabIndex">标签Index</param>
         private void PaintCloseButton(Graphics graphics, int tabIndex)
         {

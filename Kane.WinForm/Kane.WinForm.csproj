@@ -19,6 +19,7 @@
     <FileVersion>1.0.7.0</FileVersion>
     <Version>1.0.7</Version>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageIconUrl>https://github.com/KaneLeung/Kane.Project/blob/master/ProjectIcon.png</PackageIconUrl>
   </PropertyGroup>
   
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">

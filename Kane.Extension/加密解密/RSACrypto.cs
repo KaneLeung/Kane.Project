@@ -3,7 +3,7 @@
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
 * 类 名 称 ：RSACrypto
-* 类 描 述 ：RSA加密类扩展
+* 类 描 述 ：RSA加解密类扩展
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.Extension
 * 机器名称 ：KK-MAGICBOOK 
@@ -29,10 +29,16 @@ using Newtonsoft.Json;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// RSA加解密类扩展
+    /// </summary>
     public static class RSACrypto
     {
         #region RSA 用到的实体类和枚举类
         #region Rsa Key Size 枚举
+        /// <summary>
+        /// Rsa Key Size 枚举
+        /// </summary>
         public enum RsaSize
         {
             R2048 = 2048,
@@ -42,6 +48,9 @@ namespace Kane.Extension
         #endregion
 
         #region RSA Key 实体
+        /// <summary>
+        /// RSA Key 实体
+        /// </summary>
         public class RSAKey
         {
             /// <summary>
@@ -176,13 +185,11 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string RSADecrypt(string value, string privateKey, RSAEncryptionPadding padding)
         {
-            using (RSA rsa = RSA.Create())
-            {
-                rsa.FromJsonString(privateKey);
-                byte[] valueBytes = StringHelper.HexToByte(value);
-                byte[] outBytes = rsa.Decrypt(valueBytes, padding);
-                return Encoding.UTF8.GetString(outBytes);
-            }
+            using RSA rsa = RSA.Create();
+            rsa.FromJsonString(privateKey);
+            byte[] valueBytes = StringHelper.HexToByte(value);
+            byte[] outBytes = rsa.Decrypt(valueBytes, padding);
+            return Encoding.UTF8.GetString(outBytes);
         }
         #endregion
 #else
@@ -195,13 +202,11 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string RSADecrypt(string value, string privateKey)
         {
-            using (RSA rsa = RSA.Create())
-            {
-                rsa.FromJsonString(privateKey);
-                byte[] valueBytes = StringHelper.HexToByte(value);
-                byte[] outBytes = rsa.DecryptValue(valueBytes);
-                return Encoding.UTF8.GetString(outBytes);
-            }
+            using RSA rsa = RSA.Create();
+            rsa.FromJsonString(privateKey);
+            byte[] valueBytes = StringHelper.HexToByte(value);
+            byte[] outBytes = rsa.DecryptValue(valueBytes);
+            return Encoding.UTF8.GetString(outBytes);
         }
         #endregion
 #endif

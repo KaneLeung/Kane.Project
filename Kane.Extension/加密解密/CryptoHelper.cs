@@ -3,7 +3,7 @@
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
 * 类 名 称 ：CryptoHelper
-* 类 描 述 ：加密类扩展
+* 类 描 述 ：常用加解密类扩展
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.Extension
 * 机器名称 ：KK-MAGICBOOK 
@@ -81,6 +81,9 @@ namespace Kane.Extension
     //7. MD5标准密钥长度128位（128位是指二进制位。二进制太长，所以一般都改写成16进制，每一位16进制数可以代替4位二进制数，所以128位二进制数写成16进制就变成了128/4=32位。16位加密就是从32位MD5散列中把中间16位提取出来）；sha1标准密钥长度160位(比MD5摘要长32位)，Base64转换后的字符串理论上将要比原来的长1/3。 
     #endregion
 
+    /// <summary>
+    /// 常用加解密类扩展
+    /// </summary>
     public class CryptoHelper
     {
         #region 32位MD5加密 + MD5Encrypt(string value)
@@ -114,14 +117,12 @@ namespace Kane.Extension
         public static string HMACMD5(string value, string key)
         {
             byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using (HMACMD5 md5 = new HMACMD5(byteKey))
-            {
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = md5.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                result = result.Replace("-", "");
-                return result;
-            }
+            using HMACMD5 md5 = new HMACMD5(byteKey);
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = md5.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            result = result.Replace("-", "");
+            return result;
         }
         #endregion
 
@@ -133,13 +134,11 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string SHA1Encrypt(string value)
         {
-            using (SHA1 sha1 = SHA1.Create())
-            {
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = sha1.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using SHA1 sha1 = SHA1.Create();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = sha1.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -151,13 +150,11 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string SHA256Encrypt(string value)
         {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = sha256.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using SHA256 sha256 = SHA256.Create();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = sha256.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -169,13 +166,11 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string SHA384Encrypt(string value)
         {
-            using (SHA384 sha384 = SHA384.Create())
-            {
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = sha384.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using SHA384 sha384 = SHA384.Create();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = sha384.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -187,13 +182,11 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string SHA512Encrypt(string value)
         {
-            using (SHA512 sha512 = SHA512.Create())
-            {
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = sha512.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using SHA512 sha512 = SHA512.Create();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = sha512.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -207,15 +200,12 @@ namespace Kane.Extension
         public static string HMACSHA1(string value, string key)
         {
             byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using (HMACSHA1 hmac = new HMACSHA1(byteKey))
-            {
-                hmac.Initialize();
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = hmac.ComputeHash(byteIn);
-
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using HMACSHA1 hmac = new HMACSHA1(byteKey);
+            hmac.Initialize();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = hmac.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -229,14 +219,12 @@ namespace Kane.Extension
         public static string HMACSHA256(string value, string key)
         {
             byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using (HMACSHA256 hmac = new HMACSHA256(byteKey))
-            {
-                hmac.Initialize();
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = hmac.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using HMACSHA256 hmac = new HMACSHA256(byteKey);
+            hmac.Initialize();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = hmac.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -250,14 +238,12 @@ namespace Kane.Extension
         public static string HMACSHA384(string value, string key)
         {
             byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using (HMACSHA384 hmac = new HMACSHA384(byteKey))
-            {
-                hmac.Initialize();
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = hmac.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using HMACSHA384 hmac = new HMACSHA384(byteKey);
+            hmac.Initialize();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = hmac.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -271,14 +257,12 @@ namespace Kane.Extension
         public static string HMACSHA512(string value, string key)
         {
             byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using (HMACSHA512 hmac = new HMACSHA512(byteKey))
-            {
-                hmac.Initialize();
-                byte[] byteIn = Encoding.UTF8.GetBytes(value);
-                byte[] byteOut = hmac.ComputeHash(byteIn);
-                string result = BitConverter.ToString(byteOut);
-                return result.Replace("-", "");
-            }
+            using HMACSHA512 hmac = new HMACSHA512(byteKey);
+            hmac.Initialize();
+            byte[] byteIn = Encoding.UTF8.GetBytes(value);
+            byte[] byteOut = hmac.ComputeHash(byteIn);
+            string result = BitConverter.ToString(byteOut);
+            return result.Replace("-", "");
         }
         #endregion
 
@@ -338,15 +322,11 @@ namespace Kane.Extension
             {
                 try
                 {
-                    using (MemoryStream Memory = new MemoryStream())
-                    {
-                        using (CryptoStream Encryptor = new CryptoStream(Memory, Aes.CreateEncryptor(byteKey, byteVI), CryptoStreamMode.Write))
-                        {
-                            Encryptor.Write(byteValue, 0, byteValue.Length);
-                            Encryptor.FlushFinalBlock();
-                            byteResult = Memory.ToArray();
-                        }
-                    }
+                    using MemoryStream Memory = new MemoryStream();
+                    using CryptoStream Encryptor = new CryptoStream(Memory, Aes.CreateEncryptor(byteKey, byteVI), CryptoStreamMode.Write);
+                    Encryptor.Write(byteValue, 0, byteValue.Length);
+                    Encryptor.FlushFinalBlock();
+                    byteResult = Memory.ToArray();
                 }
                 catch
                 {
@@ -376,22 +356,16 @@ namespace Kane.Extension
             {
                 try
                 {
-                    using (MemoryStream Memory = new MemoryStream(byteValue))
+                    using MemoryStream Memory = new MemoryStream(byteValue);
+                    using CryptoStream Decryptor = new CryptoStream(Memory, Aes.CreateDecryptor(byteKey, byteVI), CryptoStreamMode.Read);
+                    using MemoryStream tempMemory = new MemoryStream();
+                    byte[] Buffer = new byte[1024];
+                    Int32 readBytes = 0;
+                    while ((readBytes = Decryptor.Read(Buffer, 0, Buffer.Length)) > 0)
                     {
-                        using (CryptoStream Decryptor = new CryptoStream(Memory, Aes.CreateDecryptor(byteKey, byteVI), CryptoStreamMode.Read))
-                        {
-                            using (MemoryStream tempMemory = new MemoryStream())
-                            {
-                                byte[] Buffer = new byte[1024];
-                                Int32 readBytes = 0;
-                                while ((readBytes = Decryptor.Read(Buffer, 0, Buffer.Length)) > 0)
-                                {
-                                    tempMemory.Write(Buffer, 0, readBytes);
-                                }
-                                byteResult = tempMemory.ToArray();
-                            }
-                        }
+                        tempMemory.Write(Buffer, 0, readBytes);
                     }
+                    byteResult = tempMemory.ToArray();
                 }
                 catch
                 {
@@ -415,27 +389,22 @@ namespace Kane.Extension
             byte[] byteKey = new byte[32];
             using (MemoryStream Memory = new MemoryStream())
             {
-                using (Aes aes = Aes.Create())
+                using Aes aes = Aes.Create();
+                Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.KeySize = 128;
+                aes.Key = byteKey;
+                using CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateEncryptor(), CryptoStreamMode.Write);
+                try
                 {
-
-                    Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-                    aes.Mode = CipherMode.ECB;
-                    aes.Padding = PaddingMode.PKCS7;
-                    aes.KeySize = 128;
-                    aes.Key = byteKey;
-                    using (CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateEncryptor(), CryptoStreamMode.Write))
-                    {
-                        try
-                        {
-                            cryptoStream.Write(byteValue, 0, byteValue.Length);
-                            cryptoStream.FlushFinalBlock();
-                            byteResult = Memory.ToArray();
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                    }
+                    cryptoStream.Write(byteValue, 0, byteValue.Length);
+                    cryptoStream.FlushFinalBlock();
+                    byteResult = Memory.ToArray();
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
             }
             return Convert.ToBase64String(byteResult);
@@ -455,27 +424,23 @@ namespace Kane.Extension
             Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
             using (MemoryStream Memory = new MemoryStream(byteValue))
             {
-                using (Aes aes = Aes.Create())
+                using Aes aes = Aes.Create();
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.KeySize = 128;
+                aes.Key = byteKey;
+                using CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateDecryptor(), CryptoStreamMode.Read);
+                try
                 {
-                    aes.Mode = CipherMode.ECB;
-                    aes.Padding = PaddingMode.PKCS7;
-                    aes.KeySize = 128;
-                    aes.Key = byteKey;
-                    using (CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateDecryptor(), CryptoStreamMode.Read))
-                    {
-                        try
-                        {
-                            byte[] tmp = new byte[byteValue.Length];
-                            int len = cryptoStream.Read(tmp, 0, byteValue.Length);
-                            byteResult = new byte[len];
-                            Array.Copy(tmp, 0, byteResult, 0, len);
+                    byte[] tmp = new byte[byteValue.Length];
+                    int len = cryptoStream.Read(tmp, 0, byteValue.Length);
+                    byteResult = new byte[len];
+                    Array.Copy(tmp, 0, byteResult, 0, len);
 
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                    }
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
             }
             return Encoding.UTF8.GetString(byteResult);
@@ -497,25 +462,21 @@ namespace Kane.Extension
             byte[] byteKey = new byte[24];
             using (MemoryStream Memory = new MemoryStream())
             {
-                using (TripleDES des = TripleDES.Create())
+                using TripleDES des = TripleDES.Create();
+                Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
+                des.Mode = CipherMode.ECB;
+                des.Padding = PaddingMode.PKCS7;
+                des.Key = byteKey;
+                using CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateEncryptor(), CryptoStreamMode.Write);
+                try
                 {
-                    Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-                    des.Mode = CipherMode.ECB;
-                    des.Padding = PaddingMode.PKCS7;
-                    des.Key = byteKey;
-                    using (CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateEncryptor(), CryptoStreamMode.Write))
-                    {
-                        try
-                        {
-                            cryptoStream.Write(byteValue, 0, byteValue.Length);
-                            cryptoStream.FlushFinalBlock();
-                            byteResult = Memory.ToArray();
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                    }
+                    cryptoStream.Write(byteValue, 0, byteValue.Length);
+                    cryptoStream.FlushFinalBlock();
+                    byteResult = Memory.ToArray();
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
             }
             return Convert.ToBase64String(byteResult);
@@ -535,27 +496,23 @@ namespace Kane.Extension
             Byte[] byteValue = Convert.FromBase64String(value);
             Byte[] byteKey = new Byte[24];
             Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-            using (MemoryStream Memory = new MemoryStream(byteResult))
+            using (MemoryStream Memory = new MemoryStream(byteValue))
             {
-                using (TripleDES des = TripleDES.Create())
+                using TripleDES des = TripleDES.Create();
+                des.Mode = CipherMode.ECB;
+                des.Padding = PaddingMode.PKCS7;
+                des.Key = byteKey;
+                using CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateDecryptor(), CryptoStreamMode.Read);
+                try
                 {
-                    des.Mode = CipherMode.ECB;
-                    des.Padding = PaddingMode.PKCS7;
-                    des.Key = byteKey;
-                    using (CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateDecryptor(), CryptoStreamMode.Read))
-                    {
-                        try
-                        {
-                            byte[] tmp = new byte[byteResult.Length];
-                            int len = cryptoStream.Read(tmp, 0, byteResult.Length);
-                            byteResult = new byte[len];
-                            Array.Copy(tmp, 0, byteResult, 0, len);
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                    }
+                    byte[] tmp = new byte[byteValue.Length];
+                    int len = cryptoStream.Read(tmp, 0, byteValue.Length);
+                    byteResult = new byte[len];
+                    Array.Copy(tmp, 0, byteResult, 0, len);
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
             }
             return Encoding.UTF8.GetString(byteResult);

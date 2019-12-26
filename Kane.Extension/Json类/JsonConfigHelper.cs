@@ -3,7 +3,7 @@
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
 * 类 名 称 ：JsonConfigHelper
-* 类 描 述 ：Json配置文件读取和写入扩展类
+* 类 描 述 ：Json读取和写入扩展类
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.Extension
 * 机器名称 ：KK-MAGICBOOK 
@@ -31,13 +31,19 @@ using Newtonsoft.Json.Linq;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// Json读取和写入扩展类
+    /// </summary>
     public class JsonConfigHelper
     {
         private string JSON_DATA;
         private bool IS_FILE = false;
         private string FILE_PATH = string.Empty;
 
-        #region 无参构造函数 + sonConfigHelper()
+        #region 无参构造函数 + JsonConfigHelper()
+        /// <summary>
+        /// 无参构造函数
+        /// </summary>
         public JsonConfigHelper()
         {
         }
@@ -742,7 +748,7 @@ namespace Kane.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="write">JsonWriter写入器</param>
         /// <param name="keys">关键词，可以是多个，用【:】冒号分割</param>
-        /// <param name="elements">Json元素</param>
+        /// <param name="tokens">Json元素</param>
         /// <param name="value">要写入的值</param>
         /// <param name="flag">查找到目标标志</param>
         /// <param name="index">当前关键词索引</param>

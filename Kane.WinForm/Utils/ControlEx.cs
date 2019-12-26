@@ -25,6 +25,9 @@ using System.Windows.Forms;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 控件方法扩展类
+    /// </summary>
     public static class ControlEx
     {
         #region 递归查控件内所有子控件 + GetChildControls<T>(this Control control) where T : Control

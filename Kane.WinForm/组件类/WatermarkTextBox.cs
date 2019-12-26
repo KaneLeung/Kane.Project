@@ -17,44 +17,58 @@
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 带水印文本输入框
+    /// </summary>
     public class WatermarkTextBox : TextBox
     {
         #region 私有字段和公共属性
         private string _Watermark;
+        /// <summary>
+        /// 水印文本
+        /// </summary>
         [Browsable(true), DefaultValue(""), Description("水印文本"), EditorBrowsable(EditorBrowsableState.Always)]
         public string Watermark
         {
-            get { return _Watermark; }
+            get => _Watermark;
             set { _Watermark = value; this.Invalidate(); }
         }
 
-        [Browsable(true), Description("水印文字颜色"), EditorBrowsable(EditorBrowsableState.Always)]
         private Color _WatermarkColor = SystemColors.GrayText;
+        /// <summary>
+        /// 水印文字颜色
+        /// </summary>
+        [Browsable(true), Description("水印文字颜色"), EditorBrowsable(EditorBrowsableState.Always)]
         public Color WatermarkColor
         {
-            get { return _WatermarkColor; }
+            get => _WatermarkColor;
             set { _WatermarkColor = value; Invalidate(); }
         }
 
-        [Browsable(true), Description("水印水平对齐方向"), EditorBrowsable(EditorBrowsableState.Always)]
+
         private HorizontalAlignment _WaterTextAlign = HorizontalAlignment.Center;
+        /// <summary>
+        /// 水印水平对齐方向,默认居中
+        /// </summary>
+        [Browsable(true), Description("水印水平对齐方向"), EditorBrowsable(EditorBrowsableState.Always)]
         public HorizontalAlignment WaterTextAlign
         {
-            get { return _WaterTextAlign; }
+            get => _WaterTextAlign;
             set { _WaterTextAlign = value; Invalidate(); }
         }
         #endregion
 
         #region 触发事件 + WndProc(ref Message m)
+        /// <summary>
+        /// 触发事件
+        /// </summary>
+        /// <param name="m"></param>
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
@@ -73,7 +87,7 @@ namespace Kane.WinForm
                     TextRenderer.DrawText(g, this.Watermark, this.Font, this.ClientRectangle, this.WatermarkColor, this.BackColor, align);
                 }
             }
-        } 
+        }
         #endregion
     }
 }

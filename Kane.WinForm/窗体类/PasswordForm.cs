@@ -3,7 +3,7 @@
 * 项目名称 ：Kane.WinForm
 * 项目描述 ：通用扩展工具
 * 类 名 称 ：PasswordForm
-* 类 描 述 ：密码输入窗体
+* 类 描 述 ：自定义密码输入窗体
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.WinForm
 * 机器名称 ：KK-MAGICBOOK 
@@ -26,6 +26,9 @@ using Kane.Extension;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 自定义密码输入窗体
+    /// </summary>
     public class PasswordForm : KaneForm
     {
         #region 私有成员

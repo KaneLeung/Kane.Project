@@ -23,6 +23,9 @@ using System.Text;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 随机类扩展
+    /// </summary>
     public static class RandomHelper
     {
         /// <summary>

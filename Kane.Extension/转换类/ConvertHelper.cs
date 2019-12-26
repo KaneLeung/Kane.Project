@@ -22,6 +22,9 @@ using System.Text.RegularExpressions;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 转换类扩展
+    /// </summary>
     public static class ConvertHelper
     {
         #region 泛型转换为Int,失败时返回默认值0 + ToInt<T>(this T value, int returnValue = 0)
@@ -196,7 +199,6 @@ namespace Kane.Extension
         /// 对象中的格式设置信息分析字符串 s，该对象由当前线程区域性隐式提供。
         /// </summary>
         /// <param name="value">要转的字符串</param>
-        /// <param name="returnValue">失败后的返回值,默认为DateTime.Now</param>
         /// <returns></returns>
         public static DateTime ToDT(this string value) => ToDT(value, DateTime.Now);
         #endregion

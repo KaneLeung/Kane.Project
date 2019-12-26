@@ -26,6 +26,9 @@ using System.Text;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 图像类扩展
+    /// </summary>
     public static class ImageHelper
     {
         #region 多个Bitmap叠加 + BitmapOverlay(Bitmap original, params Bitmap[] overlays)

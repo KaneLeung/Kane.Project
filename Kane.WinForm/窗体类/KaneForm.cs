@@ -18,14 +18,15 @@
 -----------------------------------------------------------------*/
 #endregion
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 自定义窗体
+    /// </summary>
     public class KaneForm : Form
     {
         #region 可配置选项

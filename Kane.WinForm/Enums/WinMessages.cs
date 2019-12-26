@@ -24,6 +24,9 @@ using System.Text;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// Window消息枚举类
+    /// </summary>
     public enum WinMessages : int
     {
         WM_NULL = 0x0000,

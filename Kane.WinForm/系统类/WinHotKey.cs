@@ -27,6 +27,9 @@ using System.Windows.Forms;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// Win系统热键类扩展
+    /// </summary>
     public class WinHotKey : IMessageFilter
     {
         #region 使用方法

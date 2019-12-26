@@ -25,6 +25,9 @@ using System.Text;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 枚举类扩展
+    /// </summary>
     public static class EnumHelper
     {
         /// <summary>

@@ -22,13 +22,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 反射类扩展
+    /// </summary>
     public static class ClassHelper
     {
-        public const BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        internal const BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
         #region 获取类所有的属性信息 + GetProps<T>(this T target)
         /// <summary>
@@ -120,7 +122,7 @@ namespace Kane.Extension
         /// 根据类的名称,属性列表创建型实例。  
         /// </summary>  
         /// <param name="className">将要创建的类的名称。</param>  
-        /// <param name="lcpi">将要创建的类的属性列表。</param>  
+        /// <param name="propInfos">将要创建的类的属性列表。</param>  
         /// <returns>返回创建的类实例</returns>  
         public static object CreateInstance(string className, List<PropInfo> propInfos) => Activator.CreateInstance(AddProp(BuildType(className), propInfos));
         #endregion
@@ -176,7 +178,7 @@ namespace Kane.Extension
         /// 添加属性到类型的实例,注意:该操作会将其它成员清除掉,其功能有待完善。  
         /// </summary>  
         /// <param name="classType">指定类型的实例。</param>  
-        /// <param name="lcpi">表示属性的一个列表。</param>  
+        /// <param name="propInfos">表示属性的一个列表。</param>  
         /// <returns>返回处理过的类型的实例。</returns>  
         public static Type AddProp(this Type classType, List<PropInfo> propInfos)
         {
@@ -452,7 +454,7 @@ namespace Kane.Extension
             /// 根据属性类型名称,属性名称构造实例，并设置属性值。
             /// </summary>
             /// <param name="type"></param>
-            /// <param name="propertyName"></param>
+            /// <param name="propName"></param>
             /// <param name="propValue"></param>
             public PropInfo(Type type, string propName, object propValue) : this(type, propName)
             {

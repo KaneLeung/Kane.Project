@@ -25,6 +25,9 @@ using System.Text;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 压缩与解压帮助类
+    /// </summary>
     public static class CompressHelper
     {
         #region 字节数组压缩成字节数组 + Compress(byte[] data, CompressMethod method)

@@ -3,7 +3,7 @@
 * 项目名称 ：Kane.WinForm
 * 项目描述 ：通用扩展工具
 * 类 名 称 ：ErrorForm
-* 类 描 述 ：错误窗体
+* 类 描 述 ：自定义错误窗体
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.WinForm
 * 机器名称 ：KK-MAGICBOOK 
@@ -25,6 +25,9 @@ using System.Drawing;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 自定义错误窗体
+    /// </summary>
     public class ErrorForm: KaneForm
     {
         #region 私有成员
@@ -169,6 +172,10 @@ namespace Kane.WinForm
         #endregion
 
         #region 释放资源 + Dispose(bool disposing)
+        /// <summary>
+        /// 释放资源
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)=> base.Dispose(disposing);
         #endregion
 

@@ -28,6 +28,9 @@ namespace Kane.Extension
     /// </summary>
     public enum FileExt
     {
+        /// <summary>
+        /// 为空
+        /// </summary>
         None = 0,
         /// <summary>
         /// Checked

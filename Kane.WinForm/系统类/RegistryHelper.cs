@@ -17,22 +17,24 @@
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Microsoft.Win32;
+using System;
+using System.IO;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 注册表常用类
+    /// </summary>
     public static class RegistryHelper
     {
         #region 设置应用程序开机自动运行 SetAutoRun(string path, bool autoRun)
+        /// <summary>
         /// 设置应用程序开机自动运行
         /// </summary>
-        /// <param name="path">完成的路径 + 应用程序的文件名</param>
-        /// <param name="isAutoRun">是否自动运行，为false时，取消自动运行</param>
-        /// <exception cref="System.Exception">路径有误时抛出异常</exception>
+        /// <param name="path">完整的路径 + 应用程序的文件名</param>
+        /// <param name="autoRun">是否自动运行，为false时，取消自动运行</param>
+        /// <returns></returns>
         public static bool SetAutoRun(string path, bool autoRun)
         {
             RegistryKey reg = null;

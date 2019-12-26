@@ -25,6 +25,9 @@ using System.Linq;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 文件类扩展
+    /// </summary>
     public static class FileHelper
     {
         #region 通过文件头两字节判断文件类型 + GetFileExt(string path)

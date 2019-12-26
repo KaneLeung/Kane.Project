@@ -25,6 +25,9 @@ using System.Text.RegularExpressions;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 字符串类扩展
+    /// </summary>
     public static class StringHelper
     {
         #region 字符串扩展方法，判断字符串是否为NullOrEmpty + IsNullOrEmpty(this string value)

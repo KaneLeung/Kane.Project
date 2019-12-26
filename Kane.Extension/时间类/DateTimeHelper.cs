@@ -23,6 +23,9 @@ using System.Text;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 时间类扩展
+    /// </summary>
     public static class DateTimeHelper
     {
         #region 将DateTime转成当天起始时间 + DayStart(this DateTime value)
@@ -61,9 +64,9 @@ namespace Kane.Extension
         public static DateTime NextMonthStart(this DateTime value) => value.MonthStart().AddMonths(1);
         #endregion
 
-        #region 获取今天时间段，通常常用 Start >= x < End + GetToday()
+        #region 获取今天时间段，通常常用 Start大于等于X小于End + GetToday()
         /// <summary>
-        /// 获取今天时间段，通常常用 Start >= x < End
+        /// 获取今天时间段，通常常用 Start大于等于X小于End
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetToday()
@@ -73,9 +76,9 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取昨天时间段，通常用法 Start >= x < End + GetYesterday()
+        #region 获取昨天时间段，通常用法 Start大于等于X小于End + GetYesterday()
         /// <summary>
-        /// 获取昨天时间段，通常用法 Start >= x < End
+        /// 获取昨天时间段，通常用法 Start大于等于X小于End
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetYesterday()
@@ -85,9 +88,9 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取本周时间段，通常用法 Start >= x < End + GetThisWeek()
+        #region 获取本周时间段，通常用法 Start大于等于X小于End + GetThisWeek()
         /// <summary>
-        /// 获取本周时间段，通常用法 Start >= x < End
+        /// 获取本周时间段，通常用法 Start大于等于X小于End
         /// 中国人习惯星期一为星期开始，因为星期日为0，所以要减七
         /// </summary>
         /// <returns></returns>
@@ -99,9 +102,9 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取某一周时间段，通常用法 Start >= x < End + GetOneWeek(DateTime dateTime)
+        #region 获取某一周时间段，通常用法 Start大于等于X小于End + GetOneWeek(DateTime dateTime)
         /// <summary>
-        /// 获取本周时间段，通常用法 Start >= x < End
+        /// 获取本周时间段，通常用法 Start大于等于X小于End
         /// 中国人习惯星期一为星期开始，因为星期日为0，所以要减七
         /// </summary>
         /// <param name="dateTime">要获取的那一周其中一个时间</param>
@@ -114,9 +117,9 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取本月时间段，通常用法 Start >= x < End + GetThisMonth()
+        #region 获取本月时间段，通常用法 Start大于等于X小于End + GetThisMonth()
         /// <summary>
-        /// 获取本月时间段，通常用法 Start >= x < End
+        /// 获取本月时间段，通常用法 Start大于等于X小于End
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetThisMonth()
@@ -126,9 +129,9 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取某一月时间段，通常用法 Start >= x < End + GetOneMonth(DateTime dateTime)
+        #region 获取某一月时间段，通常用法 Start大于等于X小于End + GetOneMonth(DateTime dateTime)
         /// <summary>
-        /// 获取某一月时间段，通常用法 Start >= x < End
+        /// 获取某一月时间段，通常用法 Start大于等于X小于End
         /// </summary>
         /// <param name="dateTime">要获取的那一月的其中一个时间</param>
         /// <returns></returns>
@@ -223,7 +226,7 @@ namespace Kane.Extension
         /// DateTime时间格式转换为Unix时间戳格式
         /// 用Int最大值是2038年01月19日03时14分07秒，超过可用Long
         /// </summary>
-        /// <param name="time"></param>
+        /// <param name="value">要转换的时间</param>
         /// <returns></returns>
         public static int ToStamp(this DateTime value)
         {

@@ -24,6 +24,9 @@ using System.Text.RegularExpressions;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 正则表达式扩展
+    /// </summary>
     public static class RegexHelper
     {
         #region 利用正则表达式替换字符串里的文字 + RegexReplce(this string value, string regex, string word)
