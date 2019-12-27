@@ -133,7 +133,7 @@ namespace Kane.Extension
             if (value.IsNull() || value.ToString().IsNullOrEmpty()) return returnValue;
             decimal.TryParse(value.ToString(), out returnValue);
             return returnValue;
-        } 
+        }
         #endregion
 
         #region 泛型转换为Decimal?(注意是可空类型) + ToNDec<T>(this T value)
@@ -151,13 +151,14 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 转换成大写人民币 + ConvertToChinese(decimal value)
+        #region 转换大写金额 + ToAmoutInWords(decimal value)
         /// <summary>
-        /// 转换成大写人民币
+        /// 转换大写金额
+        /// https://baike.baidu.com/item/大写金额
         /// </summary>
         /// <param name="value">要转换的值</param>
         /// <returns></returns>
-        public static string ConvertToChinese(decimal value)
+        public static string ToAmoutInWords(decimal value)
         {
             var valueString = value.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
             var temp = Regex.Replace(valueString, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
@@ -166,9 +167,27 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 泛型转Decimal,默认保留两位小数(采用4舍6入5取偶) + ToRoundDec<T>(this T value, int digits = 2, int returnValue = 0)
+        #region 转换大写金额 + ToAmoutInWords(double value)
         /// <summary>
-        /// 泛型转Decimal,默认保留两位小数(采用4舍6入5取偶)
+        /// 转换大写金额
+        /// https://baike.baidu.com/item/大写金额
+        /// </summary>
+        /// <param name="value">要转换的值</param>
+        /// <returns></returns>
+        public static string ToAmoutInWords(double value)
+        {
+            var valueString = value.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
+            var temp = Regex.Replace(valueString, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
+            var result = Regex.Replace(temp, ".", m => "负元空零壹贰叁肆伍陆柒捌玖空空空空空空空分角拾佰仟万亿兆京垓秭穰"[m.Value[0] - '-'].ToString());
+            return result;
+        }
+        #endregion
+
+        #region 泛型转Decimal,默认保留两位小数，默认【采用4舍6入5取偶】 + ToRoundDec<T>(this T value, int digits = 2, int returnValue = 0)
+        /// <summary>
+        /// 泛型转Decimal,默认保留两位小数，默认【采用4舍6入5取偶】
+        /// 采用Banker's rounding（银行家算法），即：四舍六入五取偶。事实上这也是IEEE的规范。
+        /// 备注：MidpointRounding.AwayFromZero可以用来实现传统意义上的"四舍五入"。
         /// </summary>
         /// <param name="value">要转的值</param>
         /// <param name="digits">保留的小数位数</param>
