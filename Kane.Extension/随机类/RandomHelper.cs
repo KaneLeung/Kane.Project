@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:19:31
-* 更新时间 ：2019/10/16 23:19:31
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2019/12/29 23:19:31
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -28,10 +28,11 @@ namespace Kane.Extension
     /// </summary>
     public static class RandomHelper
     {
+        #region MyRe获取随机字符串 + GetRandomString(int length)
         /// <summary>
         /// 获取随机字符串
         /// </summary>
-        /// <param name="length"></param>
+        /// <param name="length">随机字符串的长度</param>
         /// <returns></returns>
         public static string GetRandomString(int length)
         {
@@ -41,9 +42,10 @@ namespace Kane.Extension
             Random random = new Random(DateTime.Now.Millisecond);
             for (int i = 0; i < length; i++)
             {
-                result.Append(charArray[random.Next(0, charArray.Length)].ToString());
+                result.Append(charArray[random.Next(0, charArray.Length)]);
             }
             return result.ToString();
-        }
+        } 
+        #endregion
     }
 }
