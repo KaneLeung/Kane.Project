@@ -17,6 +17,7 @@
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +30,7 @@ namespace Kane.WinForm
     /// </summary>
     public enum WinMessages : int
     {
+
         WM_NULL = 0x0000,
         [Description("应用程序创建一个窗口")]
         WM_CREATE = 0x0001,
@@ -1240,3 +1242,4 @@ namespace Kane.WinForm
         LM_GETITEM = (WM_USER + 0x303)
     }
 }
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释

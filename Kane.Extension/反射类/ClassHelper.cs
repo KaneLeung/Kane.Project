@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:08:22
-* 更新时间 ：2019/12/19 10:42:22
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2019/12/29 10:42:22
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -491,6 +491,31 @@ namespace Kane.Extension
             ///  获取属性在IL中的Get方法名。  
             /// </summary>  
             public string GetPropertyMethodName => "get_" + PropName;
+        }
+        #endregion
+
+        #region 类对象的深克隆，利用反射 + DeepClone<T>(this T source) where T : class, new()
+        /// <summary>
+        /// 类对象的深克隆，利用反射
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source">源对象</param>
+        /// <returns></returns>
+        public static T DeepClone<T>(this T source) where T : class, new()
+        {
+            Type type = source.GetType();
+            object newObject = Activator.CreateInstance(type);
+            PropertyInfo[] infos = type.GetProperties();
+            for (int i = 0; i < infos.Length; i++)
+            {
+                PropertyInfo info = infos[i];
+#if NET40
+                info.SetValue(newObject, info.GetValue(source, null), null);
+#else
+                info.SetValue(newObject, info.GetValue(source));
+#endif
+            }
+            return (T)newObject;
         }
         #endregion
     }
