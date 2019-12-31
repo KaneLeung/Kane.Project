@@ -10,7 +10,7 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/11/3 22:29:46
-* 更新时间 ：2019/11/3 22:29:46
+* 更新时间 ：2019/12/31 22:29:46
 * 版 本 号 ：v1.0.0.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
@@ -49,7 +49,7 @@ namespace Kane.WinForm
                 else reg.SetValue(fileName, false);
                 state = true;
             }
-            catch (Exception)
+            catch
             {
                 state = false;
             }
