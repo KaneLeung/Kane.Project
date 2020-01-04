@@ -41,9 +41,11 @@ namespace Kane.Extension
         /// </summary>
         public enum RsaSize
         {
+#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
             R2048 = 2048,
             R3072 = 3072,
             R4096 = 4096
+#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
         }
         #endregion
 

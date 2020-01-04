@@ -24,6 +24,9 @@ using System.Text;
 
 namespace Kane.Extension
 {
+    /// <summary>
+    /// 压缩算法枚举类
+    /// </summary>
     public enum CompressMethod
     {
         /// <summary>

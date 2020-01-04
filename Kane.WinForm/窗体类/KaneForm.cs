@@ -30,35 +30,73 @@ namespace Kane.WinForm
     public class KaneForm : Form
     {
         #region 可配置选项
+        /// <summary>
+        /// 是否显示自定义图片图标，默认为【True】
+        /// </summary>
         [Browsable(true), Description("是否显示自定义图片图标"), EditorBrowsable(EditorBrowsableState.Always)]
         public bool ShowImageIcon { get; set; } = true;
-        [Description("ICON图标")]
+        /// <summary>
+        /// 窗体Icon图标，默认为【预设ICON_BLACK】
+        /// </summary>
+        [Browsable(true), Description("ICON图标"), EditorBrowsable(EditorBrowsableState.Always)]
         public Image IconImage { get; set; } = Common.GetResourceImage("ICON_BLACK");
-        [Description("非活动时ICON图标")]
+        /// <summary>
+        /// 窗体非活动时Icon图标，默认为【预设ICON_GREY】
+        /// </summary>
+        [Browsable(true), Description("非活动时ICON图标"), EditorBrowsable(EditorBrowsableState.Always)]
         public Image DeactivateIconImage { get; set; } = Common.GetResourceImage("ICON_GREY");
-        [Description("窗体标题背景颜色")]
+        /// <summary>
+        /// 窗体标题背景颜色，默认为【Transparent】
+        /// </summary>
+        [Browsable(true), Description("窗体标题背景颜色"), EditorBrowsable(EditorBrowsableState.Always)]
         public Color TitleBackColor { get; set; } = Color.Transparent;
-        [Description("窗体标题")]
+        /// <summary>
+        /// 窗体标题，默认为空
+        /// </summary>
+        [Browsable(true), Description("窗体标题"), EditorBrowsable(EditorBrowsableState.Always)]
         public string Title { get; set; }
-        [Description("窗体标题对齐方向")]
+        /// <summary>
+        /// 窗体标题对齐方向，默认为【MiddleCenter】
+        /// </summary>
+        [Browsable(true), Description("窗体标题对齐方向"), EditorBrowsable(EditorBrowsableState.Always)]
         public ContentAlignment TitleAlign { get; set; } = ContentAlignment.MiddleCenter;
-        [Description("窗体标题字体")]
+        /// <summary>
+        /// 窗体标题字体,默认为【微软雅黑，10.5F, FontStyle.Regular, GraphicsUnit.Point, 134】
+        /// </summary>
+        [Browsable(true), Description("窗体标题字体"), EditorBrowsable(EditorBrowsableState.Always)]
         public Font TitleFont { get; set; } = new Font("微软雅黑", 10.5F, FontStyle.Regular, GraphicsUnit.Point, 134);
-        [Description("是否显示设置按钮")]
+        /// <summary>
+        /// 是否显示设置按钮，默认为【否】
+        /// </summary>
+        [Browsable(true), Description("是否显示设置按钮"), EditorBrowsable(EditorBrowsableState.Always)]
         public bool ShowSetting { get; set; } = false;
-        [Description("是否显示最小化按钮")]
+        /// <summary>
+        /// 是否显示最小化按钮，默认为【是】
+        /// </summary>
+        [Browsable(true), Description("是否显示最小化按钮"), EditorBrowsable(EditorBrowsableState.Always)]
         public bool ShowMinimized { get; set; } = true;
-        [Description("是否显示最大化按钮")]
+        /// <summary>
+        /// 是否显示最大化按钮，默认为【是】
+        /// </summary>
+        [Browsable(true), Description("是否显示最大化按钮"), EditorBrowsable(EditorBrowsableState.Always)]
         public bool ShowMaximized { get; set; } = true;
-        [Description("是否显示关闭按钮")]
+        /// <summary>
+        /// 是否显示关闭按钮，默认为【是】
+        /// </summary>
+        [Browsable(true), Description("是否显示关闭按钮"), EditorBrowsable(EditorBrowsableState.Always)]
         public bool ShowClose { get; set; } = true;
-        [Description("是否锁定大小")]
+        /// <summary>
+        /// 是否锁定大小,，默认为【是】
+        /// </summary>
+        [Browsable(true), Description("是否锁定大小"), EditorBrowsable(EditorBrowsableState.Always)]
         public bool LockSize { get; set; } = true;
+        #endregion
 
-        //自定义事件
-        //增加 一个事件，项目里面用到这个控件的时候就可以使用这个事件了。  
-        [EditorBrowsable(EditorBrowsableState.Always)]
-        [Browsable(true)]
+        #region 自定义事件
+        /// <summary>
+        /// 设置按钮点击事件
+        /// </summary>
+        [Browsable(true), Description("设置按钮点击事件"), EditorBrowsable(EditorBrowsableState.Always)]
         public event EventHandler SettingButtonClickEvent;
         #endregion
 
