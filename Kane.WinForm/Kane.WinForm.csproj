@@ -15,9 +15,9 @@
     <RepositoryUrl>git@github.com:KaneLeung/Kane.Project.git</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.0.7.0</AssemblyVersion>
-    <FileVersion>1.0.7.0</FileVersion>
-    <Version>1.0.7</Version>
+    <AssemblyVersion>1.0.8.0</AssemblyVersion>
+    <FileVersion>1.0.8.0</FileVersion>
+    <Version>1.0.8</Version>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageIconUrl>https://raw.githubusercontent.com/KaneLeung/Kane.Project/master/ProjectIcon.png</PackageIconUrl>
   </PropertyGroup>
@@ -95,7 +95,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kane.Extension" Version="1.0.4" />
+    <PackageReference Include="Kane.Extension" Version="1.0.6" />
   </ItemGroup>
 
   <ItemGroup>
