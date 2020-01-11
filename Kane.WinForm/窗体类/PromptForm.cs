@@ -18,13 +18,14 @@
 -----------------------------------------------------------------*/
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Kane.WinForm
 {
+    /// <summary>
+    /// 自定义提示窗体
+    /// </summary>
     public class PromptForm : KaneForm
     {
         #region 私有成员
@@ -51,7 +52,7 @@ namespace Kane.WinForm
         /// <param name="content">内容</param>
         /// <param name="multiLine">是否显示多行</param>
         /// <param name="required">是否为必填</param>
-        public PromptForm(string title, string content, bool multiLine = false,bool required = true)
+        public PromptForm(string title, string content, bool multiLine = false, bool required = true)
         {
             MULTI_LINE = multiLine;
             REQUIRED = required;
@@ -199,7 +200,7 @@ namespace Kane.WinForm
         #region 点击确认按钮事件 + BTN_OK_Click(object sender, EventArgs e)
         private void BTN_OK_Click(object sender, EventArgs e)
         {
-            if (REQUIRED && TB_Content.Text.TrimStart().TrimEnd().Length < 1)
+            if (REQUIRED && TB_Content.Text.Trim().Length < 1)
             {
                 LB_Error.Text = "必填信息为空，请输入。";
                 TB_Content.Focus();

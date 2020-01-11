@@ -18,11 +18,8 @@
 -----------------------------------------------------------------*/
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace Kane.WinForm
 {
@@ -44,8 +41,11 @@ namespace Kane.WinForm
         #endregion
 
         #region 公有成员
+        /// <summary>
+        /// 校验Func
+        /// </summary>
         public event Func<string, (bool state, string message)> FuncCheckValues;
-        private readonly bool NoDecimal= false;
+        private readonly bool NoDecimal = false;
         private readonly bool NoNegative = false;
         private readonly uint? Precision;
         #endregion
@@ -61,7 +61,7 @@ namespace Kane.WinForm
         /// <param name="required">是否必填</param>
         /// <param name="noDecimal">是否整数</param>
         /// <param name="noNegative">是否非负数</param>
-        public NumberForm(string title, string content, uint? precisionm, bool multiLine = false, bool required = true,bool noDecimal =false, bool noNegative = false)
+        public NumberForm(string title, string content, uint? precisionm, bool multiLine = false, bool required = true, bool noDecimal = false, bool noNegative = false)
         {
             MULTI_LINE = multiLine;
             REQUIRED = required;
@@ -179,7 +179,7 @@ namespace Kane.WinForm
             this.BTN_Cancel.UseVisualStyleBackColor = true;
             this.BTN_Cancel.Click += new EventHandler(this.BTN_Cancel_Click);
             // 
-            // PromptForm
+            // NumberForm
             // 
             this.AutoScaleMode = AutoScaleMode.None;
             this.ClientSize = new Size(567, 232);
@@ -198,7 +198,7 @@ namespace Kane.WinForm
             this.DoubleBuffered = true;
             this.Font = new Font("微软雅黑", 12F, FontStyle.Regular, GraphicsUnit.Point, 134);
             this.FormBorderStyle = FormBorderStyle.None;
-            this.Name = "PromptForm";
+            this.Name = "NumberForm";
             this.LockSize = true;
             this.ShowImageIcon = false;
             this.ShowSetting = false;
@@ -215,7 +215,7 @@ namespace Kane.WinForm
         #region 点击确认按钮事件 + BTN_OK_Click(object sender, EventArgs e)
         private void BTN_OK_Click(object sender, EventArgs e)
         {
-            if (REQUIRED && TB_Content.Text.TrimStart().TrimEnd().Length < 1)
+            if (REQUIRED && TB_Content.Text.Trim().Length < 1)
             {
                 LB_Error.Text = "必填信息为空，请输入。";
                 TB_Content.Focus();
