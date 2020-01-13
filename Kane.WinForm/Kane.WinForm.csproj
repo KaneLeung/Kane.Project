@@ -81,11 +81,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kane.Extension" Version="1.0.6" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\Kane.Extension\Kane.Extension.csproj" />
   </ItemGroup>
   
 </Project>
