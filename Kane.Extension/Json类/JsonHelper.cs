@@ -2,8 +2,8 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
-* 类 名 称 ：JsonConfigHelper
-* 类 描 述 ：Json读取和写入扩展类
+* 类 名 称 ：JsonHelper
+* 类 描 述 ：Json读取和写入帮助类
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.Extension
 * 机器名称 ：KK-MAGICBOOK 
@@ -34,38 +34,38 @@ namespace Kane.Extension
     /// <summary>
     /// Json读取和写入扩展类
     /// </summary>
-    public class JsonConfigHelper
+    public class JsonHelper
     {
         private string JSON_DATA;
         private bool IS_FILE = false;
         private string FILE_PATH = string.Empty;
 
-        #region 无参构造函数 + JsonConfigHelper()
+        #region 无参构造函数 + JsonHelper()
         /// <summary>
         /// 无参构造函数
         /// </summary>
-        public JsonConfigHelper()
+        public JsonHelper()
         {
         }
         #endregion
 
-        #region 构造函数，可以是文件路径，也可以是JSON字符串，使用默认编码UTF8 + JsonConfigHelper(string source)
+        #region 构造函数，可以是文件路径，也可以是JSON字符串，使用默认编码UTF8 + JsonHelper(string source)
         /// <summary>
         /// 构造函数，可以是文件路径，也可以是JSON字符串，使用默认编码UTF8
         /// </summary>
         /// <param name="source"></param>
-        public JsonConfigHelper(string source) : this(source, Encoding.UTF8)
+        public JsonHelper(string source) : this(source, Encoding.UTF8)
         {
         }
         #endregion
 
-        #region 构造函数，可以是文件路径，也可以是JSON字符串,可设置编码 + JsonConfigHelper(string source, Encoding encoding)
+        #region 构造函数，可以是文件路径，也可以是JSON字符串,可设置编码 + JsonHelper(string source, Encoding encoding)
         /// <summary>
         /// 构造函数，可以是文件路径，也可以是JSON字符串,可设置编码
         /// </summary>
         /// <param name="source">可以是文件路径，也可以是JSON字符串</param>
         /// <param name="encoding">编码</param>
-        public JsonConfigHelper(string source, Encoding encoding)
+        public JsonHelper(string source, Encoding encoding)
         {
             if (File.Exists(source))
             {

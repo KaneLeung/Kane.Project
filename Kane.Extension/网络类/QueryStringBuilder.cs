@@ -126,17 +126,11 @@ namespace Kane.Extension
         public override string ToString()
         {
             var builder = new StringBuilder();
-            int index = 0;
             foreach (var keyValuePair in PARM_DATA)
             {
-                if (index == 0) builder.Append("?");
-                if (index >= 1) builder.Append("&");
-                builder.Append(keyValuePair.Key);
-                builder.Append('=');
-                builder.Append(Uri.EscapeDataString(keyValuePair.Value));
-                index++;
+                builder.Append($"{keyValuePair.Key}={Uri.EscapeDataString(keyValuePair.Value)}&");
             }
-            return builder.ToString();
+            return builder.ToString().TrimEnd('&');
         }
         #endregion
     }
