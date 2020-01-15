@@ -22,12 +22,11 @@ using System.Collections.Generic;
 using System.Text;
 #if (NETCOREAPP3_0 || NETCOREAPP3_1)
 using System.Text.Json;
-using System.Threading.Tasks;
 #else
 using Newtonsoft.Json;
 #endif
 
-namespace Kane.Extension.Json类
+namespace Kane.Extension
 {
     /// <summary>
     /// Json扩展类
