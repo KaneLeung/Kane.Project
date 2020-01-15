@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:26:06
-* 更新时间 ：2020/01/15 17:26:06
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/01/16 17:26:06
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -223,6 +223,42 @@ namespace Kane.Extension
             if (Uri.TryCreate(value, UriKind.Absolute, out Uri result) && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps)) return result;
             else return null;
         }
+        #endregion
+
+        #region 两个字符串合并成一个 + Add(this string str0, string str1)
+        /// <summary>
+        /// 两个字符串合并成一个
+        /// 代替+号，一般四个字符串以下用，比+号效率高
+        /// </summary>
+        /// <param name="str0">第一个字符串</param>
+        /// <param name="str1">第二个字符串</param>
+        /// <returns></returns>
+        public static string Add(this string str0, string str1) => string.Concat(str0, str1);
+        #endregion
+
+        #region 三个字符串合并成一个 + Add(this string str0, string str1, string str2)
+        /// <summary>
+        /// 三个字符串合并成一个
+        /// 代替+号，一般四个字符串以下用，比+号效率高
+        /// </summary>
+        /// <param name="str0">第一个字符串</param>
+        /// <param name="str1">第二个字符串</param>
+        /// <param name="str2">第四个字符串</param>
+        /// <returns></returns>
+        public static string Add(this string str0, string str1, string str2) => string.Concat(str0, str1, str2);
+        #endregion
+
+        #region 四个字符串合并成一个 + Add(this string str0, string str1, string str2, string str3)
+        /// <summary>
+        /// 四个字符串合并成一个
+        /// 代替+号，一般四个字符串以下用，比+号效率高
+        /// </summary>
+        /// <param name="str0">第一个字符串</param>
+        /// <param name="str1">第二个字符串</param>
+        /// <param name="str2">第三个字符串</param>
+        /// <param name="str3">第四个字符串</param>
+        /// <returns></returns>
+        public static string Add(this string str0, string str1, string str2, string str3) => string.Concat(str0, str1, str2, str3);
         #endregion
     }
 }

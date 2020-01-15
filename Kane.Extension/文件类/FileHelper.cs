@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/30 0:01:37
-* 更新时间 ：2019/10/30 0:01:37
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/01/16 0:01:37
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -97,6 +97,19 @@ namespace Kane.Extension
         /// <param name="pattern">与目录的名称匹配的搜索字符串。 此参数可以包含有效文本和通配符的组合，但不支持正则表达式。</param>
         /// <returns></returns>
         public static List<string> GetPathAllFiles(string path, string pattern = "") => GetPathAllFiles(path, null, pattern);
+        #endregion
+
+        #region 校验文件名是否符合Window文件命名规范 + CheckFilename(string filename)
+        /// <summary>
+        /// 校验文件名是否符合Window文件命名规范
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static bool CheckFilename(string filename)
+        {
+            char[] forbidChars = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+            return filename.IndexOfAny(forbidChars) == -1;
+        }
         #endregion
     }
 }

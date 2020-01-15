@@ -128,7 +128,10 @@ namespace Kane.Extension
             var builder = new StringBuilder();
             foreach (var keyValuePair in PARM_DATA)
             {
-                builder.Append($"{keyValuePair.Key}={Uri.EscapeDataString(keyValuePair.Value)}&");
+                builder.Append(keyValuePair.Key);
+                builder.Append("=");
+                builder.Append(Uri.EscapeDataString(keyValuePair.Value));
+                builder.Append("&");
             }
             return builder.ToString().TrimEnd('&');
         }
