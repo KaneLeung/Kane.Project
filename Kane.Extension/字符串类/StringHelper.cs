@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:26:06
-* 更新时间 ：2019/10/16 23:26:06
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/01/15 17:26:06
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -189,13 +189,40 @@ namespace Kane.Extension
         public static byte[] Base64ToBytes(this string value) => Convert.FromBase64String(value);
         #endregion
 
-        #region 将字符串【true】【是】【1】【ok】【yes】转换为Bool类型 + ToBool(this string val
+        #region 将字符串【true】【是】【1】【ok】【yes】转换为Bool类型 + ToBool(this string value)
         /// <summary>
         /// 将字符串【true】【是】【1】【ok】【yes】转换为Bool类型
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public static bool ToBool(this string value) => new string[] { "true", "是", "1", "ok", "yes" }.Any(k => k == value.ToLower());
+        #endregion
+
+        #region 校验字符串是否为Url地址，返回校验结果和转为Uri类型的值联 + CheckUrl(this string value)
+        /// <summary>
+        /// 校验字符串是否为Url地址，返回校验结果和转为Uri类型的值
+        /// </summary>
+        /// <param name="value">要校验的字符串</param>
+        /// <returns></returns>
+        public static (bool, Uri) CheckUrl(this string value)
+        {
+            if (Uri.TryCreate(value, UriKind.Absolute, out Uri result) && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps))
+                return (true, result);
+            else return (false, null);
+        }
+        #endregion
+
+        #region 将字符串转成Uri，失败返回Null + ToUrl(this string value)
+        /// <summary>
+        /// 将字符串转成Uri，失败返回Null
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Uri ToUrl(this string value)
+        {
+            if (Uri.TryCreate(value, UriKind.Absolute, out Uri result) && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps)) return result;
+            else return null;
+        }
         #endregion
     }
 }
