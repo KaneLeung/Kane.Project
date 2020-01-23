@@ -33,14 +33,14 @@ namespace Kane.Extension
     /// </summary>
     public static class JsonEx
     {
-        #region 把对象序列化，转成Json字符串 + ToJson<T>(this T value) where T : class, new()
+        #region 把对象序列化，转成Json字符串 + ToJson<T>(this T value)
         /// <summary>
         /// 把对象序列化，转成Json字符串
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value">要序列化的对象</param>
         /// <returns></returns>
-        public static string ToJson<T>(this T value) where T : class, new()
+        public static string ToJson<T>(this T value)
         {
 #if (NETCOREAPP3_0 || NETCOREAPP3_1)
             return JsonSerializer.Serialize(value);
@@ -50,14 +50,14 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region Json字符串反序列化，转成对象 + ToObject<T>(this string value) where T : class, new()
+        #region Json字符串反序列化，转成对象 + ToObject<T>(this string value)
         /// <summary>
         /// Json字符串反序列化，转成对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value">Json字符串</param>
         /// <returns></returns>
-        public static T ToObject<T>(this string value) where T : class, new()
+        public static T ToObject<T>(this string value)
         {
 #if (NETCOREAPP3_0 || NETCOREAPP3_1)
             return JsonSerializer.Deserialize<T>(value);
