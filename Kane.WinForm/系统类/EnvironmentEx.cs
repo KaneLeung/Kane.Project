@@ -81,6 +81,9 @@ namespace Kane.WinForm
         #endregion
 
         #region 获取系统主题颜色，对应【深色】和【浅色】 + GetWindows10ThemeMode()
+        /// <summary>
+        /// 主题颜色枚举类
+        /// </summary>
         public enum ThemeMode { Dark, Light }
         /// <summary>
         /// 获取系统主题颜色，对应【深色】和【浅色】
@@ -111,10 +114,8 @@ namespace Kane.WinForm
         /// <returns></returns>
         public static int GetScreenDpi()
         {
-            Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
-            int dpi = (int)graphics.DpiX;
-            graphics.Dispose();
-            return dpi;
+            using Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
+            return (int)graphics.DpiX;
         } 
         #endregion
     }

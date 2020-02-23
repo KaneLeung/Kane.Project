@@ -192,14 +192,16 @@ namespace Kane.Extension
         /// <param name="value">要转的值</param>
         /// <param name="digits">保留的小数位数</param>
         /// <param name="returnValue">失败时返回的值</param>
+        /// <param name="mode">可选择模式</param>
         /// <returns></returns>
-        public static decimal ToRoundDec<T>(this T value, int digits = 2, int returnValue = 0) => Math.Round(value.ToDec(returnValue), digits);
+        public static decimal ToRoundDec<T>(this T value, int digits = 2, int returnValue = 0, MidpointRounding mode = MidpointRounding.ToEven)
+            => Math.Round(value.ToDec(returnValue), digits, mode);
         #endregion
 
         #region 常规字符串转换DateTime，可设置失败后的返回值 + ToDT(this string value, DateTime returnValue)
         /// <summary>
         /// 常规字符串转换DateTime，可设置失败后的返回值
-        /// 对象中的格式设置信息分析字符串 s，该对象由当前线程区域性隐式提供。
+        /// 对象中的格式设置信息分析字符串value，该对象由当前线程区域性隐式提供。
         /// </summary>
         /// <param name="value">要转的字符串</param>
         /// <param name="returnValue">失败后的返回值</param>
@@ -215,7 +217,7 @@ namespace Kane.Extension
         #region 常规字符串转换DateTime，失败后的返回值默认为DateTime.Now + ToDT(this string value)
         /// <summary>
         /// 常规字符串转换DateTime，失败后的返回值默认为DateTime.Now
-        /// 对象中的格式设置信息分析字符串 s，该对象由当前线程区域性隐式提供。
+        /// 对象中的格式设置信息分析字符串value，该对象由当前线程区域性隐式提供。
         /// </summary>
         /// <param name="value">要转的字符串</param>
         /// <returns></returns>
@@ -225,18 +227,20 @@ namespace Kane.Extension
         #region 字符串转换DateTime，可根据自定义格式转换，可设置失败后的返回值 + ToDT(this string value, string format, DateTime returnValue)
         /// <summary>
         /// 字符串转换DateTime，可根据自定义格式转换，可设置失败后的返回值
-        /// d 月中的某一天。一位数的日期没有前导零。 
-        /// dd 月中的某一天。一位数的日期有一个前导零。 
-        /// ddd 周中某天的缩写名称，在 AbbreviatedDayNames 中定义。 
-        /// dddd 周中某天的完整名称，在 DayNames 中定义。 
-        /// M 月份数字。一位数的月份没有前导零。 
-        /// MM 月份数字。一位数的月份有一个前导零。 
-        /// MMM 月份的缩写名称，在 AbbreviatedMonthNames 中定义。 
-        /// MMMM 月份的完整名称，在 MonthNames 中定义。 
-        /// y 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示不具有前导零的年份。 
-        /// yy 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示具有前导零的年份。 
-        /// yyyy 包括纪元的四位数的年份。 
-        /// gg 时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。 
+        /// 例如【2019-02-05 18:20:30】
+        /// g 常规日期/短时间; 标准格式字符串 =>【2019/2/5 18:20】
+        /// gg 时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。=>【公元】
+        /// y 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示不具有前导零的年份。=>【2019年2月】
+        /// yy 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示具有前导零的年份。=>【19】
+        /// yyyy 包括纪元的四位数的年份。=>【2019】
+        /// M 月份数字。一位数的月份没有前导零。=>【2】
+        /// MM 月份数字。一位数的月份有一个前导零。=>【02】
+        /// MMM 月份的缩写名称，在 AbbreviatedMonthNames 中定义。=>【2月】或【Feb】
+        /// MMMM 月份的完整名称，在 MonthNames 中定义。=>【2月】或【February】
+        /// d 月中的某一天。一位数的日期没有前导零。=>【5】
+        /// dd 月中的某一天。一位数的日期有一个前导零。=>【05】
+        /// ddd 周中某天的缩写名称，在 AbbreviatedDayNames 中定义。=>【周二】
+        /// dddd 周中某天的完整名称，在 DayNames 中定义。=>【星期二】
         /// h 12 小时制的小时。一位数的小时数没有前导零。 
         /// hh 12 小时制的小时。一位数的小时数有前导零。 
         /// H 24 小时制的小时。一位数的小时数没有前导零。 
@@ -252,11 +256,8 @@ namespace Kane.Extension
         /// fffff 秒的小数精度为五位。其余数字被截断。 
         /// ffffff 秒的小数精度为六位。其余数字被截断。 
         /// fffffff 秒的小数精度为七位。其余数字被截断。 
-        /// t 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项的第一个字符（如果存在）。 
-        /// tt 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项（如果存在）。 
-        /// z 时区偏移量（“+”或“-”后面仅跟小时）。一位数的小时数没有前导零。例如，太平洋标准时间是“-8”。 
-        /// zz 时区偏移量（“+”或“-”后面仅跟小时）。一位数的小时数有前导零。例如，太平洋标准时间是“-08”。 
-        /// zzz 完整时区偏移量（“+”或“-”后面跟有小时和分钟）。一位数的小时数和分钟数有前导零。例如，太平洋标准时间是“-08:00”。 
+        /// t 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项的第一个字符（如果存在）。=>【18:20】
+        /// tt 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项（如果存在）。=>【下午】
         /// : 在 TimeSeparator 中定义的默认时间分隔符。 
         /// / 在 DateSeparator 中定义的默认日期分隔符。
         /// https://docs.microsoft.com/zh-cn/dotnet/api/system.globalization.datetimeformatinfo?view=netcore-3.1
@@ -276,18 +277,20 @@ namespace Kane.Extension
         #region 字符串转换DateTime，可根据自定义格式转换，失败后的返回值默认为DateTime.Now + ToDT(this string value, string format)
         /// <summary>
         /// 字符串转换DateTime，可根据自定义格式转换，失败后的返回值默认为DateTime.Now
-        /// d 月中的某一天。一位数的日期没有前导零。 
-        /// dd 月中的某一天。一位数的日期有一个前导零。 
-        /// ddd 周中某天的缩写名称，在 AbbreviatedDayNames 中定义。 
-        /// dddd 周中某天的完整名称，在 DayNames 中定义。 
-        /// M 月份数字。一位数的月份没有前导零。 
-        /// MM 月份数字。一位数的月份有一个前导零。 
-        /// MMM 月份的缩写名称，在 AbbreviatedMonthNames 中定义。 
-        /// MMMM 月份的完整名称，在 MonthNames 中定义。 
-        /// y 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示不具有前导零的年份。 
-        /// yy 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示具有前导零的年份。 
-        /// yyyy 包括纪元的四位数的年份。 
-        /// gg 时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。 
+        /// 例如【2019-02-05 18:20:30】
+        /// g 常规日期/短时间; 标准格式字符串 =>【2019/2/5 18:20】
+        /// gg 时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。=>【公元】
+        /// y 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示不具有前导零的年份。=>【2019年2月】
+        /// yy 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示具有前导零的年份。=>【19】
+        /// yyyy 包括纪元的四位数的年份。=>【2019】
+        /// M 月份数字。一位数的月份没有前导零。=>【2】
+        /// MM 月份数字。一位数的月份有一个前导零。=>【02】
+        /// MMM 月份的缩写名称，在 AbbreviatedMonthNames 中定义。=>【2月】或【Feb】
+        /// MMMM 月份的完整名称，在 MonthNames 中定义。=>【2月】或【February】
+        /// d 月中的某一天。一位数的日期没有前导零。=>【5】
+        /// dd 月中的某一天。一位数的日期有一个前导零。=>【05】
+        /// ddd 周中某天的缩写名称，在 AbbreviatedDayNames 中定义。=>【周二】
+        /// dddd 周中某天的完整名称，在 DayNames 中定义。=>【星期二】
         /// h 12 小时制的小时。一位数的小时数没有前导零。 
         /// hh 12 小时制的小时。一位数的小时数有前导零。 
         /// H 24 小时制的小时。一位数的小时数没有前导零。 
@@ -303,11 +306,8 @@ namespace Kane.Extension
         /// fffff 秒的小数精度为五位。其余数字被截断。 
         /// ffffff 秒的小数精度为六位。其余数字被截断。 
         /// fffffff 秒的小数精度为七位。其余数字被截断。 
-        /// t 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项的第一个字符（如果存在）。 
-        /// tt 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项（如果存在）。 
-        /// z 时区偏移量（“+”或“-”后面仅跟小时）。一位数的小时数没有前导零。例如，太平洋标准时间是“-8”。 
-        /// zz 时区偏移量（“+”或“-”后面仅跟小时）。一位数的小时数有前导零。例如，太平洋标准时间是“-08”。 
-        /// zzz 完整时区偏移量（“+”或“-”后面跟有小时和分钟）。一位数的小时数和分钟数有前导零。例如，太平洋标准时间是“-08:00”。 
+        /// t 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项的第一个字符（如果存在）。=>【18:20】
+        /// tt 在 AMDesignator 或 PMDesignator 中定义的 AM/PM 指示项（如果存在）。=>【下午】
         /// : 在 TimeSeparator 中定义的默认时间分隔符。 
         /// / 在 DateSeparator 中定义的默认日期分隔符。
         /// https://docs.microsoft.com/zh-cn/dotnet/api/system.globalization.datetimeformatinfo?view=netcore-3.1
@@ -316,6 +316,27 @@ namespace Kane.Extension
         /// <param name="format">自定义转换格式</param>
         /// <returns></returns>
         public static DateTime ToDT(this string value, string format) => ToDT(value, format, DateTime.Now);
+        #endregion
+
+        #region 将电话号码转换为国际标准【International Standard】的电话号码，可自定义国家代码 + ToISPhoneNo(this string value, string code)
+        /// <summary>
+        /// 将电话号码转换为国际标准【International Standard】的电话号码，可自定义国家代码
+        /// https://zh.wikipedia.org/wiki/国际电话区号列表
+        /// </summary>
+        /// <param name="value">要转的电话号码</param>
+        /// <param name="code">国家代码</param>
+        /// <returns></returns>
+        public static string ToISPhoneNo(this string value, string code) => code.StartsWith("+") ? code.Add(value) : "+".Add(code, value);
+        #endregion
+
+        #region 将国内号码转换为国际标准【International Standard】的电话号码 + ToISPhoneNo(this string value)
+        /// <summary>
+        /// 将国内号码转换为国际标准【International Standard】的电话号码
+        /// https://zh.wikipedia.org/wiki/国际电话区号列表
+        /// </summary>
+        /// <param name="value">要转的电话号码</param>
+        /// <returns></returns>
+        public static string ToISPhoneNo(this string value) => value.StartsWith("+86") ? value : "+86".Add(value);
         #endregion
     }
 }
