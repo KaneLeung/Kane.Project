@@ -33,17 +33,28 @@ namespace Kane.Extension
         #region 字符串扩展方法，判断字符串是否为NullOrEmpty + IsNullOrEmpty(this string value)
         /// <summary>
         /// 字符串扩展方法，判断字符串是否为NullOrEmpty
+        /// 判断是否为【Null】【""】【String.Empty】
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要判断的字符串</param>
         /// <returns></returns>
         public static bool IsNullOrEmpty(this string value) => string.IsNullOrEmpty(value);
+        #endregion
+
+        #region 字符串扩展方法，判断字符串是否为NullOrWhiteSpace + IsNullOrWhiteSpace(this string value)
+        /// <summary>
+        /// 字符串扩展方法，判断字符串是否为NullOrWhiteSpace
+        /// null,String.Empty,new String(' ', 20),"  \t   ",new String('\u2000', 10)都会返回True
+        /// </summary>
+        /// <param name="value">要判断的字符串</param>
+        /// <returns></returns>
+        public static bool IsNullOrWhiteSpace(this string value) => string.IsNullOrWhiteSpace(value);
         #endregion
 
         #region 字符串扩展方法，判断字符串是否不为NullOrEmpty + IsValuable(this string value)
         /// <summary>
         /// 字符串扩展方法，判断字符串是否不为NullOrEmpty
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要判断的字符串</param>
         /// <returns></returns>
         public static bool IsValuable(this string value) => !value.IsNullOrEmpty();
         #endregion
@@ -91,7 +102,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static byte[] HexToByte(string value)
+        public static byte[] HexToByte(this string value)
         {
             value = value.Replace(" ", "");
             byte[] buffer = new byte[value.Length / 2];
@@ -125,8 +136,7 @@ namespace Kane.Extension
             int count = 0;
             for (int i = 0; i < value.Length; i++)
             {
-                if (value[i] == key)
-                    count++;
+                if (value[i] == key) count++;
             }
             return count;
         }
@@ -170,13 +180,32 @@ namespace Kane.Extension
         public static string ByteToString(this byte[] value, Encoding encoding) => encoding.GetString(value);
         #endregion
 
-        #region 字节数组转成Base64字符串 + ToBase64String(this byte[] value)
+        #region 字节数组转成Base64字符串 + ToBase64(this byte[] value)
         /// <summary>
         /// 字节数组转成Base64字符串
         /// </summary>
         /// <param name="value">要转换的字节数组</param>
         /// <returns></returns>
-        public static string ToBase64String(this byte[] value) => Convert.ToBase64String(value);
+        public static string ToBase64(this byte[] value) => Convert.ToBase64String(value);
+        #endregion
+
+        #region 字符串转成Base64字符串 + ToBase64(this string value)
+        /// <summary>
+        /// 字符串转成Base64字符串
+        /// </summary>
+        /// <param name="value">要转换的字符串</param>
+        /// <returns></returns>
+        public static string ToBase64(this string value) => Convert.ToBase64String(value.ToBytes());
+        #endregion
+
+        #region 字符串转成Base64字符串,可自定义编码 + ToBase64(this string value)
+        /// <summary>
+        /// 字符串转成Base64字符串,可自定义编码
+        /// </summary>
+        /// <param name="value">要转换的字符串</param>
+        /// <param name="encoding">自定义编码</param>
+        /// <returns></returns>
+        public static string ToBase64(this string value, Encoding encoding) => Convert.ToBase64String(value.ToBytes(encoding));
         #endregion
 
         #region Base64字符串转成字节数组 + Base64ToBytes(this string value)
@@ -243,7 +272,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="str0">第一个字符串</param>
         /// <param name="str1">第二个字符串</param>
-        /// <param name="str2">第四个字符串</param>
+        /// <param name="str2">第三个字符串</param>
         /// <returns></returns>
         public static string Add(this string str0, string str1, string str2) => string.Concat(str0, str1, str2);
         #endregion
@@ -259,6 +288,50 @@ namespace Kane.Extension
         /// <param name="str3">第四个字符串</param>
         /// <returns></returns>
         public static string Add(this string str0, string str1, string str2, string str3) => string.Concat(str0, str1, str2, str3);
+        #endregion
+
+        #region 检测字符串是否匹配任意字符串的开头【区分大小写和区分区域性】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的开头【区分大小写和区分区域性】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="keys">任意字符串</param>
+        /// <returns></returns>
+        public static bool StartsWith(this string value, params string[] keys) => keys.Any(key => value.StartsWith(key));
+        #endregion
+
+        #region 检测字符串是否匹配任意字符串的开头，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的开头，默认为【区分大小写】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="ignoreCase">是否忽略大小写</param>
+        /// <param name="keys">任意字符串</param>
+        /// <returns></returns>
+        public static bool StartsWith(this string value, bool ignoreCase = false, params string[] keys)
+            => ignoreCase ? keys.Any(key => value.StartsWith(key, ignoreCase, null)) : keys.Any(key => value.StartsWith(key));
+        #endregion
+
+        #region 检测字符串是否匹配任意字符串的结尾【区分大小写和区分区域性】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的结尾【区分大小写和区分区域性】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="keys">任意字符串</param>
+        /// <returns></returns>
+        public static bool EndsWith(this string value, params string[] keys) => keys.Any(key => value.EndsWith(key));
+        #endregion
+
+        #region 检测字符串是否匹配任意字符串的结尾，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的结尾，默认为【区分大小写】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="ignoreCase">是否忽略大小写</param>
+        /// <param name="keys">任意字符串</param>
+        /// <returns></returns>
+        public static bool EndsWith(this string value, bool ignoreCase = false, params string[] keys)
+            => ignoreCase ? keys.Any(key => value.EndsWith(key, ignoreCase, null)) : keys.Any(key => value.EndsWith(key));
         #endregion
     }
 }

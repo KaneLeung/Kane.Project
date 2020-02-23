@@ -98,7 +98,7 @@ namespace Kane.Extension
         /// <param name="data">要压缩的字节数组</param>
         /// <param name="method">压缩方法CompressMethod</param>
         /// <returns></returns>
-        public static string CompressToBase64(byte[] data, CompressMethod method) => Compress(data, method).ToBase64String();
+        public static string CompressToBase64(byte[] data, CompressMethod method) => Compress(data, method).ToBase64();
         #endregion
 
         #region 字符串压缩成Base64字符串，默认使用UTF8编码 + CompressToBase64(string data, CompressMethod method)
@@ -108,7 +108,7 @@ namespace Kane.Extension
         /// <param name="data">要压缩的字符串</param>
         /// <param name="method">压缩方法CompressMethod</param>
         /// <returns></returns>
-        public static string CompressToBase64(string data, CompressMethod method) => Compress(data.ToBytes(Encoding.UTF8), method).ToBase64String();
+        public static string CompressToBase64(string data, CompressMethod method) => Compress(data.ToBytes(Encoding.UTF8), method).ToBase64();
         #endregion
 
         #region 字符串压缩成Base64字符串，可设置编码 + CompressToBase64(string data, CompressMethod method, Encoding encoding)
@@ -119,7 +119,7 @@ namespace Kane.Extension
         /// <param name="method">压缩方法CompressMethod</param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public static string CompressToBase64(string data, CompressMethod method, Encoding encoding) => Compress(data.ToBytes(encoding), method).ToBase64String();
+        public static string CompressToBase64(string data, CompressMethod method, Encoding encoding) => Compress(data.ToBytes(encoding), method).ToBase64();
         #endregion
 
         #region 字节数组解压成字节数组 + DeCompress(byte[] data, CompressMethod method)

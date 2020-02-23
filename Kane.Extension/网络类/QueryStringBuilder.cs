@@ -136,5 +136,13 @@ namespace Kane.Extension
             return builder.ToString().TrimEnd('&');
         }
         #endregion
+
+        #region 生成Json字符串 + ToJsonString()
+        /// <summary>
+        /// 生成Json字符串
+        /// </summary>
+        /// <returns></returns>
+        public string ToJsonString()=> PARM_DATA.ToJson();
+        #endregion
     }
 }
