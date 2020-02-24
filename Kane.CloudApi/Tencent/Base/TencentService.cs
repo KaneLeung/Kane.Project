@@ -53,13 +53,15 @@ namespace Kane.CloudApi.Tencent
         /// </summary>
         public string XtcVersion { get; set; }
 
+        #region 腾讯云ApiPost请求服务 + RequestService(string paramJson, string actionName = null, [CallerMemberName] string callerName = null)
         /// <summary>
-        /// 腾讯去ApiPost请求服务
+        /// 腾讯云ApiPost请求服务
         /// </summary>
         /// <param name="paramJson">参数Json字符串</param>
         /// <param name="actionName">操作的接口名称。取值参考接口文档中输入参数公共参数 Action 的说明。</param>
+        /// <param name="callerName">操作的接口名称。取值参考接口文档中输入参数公共参数 Action 的说明。</param>
         /// <returns></returns>
-        public async Task<(bool success, string message)> RequestService(string paramJson, [CallerMemberName] string actionName = null)
+        public async Task<(bool success, string message)> RequestService(string paramJson, string actionName = null, [CallerMemberName] string callerName = null)
         {
             Common.CheckParameter(SecretID, nameof(SecretID));
             Common.CheckParameter(SecretKey, nameof(SecretKey));
@@ -85,7 +87,7 @@ namespace Kane.CloudApi.Tencent
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Timestamp", timestamp);
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Version", XtcVersion);
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Region", XtcRegion);
-                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Action", actionName);
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Action", actionName ?? callerName);
                 using var content = new StringContent(paramJson, Encoding.UTF8, "application/json");
                 using var request = new HttpRequestMessage(HttpMethod.Post, $"https://{ServiceHost}".ToUrl());
                 request.Content = content;
@@ -98,6 +100,7 @@ namespace Kane.CloudApi.Tencent
             {
                 return (false, ex.Message);
             }
-        }
+        } 
+        #endregion
     }
 }

@@ -9,6 +9,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Kane.CloudApi\Kane.CloudApi.csproj" />
     <ProjectReference Include="..\Kane.WinForm\Kane.WinForm.csproj" />
   </ItemGroup>
 
