@@ -3,7 +3,7 @@
 * 项目名称 ：Kane.CloudApi.Tencent
 * 项目描述 ：常用云服务Api
 * 类 名 称 ：TencentResultBase
-* 类 描 述 ：腾讯云共同返回结果
+* 类 描 述 ：腾讯云公共返回结果
 * 所在的域 ：KK-HOME
 * 命名空间 ：Kane.CloudApi.Tencent
 * 机器名称 ：KK-HOME 
@@ -21,9 +21,9 @@
 namespace Kane.CloudApi.Tencent
 {
     /// <summary>
-    /// 腾讯云共同返回结果
+    /// 腾讯云公共返回结果
     /// </summary>
-    /// <typeparam name="T">T必须继承TencentResponseBase</typeparam>
+    /// <typeparam name="T">T必须继承<see cref="TencentResponseBase"/></typeparam>
     public class TencentResultBase<T> where T : TencentResponseBase
     {
         /// <summary>
