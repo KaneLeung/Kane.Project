@@ -2,12 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Kane.CloudApi.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Authors>Kane Leung</Authors>
+    <Company>Kane Leung</Company>
+    <Product>Kane.CloudApi</Product>
+    <Description>常用的云服务Api，目前包含阿里云和腾讯云</Description>
+    <Copyright>MIT License</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/KaneLeung/Kane.Project</PackageProjectUrl>
+    <RepositoryUrl>git@github.com:KaneLeung/Kane.Project.git</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageIconUrl>https://raw.githubusercontent.com/KaneLeung/Kane.Project/master/ProjectIcon.png</PackageIconUrl>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Tencent\Sms\SendSmsRequest.cs" />
-    <Compile Remove="Tencent\Sms\SmsSender.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Net.Http.Headers" Version="2.2.8" />
@@ -15,6 +27,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kane.Extension\Kane.Extension.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

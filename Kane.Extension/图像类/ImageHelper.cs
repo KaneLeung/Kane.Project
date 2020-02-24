@@ -227,7 +227,14 @@ namespace Kane.Extension
         public static string FileToBase64(this string path, params string[] ext)
         {
             if (!path.IsImageFile(ext)) throw new Exception("文件不是有效的图像文件");
-            return new Bitmap(path, true).ToBase64();
+            try
+            {
+                return new Bitmap(path, true).ToBase64();
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
         #endregion
     }
