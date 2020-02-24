@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:21:26
-* 更新时间 ：2019/12/20 23:21:26
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/02/24 13:21:26
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Kane.Extension
@@ -32,6 +33,44 @@ namespace Kane.Extension
     /// </summary>
     public static class ImageHelper
     {
+        #region 检查该文件是否图片的后缀
+        /// <summary>
+        /// 常见的图像文件后缀
+        /// </summary>
+        internal static string[] ImageExt = new string[] { ".png", ".jpg", ".jepg", ".gif", ".bmp" };
+        /// <summary>
+        /// 可扩展的图像文件后缀，如【.tif】
+        /// </summary>
+        public static List<string> ImageExtEx = new List<string>(4);
+        #endregion
+
+        #region 检查该文件是否为图片文件，可设置ImageExtEx进行全局扩展
+        /// <summary>
+        /// 检查该文件是否为图片文件，可设置ImageExtEx进行全局扩展
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <returns></returns>
+        public static bool IsImageFile(this string path)
+        {
+            var ext = Path.GetExtension(path).ToLower();
+            return ImageExt.Any(k => k == ext) || ImageExtEx.Any(k => k.ToLower() == ext);
+        }
+        #endregion
+
+        #region 检查该文件是否为图片文件，可临时进行扩充比较 + IsImageFile(this string path, params string[] ex)
+        /// <summary>
+        /// 检查该文件是否为图片文件，可临时进行扩充比较，如【.tif】
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        public static bool IsImageFile(this string path, params string[] ex)
+        {
+            var ext = Path.GetExtension(path).ToLower();
+            return ImageExt.Any(k => k == ext) || ImageExtEx.Any(k => k.ToLower() == ext) || ex.Any(k => k.ToLower() == ext);
+        }
+        #endregion
+
         #region 多个Bitmap叠加 + BitmapOverlay(Bitmap original, params Bitmap[] overlays)
         /// <summary>
         /// 多个Bitmap叠加
@@ -119,7 +158,6 @@ namespace Kane.Extension
         {
             try
             {
-
                 using MemoryStream ms = new MemoryStream();
                 image.Save(ms, format);
                 byte[] byteArr = new byte[ms.Length];
@@ -142,6 +180,55 @@ namespace Kane.Extension
         /// <param name="image">要转换的Image</param>
         /// <returns></returns>
         public static string ToBase64(this Image image) => image.ToBase64(ImageFormat.Png);
+        #endregion
+
+        #region 将Base64字符串转成Image,自动去除CssBase64格式 + Base64ToImage(this string value)
+        /// <summary>
+        /// 将Base64字符串转成Image,自动去除CssBase64格式
+        /// </summary>
+        /// <param name="value">要转换的Base64字符串</param>
+        /// <returns></returns>
+        public static Image Base64ToImage(this string value)
+        {
+            try
+            {
+                var imageBytes = value.Replace("data:image/png;base64,", "").Replace("data:image/jpg;base64,", "")
+                    .Replace("data:image/jpeg;base64,", "").Base64ToBytes();//如果包含CssBase64头部信息，则去掉
+                using MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length);
+                return Image.FromStream(ms, true);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        #endregion
+
+        #region 将图像文件转成Base64字符串，注意未增加CssBase64头信息 + FileToBase64(this string path)
+        /// <summary>
+        /// 将图像文件转成Base64字符串，注意未增加CssBase64头信息
+        /// </summary>
+        /// <param name="path">图像文件路径</param>
+        /// <returns></returns>
+        public static string FileToBase64(this string path)
+        {
+            if (!path.IsImageFile()) throw new Exception("文件不是有效的图像文件");
+            return new Bitmap(path, true).ToBase64();
+        }
+        #endregion
+
+        #region 将图像文件转成Base64字符串，可扩展后缀，如【.tif】，注意未增加CssBase64头信息 + FileToBase64(this string path) + FileToBase64(this string path,params string[] ext)
+        /// <summary>
+        /// 将图像文件转成Base64字符串，可扩展后缀，如【.tif】，注意未增加CssBase64头信息
+        /// </summary>
+        /// <param name="path">图像文件路径</param>
+        /// <param name="ext">扩展后缀</param>
+        /// <returns></returns>
+        public static string FileToBase64(this string path, params string[] ext)
+        {
+            if (!path.IsImageFile(ext)) throw new Exception("文件不是有效的图像文件");
+            return new Bitmap(path, true).ToBase64();
+        }
         #endregion
     }
 }
