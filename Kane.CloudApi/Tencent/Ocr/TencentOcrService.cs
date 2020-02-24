@@ -20,6 +20,7 @@
 using Kane.Extension;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,7 +84,25 @@ namespace Kane.CloudApi.Tencent
                 }
             }
             else return new TEnglishOcrResult() { Success = false, Message = result.message };
-        } 
+        }
+        #endregion
+
+        #region 英文识别 + EnglishOCR(Image image)
+        /// <summary>
+        /// 英文识别，使用Image格式
+        /// 格式：PNG、JPG、JPEG，暂不支持 GIF 格式。
+        /// 图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。
+        /// 图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
+        /// </summary>
+        /// <param name="imageBase64">图片的Base64值</param>
+        /// <param name="imageUrl">图片的Url地址</param>
+        /// <returns></returns>
+        public async Task<TEnglishOcrResult> EnglishOCR(Image image)
+        {
+            var base64 = image.ToBase64();
+            if (base64.IsNullOrEmpty()) return new TEnglishOcrResult() { Success = false, Message = "图像转成Base64失败" };
+            return await this.EnglishOCR(base64);
+        }
         #endregion
     }
 }

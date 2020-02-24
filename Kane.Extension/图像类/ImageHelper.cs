@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Text;
 
 namespace Kane.Extension
@@ -104,7 +105,43 @@ namespace Kane.Extension
             g.CompositingQuality = CompositingQuality.HighQuality;
             g.DrawImage(original, new Rectangle(0, 0, width, height));
             return newBitmap;
-        } 
+        }
+        #endregion
+
+        #region 将Image转成指定格式的Base64字符串 + ToBase64(this Image image, ImageFormat format)
+        /// <summary>
+        /// 将Image转成指定格式的Base64字符串
+        /// </summary>
+        /// <param name="image">要转换的Image</param>
+        /// <param name="format">要转换的格式</param>
+        /// <returns></returns>
+        public static string ToBase64(this Image image, ImageFormat format)
+        {
+            try
+            {
+
+                using MemoryStream ms = new MemoryStream();
+                image.Save(ms, format);
+                byte[] byteArr = new byte[ms.Length];
+                ms.Position = 0;
+                ms.Read(byteArr, 0, (int)ms.Length);
+                ms.Close();
+                return Convert.ToBase64String(byteArr);
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
+
+        #region 将Image转成Png格式的Base64字符串 + ToBase64(this Image image)
+        /// <summary>
+        /// 将Image转成Png格式的Base64字符串
+        /// </summary>
+        /// <param name="image">要转换的Image</param>
+        /// <returns></returns>
+        public static string ToBase64(this Image image) => image.ToBase64(ImageFormat.Png);
         #endregion
     }
 }
