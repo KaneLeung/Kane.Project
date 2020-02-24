@@ -123,8 +123,7 @@ namespace Kane.CloudApi.Tencent
         /// 图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。
         /// 图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
         /// </summary>
-        /// <param name="imageBase64">图片的Base64值</param>
-        /// <param name="imageUrl">图片的Url地址</param>
+        /// <param name="image">Image格式图片</param>
         /// <returns></returns>
         public async Task<TComOcrResult> EnglishOcr(Image image)
         {

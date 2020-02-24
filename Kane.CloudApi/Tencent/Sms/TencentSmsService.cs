@@ -18,29 +18,41 @@
 -----------------------------------------------------------------*/
 #endregion
 using Kane.Extension;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kane.CloudApi.Tencent
 {
+    /// <summary>
+    /// 腾讯云发送短信Api服务
+    /// </summary>
     public class TencentSmsService : TencentService
     {
+        #region 无参构造函数 + TencentSmsService()
+        /// <summary>
+        /// 无参构造函数
+        /// </summary>
         public TencentSmsService()
         {
             ServiceHost = "sms.tencentcloudapi.com";
             XtcRegion = "ap-guangzhou";
             XtcVersion = "2019-07-11";
         }
+        #endregion
 
+        #region 构造函数 + TencentSmsService(string secretID, string secretKey) : this()
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="secretID">在云API密钥上申请的标识身份的 SecretID，一个 SecretID 对应唯一的 SecretKey</param>
+        /// <param name="secretKey">SecretID 对应唯一的 SecretKey</param>
         public TencentSmsService(string secretID, string secretKey) : this()
         {
             SecretID = secretID;
             SecretKey = secretKey;
         }
+        #endregion
 
         #region 发送短信方法，可发送多条 + SendSms(string smsSdkAppid, string templateID, IEnumerable<string> phoneNumbers, params string[] templateParams)
         /// <summary>
@@ -72,13 +84,13 @@ namespace Kane.CloudApi.Tencent
                         if (item.Code == "Ok")
                         {
                             data.SuccessCount++;
-                            data.SuccessNo.Append(item.PhoneNumber);
+                            data.SuccessNo.Add(item.PhoneNumber);
                         }
                         else
                         {
                             data.FailCount++;
-                            data.FailNo.Append(item.PhoneNumber);
-                            data.FailMessage.Append(item.Message);
+                            data.FailNo.Add(item.PhoneNumber);
+                            data.FailMessage.Add(item.Message);
                         }
                     }
                     if (data.FailCount > 0)

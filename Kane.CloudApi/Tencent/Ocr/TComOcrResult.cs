@@ -17,7 +17,11 @@
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
+#if (NETCOREAPP3_0 || NETCOREAPP3_1)
 using System.Text.Json.Serialization;
+#else
+using Newtonsoft.Json;
+#endif
 
 namespace Kane.CloudApi.Tencent
 {
@@ -37,6 +41,9 @@ namespace Kane.CloudApi.Tencent
         /// </summary>
         [JsonIgnore]
         public string Content { get; set; }
+        /// <summary>
+        /// 是否成功
+        /// </summary>
         [JsonIgnore]
         public bool Success { get; set; } = true;
         /// <summary>
