@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:16:16
-* 更新时间 ：2019/10/16 23:16:16
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/02/25 23:16:16
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -20,8 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Kane.Extension
 {
@@ -30,18 +30,43 @@ namespace Kane.Extension
     /// </summary>
     public static class EnumHelper
     {
+        #region 获取枚举值的描述特性 + Description(this Enum item,bool inherit =false)
         /// <summary>
-        /// 获取枚举值的描述特性
+        /// 获取枚举值的描述特性，默认【不继承】
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">该枚举的其中一个成员即可</param>
+        /// <param name="inherit">是否继承</param>
         /// <returns></returns>
-        public static string Description(this Enum item)
+        public static string Description(this Enum item,bool inherit =false)
         {
-            string itemName = item.ToString();
-            Type t = item.GetType();
-            FieldInfo fieldInfo = t.GetField(itemName);
-            DescriptionAttribute[] arrDesc = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            return arrDesc[0].Description;
+            FieldInfo fieldInfo = item.GetType().GetField(item.ToString());
+            DescriptionAttribute[] arrDesc = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), inherit);
+            return arrDesc[0]?.Description ?? string.Empty;
         }
+        #endregion
+
+        #region 将【Enum】转换为【EnumItem】List + EnumToList<T>(this T _) where T : Enum
+        /// <summary>
+        /// 将【Enum】转换为【EnumItem】List
+        /// </summary>
+        /// <param name="_">【弃元】该枚举的其中一个成员即可</param>
+        /// <returns></returns>
+        public static IList<EnumItem> EnumToList<T>(this T _) where T : Enum
+        {
+            var result = new List<EnumItem>();
+            foreach (var item in Enum.GetValues(typeof(T)))
+            {
+                var temp = new EnumItem
+                {
+                    Key = item.ToString(),
+                    Value = Convert.ToInt32(item)
+                };
+                var arrDesc = item.GetType().GetField(item.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), true);
+                if (arrDesc.Any()) temp.Description = (arrDesc.First() as DescriptionAttribute).Description;
+                result.Add(temp);
+            }
+            return result;
+        }
+        #endregion
     }
 }
