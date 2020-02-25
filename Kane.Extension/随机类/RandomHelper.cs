@@ -55,5 +55,26 @@ namespace Kane.Extension
             return result.ToString();
         }
         #endregion
+
+        #region Guid转换为纯数字 + ToNumeric(this Guid guid)
+        /// <summary>
+        /// Guid转换为纯数字
+        /// </summary>
+        /// <returns></returns>
+        public static string ToNumeric(this Guid guid)
+        {
+            var buffer = guid.ToByteArray();
+            return BitConverter.ToInt64(buffer, 0).ToString();
+        }
+        #endregion
+
+        #region 获取一个UUID，默认为全【大写】 + UUID(bool uppercase = true)
+        /// <summary>
+        /// 获取一个UUID，默认为全【大写】
+        /// </summary>
+        /// <param name="uppercase">是否全【大写】</param>
+        /// <returns></returns>
+        public static string UUID(bool uppercase = true) => uppercase ? Guid.NewGuid().ToString("N").ToLower() : Guid.NewGuid().ToString("N");
+        #endregion
     }
 }
