@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Kane.Extension
@@ -80,6 +81,19 @@ namespace Kane.Extension
             }
             catch { return null; }
         }
+        #endregion
+
+        #region 移除HTML标签 + ReplaceHtml(this string content)
+        /// <summary>
+        /// 移除HTML标签
+        /// </summary>
+        /// <param name="content">待移除Html的内容</param>
+        /// <returns></returns>
+        public static string ReplaceHtml(this string content)
+        {
+            var result = Regex.Replace(content, "<[^>]+>", "");
+            return Regex.Replace(result, "&[^;]+;", "");
+        } 
         #endregion
     }
 }
