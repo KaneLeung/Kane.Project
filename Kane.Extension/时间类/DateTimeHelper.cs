@@ -10,16 +10,14 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:17:28
-* 更新时间 ：2019/10/16 23:17:28
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/02/26 23:17:28
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Kane.Extension
 {
@@ -50,7 +48,7 @@ namespace Kane.Extension
         /// <summary>
         /// 将DateTime转成当月初时间
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要转的时间点</param>
         /// <returns></returns>
         public static DateTime MonthStart(this DateTime value) => new DateTime(value.Year, value.Month, 1);
         #endregion
@@ -59,52 +57,52 @@ namespace Kane.Extension
         /// <summary>
         /// 将DateTime转成下个月初的开始时间
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要转的时间点</param>
         /// <returns></returns>
         public static DateTime NextMonthStart(this DateTime value) => value.MonthStart().AddMonths(1);
         #endregion
 
-        #region 获取今天时间段，通常常用 Start大于等于X小于End + GetToday()
+        #region 获取今天时间段，通常常用 Start ≥ X ＜ End + GetToday()
         /// <summary>
-        /// 获取今天时间段，通常常用 Start大于等于X小于End
+        /// 获取今天时间段，通常常用 Start ≥ X ＜ End
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetToday()
         {
-            var start = DateTime.Now.DayStart();
+            var start = DateTime.Today;
             return (start, start.AddDays(1));
         }
         #endregion
 
-        #region 获取昨天时间段，通常用法 Start大于等于X小于End + GetYesterday()
+        #region 获取昨天时间段，通常用法 Start ≥ X ＜ End + GetYesterday()
         /// <summary>
-        /// 获取昨天时间段，通常用法 Start大于等于X小于End
+        /// 获取昨天时间段，通常用法 Start ≥ X ＜ End
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetYesterday()
         {
-            var end = DateTime.Now.DayStart();
+            var end = DateTime.Today;
             return (end.AddDays(-1), end);
         }
         #endregion
 
-        #region 获取本周时间段，通常用法 Start大于等于X小于End + GetThisWeek()
+        #region 获取本周时间段，通常用法 Start≥X<End + GetThisWeek()
         /// <summary>
-        /// 获取本周时间段，通常用法 Start大于等于X小于End
+        /// 获取本周时间段，通常用法 Start ≥ X ＜ End
         /// 中国人习惯星期一为星期开始，因为星期日为0，所以要减七
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetThisWeek()
         {
             var dayOfWeek = (int)DateTime.Now.DayOfWeek;
-            var start = DateTime.Now.AddDays(1 - (dayOfWeek == 0 ? 7 : dayOfWeek)).DayStart();
+            var start = DateTime.Today.AddDays(1 - (dayOfWeek == 0 ? 7 : dayOfWeek));
             return (start, start.AddDays(7));
         }
         #endregion
 
-        #region 获取某一周时间段，通常用法 Start大于等于X小于End + GetOneWeek(DateTime dateTime)
+        #region 获取某一周时间段，通常用法 Start ≥ X ＜ End + GetOneWeek(DateTime dateTime)
         /// <summary>
-        /// 获取本周时间段，通常用法 Start大于等于X小于End
+        /// 获取本周时间段，通常用法 Start ≥ X ＜ End
         /// 中国人习惯星期一为星期开始，因为星期日为0，所以要减七
         /// </summary>
         /// <param name="dateTime">要获取的那一周其中一个时间</param>
@@ -117,9 +115,9 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取本月时间段，通常用法 Start大于等于X小于End + GetThisMonth()
+        #region 获取本月时间段，通常用法 Start ≥ X ＜ End + GetThisMonth()
         /// <summary>
-        /// 获取本月时间段，通常用法 Start大于等于X小于End
+        /// 获取本月时间段，通常用法 Start ≥ X ＜ End
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetThisMonth()
@@ -129,9 +127,9 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取某一月时间段，通常用法 Start大于等于X小于End + GetOneMonth(DateTime dateTime)
+        #region 获取某一月时间段，通常用法 Start ≥ X ＜ End + GetOneMonth(DateTime dateTime)
         /// <summary>
-        /// 获取某一月时间段，通常用法 Start大于等于X小于End
+        /// 获取某一月时间段，通常用法 Start ≥ X ＜ End
         /// </summary>
         /// <param name="dateTime">要获取的那一月的其中一个时间</param>
         /// <returns></returns>
@@ -195,12 +193,12 @@ namespace Kane.Extension
         /// 要到 2286/11/21 01:46:40 才会变成11位（10000000000）
         /// int范围 -2,147,483,648 到 2,147,483,647
         /// </summary>
-        /// <param name="timeStamp"></param>
+        /// <param name="timeStamp">时间戳</param>
         /// <returns></returns>
         public static DateTime StampToDateTime(long timeStamp)
         {
-            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);
-            timeStamp *= 10000000;
+            timeStamp *= 10000000;//new DateTime(621355968000000000 + long.Parse(timestamp) * 10000000);//更简单的方法
+            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);//621355968000000000
             TimeSpan toNow = new TimeSpan(timeStamp);//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
             return startTime.Add(toNow);
         }
@@ -214,8 +212,8 @@ namespace Kane.Extension
         /// <returns></returns>
         public static DateTime StampToDateTime(string timeStamp)
         {
-            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);
             long stamp = long.Parse(timeStamp + "0000000");
+            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);//621355968000000000
             TimeSpan toNow = new TimeSpan(stamp);//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
             return startTime.Add(toNow);
         }
