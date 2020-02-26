@@ -10,10 +10,10 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/12/27 0:39:55
-* 更新时间 ：2019/12/27 0:39:55
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/02/23 23:39:55
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
-* Copyright @ Kane Leung 2019. All rights reserved.
+* Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
@@ -32,9 +32,10 @@ namespace Kane.UnitTest
         public void TestDES()
         {
             string key = "Fa410cOr=+)^*()d";
-            string data = "Copyright @ Kane Leung 2019. All rights reserved.";
-            var encryptValue = CryptoHelper.DESEncrypt(data, key);
-            var decryptValue = CryptoHelper.DESDecrypt(encryptValue, key);
+            string data = "Copyright @ Kane Leung 2020. All rights reserved.";
+            var crypto = new CryptoHelper();
+            var encryptValue = crypto.DesEncrypt(data, key);
+            var decryptValue = crypto.DesDecrypt(encryptValue, key);
             Assert.AreEqual(data, decryptValue);
         }
     }
