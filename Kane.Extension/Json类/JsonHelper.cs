@@ -39,6 +39,18 @@ namespace Kane.Extension
         private string JSON_DATA;
         private bool IS_FILE = false;
         private string FILE_PATH = string.Empty;
+#if (NETCOREAPP3_0 || NETCOREAPP3_1)
+        /// <summary>
+        /// 字符串转JsonDocument时设置的参数，可设置深度
+        /// </summary>
+        public static JsonDocumentOptions Options = default;
+#else
+        /// <summary>
+        /// 字符串转JObject时设置的参数
+        /// </summary>
+        public static JsonLoadSettings Settings = null;
+#endif
+
 
         #region 无参构造函数 + JsonHelper()
         /// <summary>
@@ -119,8 +131,7 @@ namespace Kane.Extension
             try
             {
                 var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
-                if (keyValues.Length > 64) throw new Exception("最大深度为64层");
-                using var doc = JsonDocument.Parse(JSON_DATA);
+                using var doc = JsonDocument.Parse(JSON_DATA, Options);
                 List<JsonElement> result = new List<JsonElement>();
                 if (keyValues.Length > 1 && int.TryParse(keyValues.LastOrDefault(), out int index))//大于两个元素，并且最后一位能转为Int类型
                 {
@@ -147,7 +158,7 @@ namespace Kane.Extension
 #if DEBUG
                 Console.WriteLine(ex.Message);
 #endif
-                throw;
+                throw ex;
                 //return returnValue;
             }
         }
@@ -236,7 +247,7 @@ namespace Kane.Extension
 #if DEBUG
                 Console.WriteLine(ex.Message);
 #endif
-                throw;
+                throw ex;
             }
         }
         #endregion
@@ -259,7 +270,7 @@ namespace Kane.Extension
                 writer.WriteStartObject();
                 if (JSON_DATA.IsValuable())
                 {
-                    using var document = JsonDocument.Parse(JSON_DATA);
+                    using var document = JsonDocument.Parse(JSON_DATA, Options);
                     WriteJsonObject(writer, keyValues, document.RootElement.EnumerateObject(), value);
                 }
                 else WriteJsonObject(writer, keyValues, new List<JsonProperty>(), value);
@@ -268,9 +279,9 @@ namespace Kane.Extension
                 JSON_DATA = Encoding.UTF8.GetString(buffer.WrittenSpan.ToArray());
                 return JSON_DATA;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         #endregion
@@ -296,7 +307,7 @@ namespace Kane.Extension
                 writer.WriteStartObject();
                 if (source.IsValuable())
                 {
-                    using var document = JsonDocument.Parse(source);
+                    using var document = JsonDocument.Parse(source, Options);
                     WriteJsonObject(writer, keyValues, document.RootElement.EnumerateObject(), value);
                 }
                 else WriteJsonObject(writer, keyValues, new List<JsonProperty>(), value);
@@ -304,9 +315,9 @@ namespace Kane.Extension
                 writer.Flush();
                 return Encoding.UTF8.GetString(buffer.WrittenSpan.ToArray());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         #endregion
@@ -374,7 +385,7 @@ namespace Kane.Extension
                     {
                         var temp = JsonSerializer.Serialize(value, new JsonSerializerOptions { WriteIndented = true });
                         write.WriteStartObject(item.Name);
-                        WriteJsonObject(write, keys, JsonDocument.Parse(temp).RootElement.EnumerateObject(), value, true, index + 1);
+                        WriteJsonObject(write, keys, JsonDocument.Parse(temp, Options).RootElement.EnumerateObject(), value, true, index + 1);
                         write.WriteEndObject();
                     }
                 }
@@ -396,7 +407,7 @@ namespace Kane.Extension
                     {
                         var temp = JsonSerializer.Serialize(value, new JsonSerializerOptions { WriteIndented = true });
                         write.WriteStartObject(keys[index]);
-                        WriteJsonObject(write, keys, JsonDocument.Parse(temp).RootElement.EnumerateObject(), value, true, index + 1);
+                        WriteJsonObject(write, keys, JsonDocument.Parse(temp, Options).RootElement.EnumerateObject(), value, true, index + 1);
                         write.WriteEndObject();
                     }
                 }
@@ -474,8 +485,7 @@ namespace Kane.Extension
             try
             {
                 var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
-                //if (keyValues.Length > 64) throw new Exception("最大深度为64层");//Json.Net 测试过720层没问题
-                var rootData = JObject.Parse(JSON_DATA);
+                var rootData = JObject.Parse(JSON_DATA, Settings);
                 if (keyValues.Length > 1)
                 {
                     if (int.TryParse(keyValues.LastOrDefault(), out int index))//最后一位是数字
@@ -545,7 +555,7 @@ namespace Kane.Extension
                 writer.WriteStartObject();
                 if (JSON_DATA.IsValuable())
                 {
-                    var rootData = JObject.Parse(JSON_DATA);
+                    var rootData = JObject.Parse(JSON_DATA, Settings);
                     WriteJsonObject(writer, keyValues, rootData.Properties(), value);
                 }
                 else WriteJsonObject(writer, keyValues, new List<JProperty>(), value);
@@ -583,7 +593,7 @@ namespace Kane.Extension
                 writer.WriteStartObject();
                 if (source.IsValuable())
                 {
-                    var rootData = JObject.Parse(source);
+                    var rootData = JObject.Parse(source, Settings);
                     WriteJsonObject(writer, keyValues, rootData.Properties(), value);
                 }
                 else WriteJsonObject(writer, keyValues, new List<JProperty>(), value);
@@ -703,7 +713,7 @@ namespace Kane.Extension
                     {
                         var temp = JsonConvert.SerializeObject(value);
                         write.WriteStartObject();
-                        WriteJsonObject(write, keys, JObject.Parse(temp).Properties(), value, true, index + 1);
+                        WriteJsonObject(write, keys, JObject.Parse(temp, Settings).Properties(), value, true, index + 1);
                         write.WriteEndObject();
                     }
                 }
@@ -726,7 +736,7 @@ namespace Kane.Extension
                     {
                         var temp = JsonConvert.SerializeObject(value);
                         write.WriteStartObject();
-                        WriteJsonObject(write, keys, JObject.Parse(temp).Properties(), value, true, index + 1);
+                        WriteJsonObject(write, keys, JObject.Parse(temp, Settings).Properties(), value, true, index + 1);
                         write.WriteEndObject();
                     }
                 }

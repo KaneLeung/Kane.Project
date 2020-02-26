@@ -69,11 +69,12 @@ namespace Kane.CloudApi.Tencent
             Common.CheckParameter(XtcVersion, nameof(XtcVersion));
             try
             {
+                var crypto = new CryptoHelper();
                 var date = DateTime.UtcNow.ToString("yyyy-MM-dd");
                 string service = ServiceHost.Split('.')[0]; //service 为产品名，通常为域名前缀
                 var timestamp = DateTimeHelper.GetTimeStamp();
-                string canonicalRequest = $"POST\n/\n\ncontent-type:application/json; charset=utf-8\nhost:{ServiceHost}\n\ncontent-type;host\n{CryptoHelper.SHA256Encrypt(paramJson).ToLower()}";
-                string stringToSign = $"TC3-HMAC-SHA256\n{timestamp}\n{date}/{service}/tc3_request\n{CryptoHelper.SHA256Encrypt(canonicalRequest).ToLower()}";
+                string canonicalRequest = $"POST\n/\n\ncontent-type:application/json; charset=utf-8\nhost:{ServiceHost}\n\ncontent-type;host\n{crypto.Sha256(paramJson).ToLower()}";
+                string stringToSign = $"TC3-HMAC-SHA256\n{timestamp}\n{date}/{service}/tc3_request\n{crypto.Sha256(canonicalRequest).ToLower()}";
 
                 byte[] secretDate = Common.HmacSHA256(date, "TC3".Add(SecretKey).ToBytes());
                 byte[] secretService = Common.HmacSHA256(service, secretDate);

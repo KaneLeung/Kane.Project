@@ -112,6 +112,7 @@ namespace Kane.CloudApi.Tencent
         }
         #endregion
 
+        #region 发送短信方法，发送单条 + SendSms(string smsSdkAppid, string templateID, string phoneNumber, params string[] templateParams)
         /// <summary>
         /// 发送短信方法，发送单条
         /// </summary>
@@ -121,6 +122,7 @@ namespace Kane.CloudApi.Tencent
         /// <param name="templateParams">模板参数，若无模板参数，则设置为空。</param>
         /// <returns></returns>
         public async Task<TSendSmsResult> SendSms(string smsSdkAppid, string templateID, string phoneNumber, params string[] templateParams)
-            => await SendSms(smsSdkAppid, templateID, new string[] { phoneNumber }, templateParams);
+            => await SendSms(smsSdkAppid, templateID, new string[] { phoneNumber }, templateParams); 
+        #endregion
     }
 }

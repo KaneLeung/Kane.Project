@@ -29,26 +29,36 @@ namespace Kane.Extension
     public enum RandMethod
     {
         /// <summary>
+        /// 所有类型都包含
+        /// </summary>
+        [Description("全部")]
+        All = 1,
+        /// <summary>
+        /// 只有大小写字母
+        /// </summary>
+        [Description("字母")]
+        Letter = 2,
+        /// <summary>
         /// 数字【0123456789】
         /// </summary>
         [Description("数字")]
-        Numeric = 1,
+        Numeric = 4,
         /// <summary>
         /// 小写字母【a-z】
         /// </summary>
         [Description("小写字母")]
-        Lowercase = 2,
+        Lowercase = 8,
         /// <summary>
         /// 小写字母【A-Z】
         /// </summary>
         [Description("大写字母")]
-        Uppercase = 4,
+        Uppercase = 16,
 #pragma warning disable CS1570 // XML 注释出现 XML 格式错误
         /// <summary>
         /// 标点符号【!@#$%^&*()_+~`|}{[]\:;?><,./-=】
         /// </summary>
 #pragma warning restore CS1570 // XML 注释出现 XML 格式错误
         [Description("标点符号")]
-        Punctuation = 8
+        Punctuation = 32
     }
 }

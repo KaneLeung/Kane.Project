@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:19:31
-* 更新时间 ：2019/12/29 23:19:31
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/02/26 18:19:31
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -40,12 +40,13 @@ namespace Kane.Extension
         public static string RandCode(int length, RandMethod method, params char[] exceptChar)
         {
             var charList = new List<char>();
-            if (method.HasFlag(RandMethod.Numeric)) charList.AddRange(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
-            if (method.HasFlag(RandMethod.Lowercase))
+            if (method.HasFlag(RandMethod.All) || method.HasFlag(RandMethod.Numeric))
+                charList.AddRange(new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' });
+            if (method.HasFlag(RandMethod.All) || method.HasFlag(RandMethod.Letter) || method.HasFlag(RandMethod.Lowercase))
                 charList.AddRange(new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' });
-            if (method.HasFlag(RandMethod.Uppercase))
+            if (method.HasFlag(RandMethod.All) || method.HasFlag(RandMethod.Letter) || method.HasFlag(RandMethod.Uppercase))
                 charList.AddRange(new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' });
-            if (method.HasFlag(RandMethod.Punctuation))
+            if (method.HasFlag(RandMethod.All) || method.HasFlag(RandMethod.Punctuation))
                 charList.AddRange(new char[] { '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '~', '`', '|', '}', '{', '[', ']', '\\', ':', ';', '?', '>', '<', ',', '.', '/', '-', '=' });
             if (exceptChar.Length > 0) charList = charList.Except(exceptChar).ToList();
             StringBuilder result = new StringBuilder();
@@ -74,7 +75,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="uppercase">是否全【大写】</param>
         /// <returns></returns>
-        public static string UUID(bool uppercase = true) => uppercase ? Guid.NewGuid().ToString("N").ToLower() : Guid.NewGuid().ToString("N");
+        public static string UUID(bool uppercase = true) => uppercase ? Guid.NewGuid().ToString("N").ToUpper() : Guid.NewGuid().ToString("N");
         #endregion
     }
 }

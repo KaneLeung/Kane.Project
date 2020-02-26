@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:12:20
-* 更新时间 ：2019/10/16 23:12:20
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/02/26 18:12:20
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -86,436 +86,367 @@ namespace Kane.Extension
     /// </summary>
     public class CryptoHelper
     {
-        #region 32位MD5加密 + MD5Encrypt(string value)
+        #region 32位MD5加密,【全小写】+ Md5(string value)
         /// <summary>
-        /// 32位MD5加密
-        /// 这个比上面的快
+        /// 32位MD5加密,【全小写】
         /// </summary>
-        /// <param name="value">要加密字符串</param>
+        /// <param name="value">要哈希化的数据</param>
         /// <returns></returns>
-        public static string MD5Encrypt(string value)
+        public string Md5(string value)
         {
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] data = md5.ComputeHash(Encoding.UTF8.GetBytes(value));
-            md5.Clear();
-            StringBuilder sBuilder = new StringBuilder();
+            using MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] data = md5.ComputeHash(value.ToBytes());
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < data.Length; i++)
-            {
-                sBuilder.Append(Convert.ToString(data[i], 16).PadLeft(2, '0'));
-            }
-            return sBuilder.ToString().PadLeft(32, '0');
+                sb.Append(Convert.ToString(data[i], 16).PadLeft(2, '0'));
+            return sb.ToString().PadLeft(32, '0');
         }
         #endregion
 
-        #region HMAC-MD5加密 + HMACMD5(string value, string key)
+        #region HMAC-MD5加密，【全大写】 + HmacMd5(string value, string key)
         /// <summary>
+        /// HMAC-MD5加密，【全大写】
         /// HMAC-MD5就可以用一把发送方和接收方都有的key进行计算，而没有这把key的第三方是无法计算出正确的散列值的，这样就可以防止数据被篡改
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key"></param>
+        /// <param name="value">要哈希化的数据</param>
+        /// <param name="key">密钥</param>
         /// <returns></returns>
-        public static string HMACMD5(string value, string key)
+        public string HmacMd5(string value, string key)
         {
-            byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using HMACMD5 md5 = new HMACMD5(byteKey);
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = md5.ComputeHash(byteIn);
+            using HMACMD5 md5 = new HMACMD5(key.ToBytes());
+            byte[] byteOut = md5.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
-            result = result.Replace("-", "");
-            return result;
+            return result.Replace("-", "");
         }
         #endregion
 
-        #region SHA1加密 + SHA1Encrypt(string value)
+        #region SHA1加密，【全大写】 + Sha1(string value)
         /// <summary>
-        /// SHA1加密
+        /// SHA1加密，【全大写】
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要哈希化的数据</param>
         /// <returns></returns>
-        public static string SHA1Encrypt(string value)
+        public string Sha1(string value)
         {
             using SHA1 sha1 = SHA1.Create();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = sha1.ComputeHash(byteIn);
+            byte[] byteOut = sha1.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
         #endregion
 
-        #region SHA256加密 + SHA256Encrypt(string value)
+        #region SHA256加密，【全大写】 + Sha256(string value)
         /// <summary>
-        /// SHA256加密
+        /// SHA256加密，【全大写】
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要哈希化的数据</param>
         /// <returns></returns>
-        public static string SHA256Encrypt(string value)
+        public string Sha256(string value)
         {
             using SHA256 sha256 = SHA256.Create();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = sha256.ComputeHash(byteIn);
+            byte[] byteOut = sha256.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
         #endregion
 
-        #region SHA384加密 + SHA384Encrypt(string value)
+        #region SHA384加密，【全大写】 + Sha384(string value)
         /// <summary>
-        /// SHA384加密
+        /// SHA384加密，【全大写】
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要哈希化的数据</param>
         /// <returns></returns>
-        public static string SHA384Encrypt(string value)
+        public string Sha384(string value)
         {
             using SHA384 sha384 = SHA384.Create();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = sha384.ComputeHash(byteIn);
+            byte[] byteOut = sha384.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
         #endregion
 
-        #region SHA512加密 + SHA512Encrypt(string value)
+        #region SHA512加密，【全大写】 + Sha512(string value)
         /// <summary>
-        /// SHA512加密
+        /// SHA512加密，【全大写】
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要哈希化的数据</param>
         /// <returns></returns>
-        public static string SHA512Encrypt(string value)
+        public string Sha512(string value)
         {
             using SHA512 sha512 = SHA512.Create();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = sha512.ComputeHash(byteIn);
+            byte[] byteOut = sha512.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
         #endregion
 
-        #region HMACSHA1加密 + HMACSHA1(string value, string key)
+        #region HMACSHA1加密，【全大写】 + HMACSHA1(string value, string key)
         /// <summary>
-        /// HMACSHA1加密
+        /// HMACSHA1加密，【全大写】
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key"></param>
+        /// <param name="value">要哈希化的数据</param>
+        /// <param name="key">密钥</param>
         /// <returns></returns>
-        public static string HMACSHA1(string value, string key)
+        public string HmacSha1(string value, string key)
         {
-            byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using HMACSHA1 hmac = new HMACSHA1(byteKey);
-            hmac.Initialize();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = hmac.ComputeHash(byteIn);
+            using HMACSHA1 hmac = new HMACSHA1(key.ToBytes());
+            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
         #endregion
 
-        #region HMACSHA256加密 + HMACSHA256(string value, string key)
+        #region HMACSHA256加密，【全大写】 + HMACSHA256(string value, string key)
         /// <summary>
-        /// HMACSHA256加密
+        /// HMACSHA256加密，【全大写】
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key"></param>
+        /// <param name="value">要哈希化的数据</param>
+        /// <param name="key">密钥</param>
         /// <returns></returns>
-        public static string HMACSHA256(string value, string key)
+        public string HmacSha256(string value, string key)
         {
-            byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using HMACSHA256 hmac = new HMACSHA256(byteKey);
-            hmac.Initialize();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = hmac.ComputeHash(byteIn);
+            using HMACSHA256 hmac = new HMACSHA256(key.ToBytes());
+            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
         #endregion
 
-        #region HMACSHA384加密 + HMACSHA384(string value, string key)
+        #region HMACSHA384加密，【全大写】 + HMACSHA384(string value, string key)
         /// <summary>
-        /// HMACSHA384加密
+        /// HMACSHA384加密，【全大写】
+        /// ###和在线加密的结果不一致###
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key"></param>
+        /// <param name="value">要哈希化的数据</param>
+        /// <param name="key">密钥</param>
         /// <returns></returns>
-        public static string HMACSHA384(string value, string key)
+        public string HmacSha384(string value, string key)
         {
-            byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using HMACSHA384 hmac = new HMACSHA384(byteKey);
-            hmac.Initialize();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = hmac.ComputeHash(byteIn);
+            using HMACSHA384 hmac = new HMACSHA384(key.ToBytes());
+            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
         #endregion
 
-        #region HMACSHA512加密 + HMACSHA512(string value, string key)
+        #region HMACSHA512加密，【全大写】 + HMACSHA512(string value, string key)
         /// <summary>
-        /// HMACSHA512加密
+        /// HMACSHA512加密，【全大写】
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key"></param>
+        /// <param name="value">要哈希化的数据</param>
+        /// <param name="key">密钥</param>
         /// <returns></returns>
-        public static string HMACSHA512(string value, string key)
+        public string HmacSha512(string value, string key)
         {
-            byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            using HMACSHA512 hmac = new HMACSHA512(byteKey);
-            hmac.Initialize();
-            byte[] byteIn = Encoding.UTF8.GetBytes(value);
-            byte[] byteOut = hmac.ComputeHash(byteIn);
+            using HMACSHA512 hmac = new HMACSHA512(key.ToBytes());
+            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
             string result = BitConverter.ToString(byteOut);
             return result.Replace("-", "");
         }
-        #endregion
-
-        #region Base64加密与解密
-        /// <summary>
-        /// Base64加密,默认使用UTF8编码
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string Base64Encrypt(string value) => Base64Encrypt(value, Encoding.UTF8);
-
-        /// <summary>
-        /// Base64加密
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="encoding">编码</param>
-        /// <returns></returns>
-        public static string Base64Encrypt(string value, Encoding encoding) => Convert.ToBase64String(encoding.GetBytes(value));
-
-        /// <summary>
-        /// Base64解密,默认使用UTF8编码
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string Base64Decrypt(string value) => Base64Decrypt(value, Encoding.UTF8);
-
-        /// <summary>
-        /// Base64解密
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="encoding">编码</param>
-        /// <returns></returns>
-        public static string Base64Decrypt(string value, Encoding encoding) => encoding.GetString(Convert.FromBase64String(value));
         #endregion
 
         #region AES对称性加密算法 加密与解密
-        /// <summary>
         /// AES加密
         /// AES（Advanced Encryption Standard）：对称性加密算法，高级加密标准，是下一代的加密算法标准，速度快，安全级别高；
         /// AES是一个使用128为分组块的分组加密算法，分组块和128、192或256位的密钥一起作为输入，对4×4的字节数组上进行操作。
         /// 众所周之AES是种十分高效的算法，尤其在8位架构中，这源于它面向字节的设计。AES 适用于8位的小型单片机或者普通的32位微处理器,
         /// 并且适合用专门的硬件实现，硬件实现能够使其吞吐量（每秒可以到达的加密/解密bit数）达到十亿量级。同样，其也适用于RFID系统。
+
+        #region AES加密，32位密钥，16位VI向量 + AesEncrypt(string value, string key, string vi)
+        /// <summary>
+        /// AES加密，32位密钥，16位VI向量
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key">密钥，32Bit,可由GetRandomString(32)生成</param>
-        /// <param name="vi">向量，16Bit,可由GetRandomString(16)生成</param>
+        /// <param name="value">要加密的数据</param>
+        /// <param name="key">密钥，最大32Bit,可由RandCode(32)生成</param>
+        /// <param name="vi">向量，最大16Bit,可由RandCode(16)生成</param>
         /// <returns></returns>
-        public static string AESEncrypt(string value, string key, string vi)
+        public string AesEncrypt(string value, string key, string vi)
         {
-            byte[] byteValue = Encoding.UTF8.GetBytes(value);
+            byte[] byteValue = value.ToBytes();
             byte[] byteKey = new byte[32];
-            Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
+            Array.Copy(key.PadRight(byteKey.Length).ToBytes(), byteKey, byteKey.Length);
             byte[] byteVI = new byte[16];
-            Array.Copy(Encoding.UTF8.GetBytes(vi.PadRight(byteVI.Length)), byteVI, byteVI.Length);
-            byte[] byteResult = null; // encrypted data
-            using (Aes Aes = Aes.Create())
+            Array.Copy(vi.PadRight(byteVI.Length).ToBytes(), byteVI, byteVI.Length);
+            using Aes Aes = Aes.Create();
+            try
             {
-                try
-                {
-                    using MemoryStream Memory = new MemoryStream();
-                    using CryptoStream Encryptor = new CryptoStream(Memory, Aes.CreateEncryptor(byteKey, byteVI), CryptoStreamMode.Write);
-                    Encryptor.Write(byteValue, 0, byteValue.Length);
-                    Encryptor.FlushFinalBlock();
-                    byteResult = Memory.ToArray();
-                }
-                catch
-                {
-                    byteResult = null;
-                    throw;
-                }
+                using MemoryStream Memory = new MemoryStream();
+                using CryptoStream Encryptor = new CryptoStream(Memory, Aes.CreateEncryptor(byteKey, byteVI), CryptoStreamMode.Write);
+                Encryptor.Write(byteValue, 0, byteValue.Length);
+                Encryptor.FlushFinalBlock();
+                return Memory.ToArray().ToBase64();
             }
-            return Convert.ToBase64String(byteResult);
-        }
-
-        /// <summary>
-        /// AES解密
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key">密钥，32Bit,可由GetRandomString(32)生成</param>
-        /// <param name="vi">向量，16Bit,可由GetRandomString(16)生成</param>
-        /// <returns></returns>
-        public static string AESDecrypt(string value, string key, string vi)
-        {
-            byte[] byteValue = Convert.FromBase64String(value);
-            byte[] byteKey = new byte[32];
-            Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-            byte[] byteVI = new byte[16];
-            Array.Copy(Encoding.UTF8.GetBytes(vi.PadRight(byteVI.Length)), byteVI, byteVI.Length);
-            byte[] byteResult = null; // decrypted data
-            using (Aes Aes = Aes.Create())
+            catch
             {
-                try
-                {
-                    using MemoryStream Memory = new MemoryStream(byteValue);
-                    using CryptoStream Decryptor = new CryptoStream(Memory, Aes.CreateDecryptor(byteKey, byteVI), CryptoStreamMode.Read);
-                    using MemoryStream tempMemory = new MemoryStream();
-                    byte[] Buffer = new byte[1024];
-                    Int32 readBytes = 0;
-                    while ((readBytes = Decryptor.Read(Buffer, 0, Buffer.Length)) > 0)
-                    {
-                        tempMemory.Write(Buffer, 0, readBytes);
-                    }
-                    byteResult = tempMemory.ToArray();
-                }
-                catch
-                {
-                    byteResult = null;
-                    throw;
-                }
+                return string.Empty;
             }
-            return Encoding.UTF8.GetString(byteResult);
-        }
-
-        /// <summary>
-        /// AES加密无VI向量
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key">密钥，32Bit,可由GetRandomString(32)生成</param>
-        /// <returns></returns>
-        public static string AESEncrypt(string value, string key)
-        {
-            byte[] byteResult = null;
-            byte[] byteValue = Encoding.UTF8.GetBytes(value);
-            byte[] byteKey = new byte[32];
-            using (MemoryStream Memory = new MemoryStream())
-            {
-                using Aes aes = Aes.Create();
-                Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-                aes.Mode = CipherMode.ECB;
-                aes.Padding = PaddingMode.PKCS7;
-                aes.KeySize = 128;
-                aes.Key = byteKey;
-                using CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateEncryptor(), CryptoStreamMode.Write);
-                try
-                {
-                    cryptoStream.Write(byteValue, 0, byteValue.Length);
-                    cryptoStream.FlushFinalBlock();
-                    byteResult = Memory.ToArray();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
-            return Convert.ToBase64String(byteResult);
-        }
-
-        /// <summary>
-        /// AES解密无VI向量
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key">密钥，32Bit,可由GetRandomString(32)生成</param>
-        /// <returns></returns>
-        public static string AESDecrypt(string value, string key)
-        {
-            byte[] byteResult = null;
-            byte[] byteValue = Convert.FromBase64String(value);
-            byte[] byteKey = new byte[32];
-            Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-            using (MemoryStream Memory = new MemoryStream(byteValue))
-            {
-                using Aes aes = Aes.Create();
-                aes.Mode = CipherMode.ECB;
-                aes.Padding = PaddingMode.PKCS7;
-                aes.KeySize = 128;
-                aes.Key = byteKey;
-                using CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateDecryptor(), CryptoStreamMode.Read);
-                try
-                {
-                    byte[] tmp = new byte[byteValue.Length];
-                    int len = cryptoStream.Read(tmp, 0, byteValue.Length);
-                    byteResult = new byte[len];
-                    Array.Copy(tmp, 0, byteResult, 0, len);
-
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
-            return Encoding.UTF8.GetString(byteResult);
         }
         #endregion
 
-        #region DES 对称性加密算法 加密 + DESEncrypt(string value, string key)
+        #region AES解密，32位密钥，16位VI向量 + AesDecrypt(string value, string key, string vi)
+        /// <summary>
+        /// AES解密，32位密钥，16位VI向量
+        /// </summary>
+        /// <param name="value">要解密的数据</param>
+        /// <param name="key">密钥，最大32Bit,可由RandCode(32)生成</param>
+        /// <param name="vi">向量，最大16Bit,可由RandCode(16)生成</param>
+        /// <returns></returns>
+        public string AesDecrypt(string value, string key, string vi)
+        {
+            byte[] byteKey = new byte[32];
+            Array.Copy(key.PadRight(byteKey.Length).ToBytes(), byteKey, byteKey.Length);
+            byte[] byteVI = new byte[16];
+            Array.Copy(vi.PadRight(byteVI.Length).ToBytes(), byteVI, byteVI.Length);
+            using Aes Aes = Aes.Create();
+            try
+            {
+                using MemoryStream Memory = new MemoryStream(value.Base64ToBytes());
+                using CryptoStream Decryptor = new CryptoStream(Memory, Aes.CreateDecryptor(byteKey, byteVI), CryptoStreamMode.Read);
+                using MemoryStream tempMemory = new MemoryStream();
+                byte[] Buffer = new byte[1024];
+                int readBytes = 0;
+                while ((readBytes = Decryptor.Read(Buffer, 0, Buffer.Length)) > 0)
+                {
+                    tempMemory.Write(Buffer, 0, readBytes);
+                }
+                return tempMemory.ToArray().ByteToString();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
+
+        #region AES加密，32位密钥，无VI向量 + AesEncrypt(string value, string key)
+        /// <summary>
+        /// AES加密，32位密钥，无VI向量
+        /// </summary>
+        /// <param name="value">要加密的数据</param>
+        /// <param name="key">密钥，最大32Bit,可由RandCode(32)生成</param>
+        /// <returns></returns>
+        public string AesEncrypt(string value, string key)
+        {
+            byte[] byteValue = value.ToBytes();
+            byte[] byteKey = new byte[32];
+            Array.Copy(key.PadRight(byteKey.Length).ToBytes(), byteKey, byteKey.Length);
+            using MemoryStream Memory = new MemoryStream();
+            using Aes aes = Aes.Create();
+            aes.Mode = CipherMode.ECB;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.KeySize = 128;
+            aes.Key = byteKey;
+            using CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateEncryptor(), CryptoStreamMode.Write);
+            try
+            {
+                cryptoStream.Write(byteValue, 0, byteValue.Length);
+                cryptoStream.FlushFinalBlock();
+                return Memory.ToArray().ToBase64();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
+
+        #region AES解密，32位密钥，无VI向量 + AesDecrypt(string value, string key)
+        /// <summary>
+        /// AES解密，32位密钥，无VI向量
+        /// </summary>
+        /// <param name="value">要解密的数据</param>
+        /// <param name="key">密钥，最大32Bit,可由RandCode(32)生成</param>
+        /// <returns></returns>
+        public string AesDecrypt(string value, string key)
+        {
+            byte[] byteValue = Convert.FromBase64String(value);
+            byte[] byteKey = new byte[32];
+            Array.Copy(key.PadRight(byteKey.Length).ToBytes(), byteKey, byteKey.Length);
+            using MemoryStream Memory = new MemoryStream(byteValue);
+            using Aes aes = Aes.Create();
+            aes.Mode = CipherMode.ECB;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.KeySize = 128;
+            aes.Key = byteKey;
+            using CryptoStream cryptoStream = new CryptoStream(Memory, aes.CreateDecryptor(), CryptoStreamMode.Read);
+            try
+            {
+                byte[] tmp = new byte[byteValue.Length];
+                int len = cryptoStream.Read(tmp, 0, byteValue.Length);
+                var byteResult = new byte[len];
+                Array.Copy(tmp, 0, byteResult, 0, len);
+                return byteResult.ByteToString();
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
+        #endregion
+
+        #region DES 对称性加密算法 加密 + DesEncrypt(string value, string key)
         /// <summary>
         /// DES 对称性加密算法 加密
         /// DES（Data Encryption Standard）：数据加密标准，速度较快，适用于加密大量数据的场合。
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key">密钥，24Bit,可由GetRandomString(24)生成</param>
+        /// <param name="value">要加密的数据</param>
+        /// <param name="key">密钥，最大24Bit,可由RandCode(24)生成</param>
         /// <returns></returns>
-        public static string DESEncrypt(string value, string key)
+        public string DesEncrypt(string value, string key)
         {
-            byte[] byteResult = null;
-            byte[] byteValue = Encoding.UTF8.GetBytes(value);
+            byte[] byteValue = value.ToBytes();
             byte[] byteKey = new byte[24];
-            using (MemoryStream Memory = new MemoryStream())
+            using MemoryStream Memory = new MemoryStream();
+            using TripleDES des = TripleDES.Create();
+            Array.Copy(key.PadRight(byteKey.Length).ToBytes(), byteKey, byteKey.Length);
+            des.Mode = CipherMode.ECB;
+            des.Padding = PaddingMode.PKCS7;
+            des.Key = byteKey;
+            using CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateEncryptor(), CryptoStreamMode.Write);
+            try
             {
-                using TripleDES des = TripleDES.Create();
-                Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-                des.Mode = CipherMode.ECB;
-                des.Padding = PaddingMode.PKCS7;
-                des.Key = byteKey;
-                using CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateEncryptor(), CryptoStreamMode.Write);
-                try
-                {
-                    cryptoStream.Write(byteValue, 0, byteValue.Length);
-                    cryptoStream.FlushFinalBlock();
-                    byteResult = Memory.ToArray();
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                cryptoStream.Write(byteValue, 0, byteValue.Length);
+                cryptoStream.FlushFinalBlock();
+                return Memory.ToArray().ToBase64();
             }
-            return Convert.ToBase64String(byteResult);
+            catch
+            {
+                return string.Empty;
+            }
         }
         #endregion
 
-        #region DES 对称性加密算法 解密 + DESDecrypt(string value, string key)
+        #region DES 对称性加密算法 解密 + DesDecrypt(string value, string key)
         /// <summary>
         /// DES 对称性加密算法 解密
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="key"></param>
+        /// <param name="value">要解密的数据</param>
+        /// <param name="key">密钥</param>
         /// <returns></returns>
-        public static string DESDecrypt(string value, string key)
+        public string DesDecrypt(string value, string key)
         {
-            byte[] byteResult = null;
-            Byte[] byteValue = Convert.FromBase64String(value);
-            Byte[] byteKey = new Byte[24];
-            Array.Copy(Encoding.UTF8.GetBytes(key.PadRight(byteKey.Length)), byteKey, byteKey.Length);
-            using (MemoryStream Memory = new MemoryStream(byteValue))
+            byte[] byteValue = Convert.FromBase64String(value);
+            byte[] byteKey = new byte[24];
+            Array.Copy(key.PadRight(byteKey.Length).ToBytes(), byteKey, byteKey.Length);
+            using MemoryStream Memory = new MemoryStream(byteValue);
+            using TripleDES des = TripleDES.Create();
+            des.Mode = CipherMode.ECB;
+            des.Padding = PaddingMode.PKCS7;
+            des.Key = byteKey;
+            using CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateDecryptor(), CryptoStreamMode.Read);
+            try
             {
-                using TripleDES des = TripleDES.Create();
-                des.Mode = CipherMode.ECB;
-                des.Padding = PaddingMode.PKCS7;
-                des.Key = byteKey;
-                using CryptoStream cryptoStream = new CryptoStream(Memory, des.CreateDecryptor(), CryptoStreamMode.Read);
-                try
-                {
-                    byte[] tmp = new byte[byteValue.Length];
-                    int len = cryptoStream.Read(tmp, 0, byteValue.Length);
-                    byteResult = new byte[len];
-                    Array.Copy(tmp, 0, byteResult, 0, len);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                byte[] tmp = new byte[byteValue.Length];
+                int len = cryptoStream.Read(tmp, 0, byteValue.Length);
+                var byteResult = new byte[len];
+                Array.Copy(tmp, 0, byteResult, 0, len);
+                return byteResult.ByteToString();
             }
-            return Encoding.UTF8.GetString(byteResult);
+            catch
+            {
+                return string.Empty;
+            }
         }
         #endregion
     }

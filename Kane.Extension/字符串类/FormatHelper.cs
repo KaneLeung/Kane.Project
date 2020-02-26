@@ -28,7 +28,7 @@ using System.Text.RegularExpressions;
 namespace Kane.Extension
 {
     /// <summary>
-    /// 
+    /// 常用的校验格式帮助类
     /// </summary>
     public class FormatHelper
     {

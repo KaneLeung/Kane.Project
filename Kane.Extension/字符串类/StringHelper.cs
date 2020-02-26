@@ -56,7 +56,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="value">要判断的字符串</param>
         /// <returns></returns>
-        public static bool IsValuable(this string value) => !value.IsNullOrEmpty();
+        public static bool IsValuable(this string value) => !string.IsNullOrEmpty(value);
         #endregion
 
         #region 泛型扩展方法，判断类型是否为Null + IsNull<T>(this T value)
@@ -87,12 +87,10 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string ByteToHex(this byte[] value)
         {
-            StringBuilder sbuilder = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < value.Length; i++)
-            {
-                sbuilder.Append(value[i].ToString("X2"));
-            }
-            return sbuilder.ToString();
+                sb.Append(value[i].ToString("X2"));
+            return sb.ToString();
         }
         #endregion
 
@@ -107,9 +105,7 @@ namespace Kane.Extension
             value = value.Replace(" ", "");
             byte[] buffer = new byte[value.Length / 2];
             for (int i = 0; i < value.Length; i += 2)
-            {
                 buffer[i / 2] = Convert.ToByte(value.Substring(i, 2), 16);
-            }
             return buffer;
         }
         #endregion
@@ -135,9 +131,7 @@ namespace Kane.Extension
         {
             int count = 0;
             for (int i = 0; i < value.Length; i++)
-            {
                 if (value[i] == key) count++;
-            }
             return count;
         }
         #endregion
@@ -180,15 +174,6 @@ namespace Kane.Extension
         public static string ByteToString(this byte[] value, Encoding encoding) => encoding.GetString(value);
         #endregion
 
-        #region 字节数组转成Base64字符串 + ToBase64(this byte[] value)
-        /// <summary>
-        /// 字节数组转成Base64字符串
-        /// </summary>
-        /// <param name="value">要转换的字节数组</param>
-        /// <returns></returns>
-        public static string ToBase64(this byte[] value) => Convert.ToBase64String(value);
-        #endregion
-
         #region 字符串转成Base64字符串 + ToBase64(this string value)
         /// <summary>
         /// 字符串转成Base64字符串
@@ -200,12 +185,40 @@ namespace Kane.Extension
 
         #region 字符串转成Base64字符串,可自定义编码 + ToBase64(this string value)
         /// <summary>
-        /// 字符串转成Base64字符串,可自定义编码
+        /// 字符串转成Base64字符串，可自定义编码
         /// </summary>
         /// <param name="value">要转换的字符串</param>
         /// <param name="encoding">自定义编码</param>
         /// <returns></returns>
         public static string ToBase64(this string value, Encoding encoding) => Convert.ToBase64String(value.ToBytes(encoding));
+        #endregion
+
+        #region Base64字符串转成字符串，默认使用UTF8编码 + FormBase64(this string value)
+        /// <summary>
+        /// Base64字符串转成字符串，默认使用UTF8编码
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string FormBase64(this string value) => FormBase64(value, Encoding.UTF8);
+        #endregion
+
+        #region Base64字符串转成字符串，可自定义编码 + FormBase64(this string value, Encoding encoding)
+        /// <summary>
+        /// Base64字符串转成字符串，可自定义编码
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="encoding">编码</param>
+        /// <returns></returns>
+        public static string FormBase64(this string value, Encoding encoding) => encoding.GetString(Convert.FromBase64String(value));
+        #endregion
+
+        #region 字节数组转成Base64字符串 + ToBase64(this byte[] value)
+        /// <summary>
+        /// 字节数组转成Base64字符串
+        /// </summary>
+        /// <param name="value">要转换的字节数组</param>
+        /// <returns></returns>
+        public static string ToBase64(this byte[] value) => Convert.ToBase64String(value);
         #endregion
 
         #region Base64字符串转成字节数组 + Base64ToBytes(this string value)
