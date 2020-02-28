@@ -86,7 +86,7 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取本周时间段，通常用法 Start≥X<End + GetThisWeek()
+        #region 获取本周时间段，通常用法 Start ≥ X < End + GetThisWeek()
         /// <summary>
         /// 获取本周时间段，通常用法 Start ≥ X ＜ End
         /// 中国人习惯星期一为星期开始，因为星期日为0，所以要减七

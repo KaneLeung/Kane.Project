@@ -10,14 +10,16 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:25:16
-* 更新时间 ：2019/12/18 18:00:16
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/02/28 18:00:16
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Kane.Extension
@@ -198,6 +200,82 @@ namespace Kane.Extension
             => Math.Round(value.ToDec(returnValue), digits, mode);
         #endregion
 
+        #region 全局日期时间转换格式
+        /// <summary>
+        /// 全局日期转换格式
+        /// </summary>
+        public static IEnumerable<string> GlobalFormats = new string[]
+        {
+            "yyyy-MM-dd HH:mm:ss",
+            "yyyyMMdd HH:mm:ss",
+            "yyyy/MM/dd HH:mm:ss",
+            "yyyy-M-d HH:mm:ss",
+            "yyyyMd HH:mm:ss",
+            "yyyy/M/d HH:mm:ss",
+            "yy-MM-dd HH:mm:ss",
+            "yyMMdd HH:mm:ss",
+            "yy/MM/dd HH:mm:ss",
+            "yy-M-d HH:mm:ss",
+            "yyMd HH:mm:ss",
+            "yy/M/d HH:mm:ss",
+            "yyyyMMddHHmmss",
+            "yyyy-MM-dd H:m:s",
+            "yyyyMMdd H:m:s",
+            "yyyy/MM/dd H:m:s",
+            "yyyy-M-d H:m:s",
+            "yyyyMd H:m:s",
+            "yyyy/M/d H:m:s",
+            "yy-MM-dd H:m:s",
+            "yyMMdd H:m:s",
+            "yy/MM/dd H:m:s",
+            "yy-M-d H:m:s",
+            "yyMd H:m:s",
+            "yy/M/d H:m:s",
+            "yyyy-MM-dd",
+            "yyyyMMdd",
+            "yyyy/MM/dd",
+            "yyyy-M-d",
+            "yyyyMd",
+            "yyyy/M/d",
+            "yy-MM-dd",
+            "yyMMdd",
+            "yy/MM/dd",
+            "yy-M-d",
+            "yyMd",
+            "yy/M/d"
+        };
+        #endregion
+
+        #region 将字符串转换为可空的日期对象 + ToNDT(this string value, string format = "")
+        /// <summary>
+        /// 将字符串转换为可空的日期对象
+        /// </summary>
+        /// <param name="value">日期字符串</param>
+        /// <param name="format">日期格式化字符串</param>
+        /// <returns>日期对象</returns>
+        public static DateTime? ToNDT(this string value, string format = "")
+        {
+            DateTime? result = null;
+            if (value.IsValuable())
+            {
+                if (format.IsValuable() && DateTime.TryParseExact(value, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime temp)) result = temp;
+                if (result == null && DateTime.TryParse(value, out temp)) result = temp;
+                if (result == null)
+                {
+                    foreach (string item in GlobalFormats)
+                    {
+                        if (DateTime.TryParseExact(value, item, CultureInfo.InvariantCulture, DateTimeStyles.None, out temp))
+                        {
+                            result = temp;
+                            break;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        #endregion
+
         #region 常规字符串转换DateTime，可设置失败后的返回值 + ToDT(this string value, DateTime returnValue)
         /// <summary>
         /// 常规字符串转换DateTime，可设置失败后的返回值
@@ -209,25 +287,24 @@ namespace Kane.Extension
         public static DateTime ToDT(this string value, DateTime returnValue)
         {
             if (value.IsNullOrEmpty()) return returnValue;
-            DateTime.TryParse(value, out returnValue);
-            return returnValue;
+            return value.ToNDT() ?? returnValue;
         }
         #endregion
 
-        #region 常规字符串转换DateTime，失败后的返回值默认为DateTime.Now + ToDT(this string value)
+        #region 常规字符串转换DateTime，失败后的返回默认值 + ToDT(this string value)
         /// <summary>
-        /// 常规字符串转换DateTime，失败后的返回值默认为DateTime.Now
-        /// 对象中的格式设置信息分析字符串value，该对象由当前线程区域性隐式提供。
+        /// 常规字符串转换DateTime，失败后的返回默认值
+        /// <para>对象中的格式设置信息分析字符串value，该对象由当前线程区域性隐式提供。</para>
         /// </summary>
         /// <param name="value">要转的字符串</param>
         /// <returns></returns>
-        public static DateTime ToDT(this string value) => ToDT(value, DateTime.Now);
+        public static DateTime ToDT(this string value) => ToDT(value, default(DateTime));
         #endregion
 
         #region 字符串转换DateTime，可根据自定义格式转换，可设置失败后的返回值 + ToDT(this string value, string format, DateTime returnValue)
         /// <summary>
         /// 字符串转换DateTime，可根据自定义格式转换，可设置失败后的返回值
-        /// 例如【2019-02-05 18:20:30】
+        /// <para>例如【2019-02-05 18:20:30】</para>
         /// g 常规日期/短时间; 标准格式字符串 =>【2019/2/5 18:20】
         /// gg 时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。=>【公元】
         /// y 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示不具有前导零的年份。=>【2019年2月】
@@ -269,15 +346,14 @@ namespace Kane.Extension
         public static DateTime ToDT(this string value, string format, DateTime returnValue)
         {
             if (value.IsNullOrEmpty()) return returnValue;
-            DateTime.TryParseExact(value, format, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None, out returnValue);
-            return returnValue;
+            return value.ToNDT(format) ?? returnValue;
         }
         #endregion
 
-        #region 字符串转换DateTime，可根据自定义格式转换，失败后的返回值默认为DateTime.Now + ToDT(this string value, string format)
+        #region 字符串转换DateTime，可根据自定义格式转换，失败后的返回默认值 + ToDT(this string value, string format)
         /// <summary>
-        /// 字符串转换DateTime，可根据自定义格式转换，失败后的返回值默认为DateTime.Now
-        /// 例如【2019-02-05 18:20:30】
+        /// 字符串转换DateTime，可根据自定义格式转换，失败后的返回默认值
+        /// <para>例如【2019-02-05 18:20:30】</para>
         /// g 常规日期/短时间; 标准格式字符串 =>【2019/2/5 18:20】
         /// gg 时期或纪元。如果要设置格式的日期不具有关联的时期或纪元字符串，则忽略该模式。=>【公元】
         /// y 不包含纪元的年份。如果不包含纪元的年份小于 10，则显示不具有前导零的年份。=>【2019年2月】
@@ -315,7 +391,7 @@ namespace Kane.Extension
         /// <param name="value">要转的字符串</param>
         /// <param name="format">自定义转换格式</param>
         /// <returns></returns>
-        public static DateTime ToDT(this string value, string format) => ToDT(value, format, DateTime.Now);
+        public static DateTime ToDT(this string value, string format) => ToDT(value, format, default);
         #endregion
 
         #region 将电话号码转换为国际标准【International Standard】的电话号码，可自定义国家代码 + ToISPhoneNo(this string value, string code)

@@ -125,7 +125,7 @@ namespace Kane.Extension
             /// <param name="typeToConvert"></param>
             /// <param name="options"></param>
             /// <returns></returns>
-            public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => reader.GetString().ToDT(_format);
+            public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => reader.GetString().ToDT();
             #endregion
 
             #region 重写转换器Write方法 + Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
