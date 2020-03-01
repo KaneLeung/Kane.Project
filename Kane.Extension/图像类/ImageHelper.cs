@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:21:26
-* 更新时间 ：2020/02/24 13:21:26
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/03/01 13:21:26
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -24,7 +24,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Kane.Extension
 {
@@ -237,5 +237,28 @@ namespace Kane.Extension
             }
         }
         #endregion
+
+#if !NET40
+        #region 使用异步，将转换为byte[]类型的图片保存至指定路径 + SaveImage(this byte[] buffer, string path)
+        /// <summary>
+        /// 使用异步，将转换为byte[]类型的图片保存至指定路径
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static async Task SaveImage(this byte[] buffer, string path)
+        {
+            using var ms = new MemoryStream(buffer);
+            using var stream = new FileStream(path, FileMode.Create);
+            var bytes = new byte[1024];
+            var size = await ms.ReadAsync(bytes, 0, bytes.Length);
+            while (size > 0)
+            {
+                await stream.WriteAsync(bytes, 0, size);
+                size = await ms.ReadAsync(bytes, 0, bytes.Length);
+            }
+        }
+        #endregion
+#endif
     }
 }
