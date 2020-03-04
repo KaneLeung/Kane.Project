@@ -23,7 +23,6 @@ using System.Drawing;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Kane.Extension
 {
@@ -93,7 +92,27 @@ namespace Kane.Extension
         {
             var result = Regex.Replace(content, "<[^>]+>", "");
             return Regex.Replace(result, "&[^;]+;", "");
-        } 
+        }
         #endregion
+
+        /// <summary>
+        /// 将Dictionary转成查询字符串(QueryString)
+        /// </summary>
+        /// <param name="parms">字典值</param>
+        /// <returns></returns>
+        public static string ToQueryString(this Dictionary<string, string> parms)
+        {
+            var sb = new StringBuilder();
+            foreach (var keyValuePair in parms)
+            {
+                sb.Append(keyValuePair.Key);
+                sb.Append('=');
+                sb.Append(Uri.EscapeDataString(keyValuePair.Value));
+                sb.Append('&');
+            }
+            return sb.ToString().TrimEnd('&');
+        }
+
+        
     }
 }
