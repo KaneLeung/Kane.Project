@@ -40,6 +40,7 @@ namespace Kane.Extension
         {
             try
             {
+                if (method == CompressMethod.None) return data;
                 using MemoryStream inputStream = new MemoryStream(data);
                 using var outputStream = new MemoryStream();
                 if (method == CompressMethod.Deflate)
@@ -132,6 +133,7 @@ namespace Kane.Extension
         {
             try
             {
+                if (method == CompressMethod.None) return data;
                 using MemoryStream inputStream = new MemoryStream(data);
                 using var outputStream = new MemoryStream();
                 if (method == CompressMethod.Deflate)
