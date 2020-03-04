@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:17:28
-* 更新时间 ：2020/02/26 23:17:28
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/03/03 23:17:28
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -35,13 +35,22 @@ namespace Kane.Extension
         public static DateTime DayStart(this DateTime value) => new DateTime(value.Year, value.Month, value.Day);
         #endregion
 
-        #region 将DateTime转成明天的开始时间 + NextDayStart(this DateTime value)
+        #region 将DateTime转成下一天的开始时间 + NextDayStart(this DateTime value)
         /// <summary>
-        /// 将DateTime转成明天的开始时间
+        /// 将DateTime转成下一天的开始时间
         /// </summary>
         /// <param name="value">要转的日期</param>
         /// <returns></returns>
         public static DateTime NextDayStart(this DateTime value) => value.DayStart().AddDays(1);
+        #endregion
+
+        #region 将DateTime转成上一天的开始时间 + NextDayStart(this DateTime value)
+        /// <summary>
+        /// 将DateTime转成上一天的开始时间
+        /// </summary>
+        /// <param name="value">要转的日期</param>
+        /// <returns></returns>
+        public static DateTime LastDayStart(this DateTime value) => value.DayStart().AddDays(-1);
         #endregion
 
         #region 将DateTime转成当月初时间 + MonthStart(this DateTime value)
@@ -60,6 +69,15 @@ namespace Kane.Extension
         /// <param name="value">要转的时间点</param>
         /// <returns></returns>
         public static DateTime NextMonthStart(this DateTime value) => value.MonthStart().AddMonths(1);
+        #endregion
+
+        #region 将DateTime转成上个月初的开始时间 + DateTime NextMonthStart(this DateTime value)
+        /// <summary>
+        /// 将DateTime转成上个月初的开始时间
+        /// </summary>
+        /// <param name="value">要转的时间点</param>
+        /// <returns></returns>
+        public static DateTime LastMonthStart(this DateTime value) => value.MonthStart().AddMonths(-1);
         #endregion
 
         #region 获取今天时间段，通常常用 Start ≥ X ＜ End + GetToday()
@@ -83,6 +101,18 @@ namespace Kane.Extension
         {
             var end = DateTime.Today;
             return (end.AddDays(-1), end);
+        }
+        #endregion
+
+        #region 获取明天时间段，通常用法 Start ≥ X ＜ End + GetYesterday()
+        /// <summary>
+        /// 获取明天时间段，通常用法 Start ≥ X ＜ End
+        /// </summary>
+        /// <returns></returns>
+        public static (DateTime Start, DateTime End) GetTomorrow()
+        {
+            var today = DateTime.Today;
+            return (today.AddDays(1), today.AddDays(2));
         }
         #endregion
 
@@ -174,48 +204,80 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取时间戳 + GetTimeStamp()
+        #region 获取时间戳 + TimeStamp()
         /// <summary>  
         /// 获取时间戳
         /// 时间戳, 又叫Unix Stamp. 从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数，不考虑闰秒。
         /// </summary>  
         /// <returns></returns>  
-        public static string GetTimeStamp()
+        public static string TimeStamp()
         {
+#if NET40 || NET45
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             return Convert.ToInt64(ts.TotalSeconds).ToString();
+#else
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();//和【DateTimeOffset.Now.ToUnixTimeSeconds()】结果一样
+#endif
         }
         #endregion
 
-        #region 时间戳转为DateTime + StampToDateTime(string timeStamp)
+        #region 时间戳转为【当地时区】的DateTime + StampToLocal(long timeStamp)
         /// <summary>
-        /// 时间戳转为DateTime
+        /// 时间戳转为【当地时区】的DateTime
         /// 要到 2286/11/21 01:46:40 才会变成11位（10000000000）
         /// int范围 -2,147,483,648 到 2,147,483,647
         /// </summary>
         /// <param name="timeStamp">时间戳</param>
         /// <returns></returns>
-        public static DateTime StampToDateTime(long timeStamp)
+        public static DateTime StampToLocal(long timeStamp)
         {
             timeStamp *= 10000000;//new DateTime(621355968000000000 + long.Parse(timestamp) * 10000000);//更简单的方法
-            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);//621355968000000000
-            TimeSpan toNow = new TimeSpan(timeStamp);//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
-            return startTime.Add(toNow);
+            DateTime startTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(1970, 1, 1), TimeZoneInfo.Local);//621355968000000000
+            return startTime.Add(new TimeSpan(timeStamp));//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
         }
         #endregion
 
-        #region 时间戳转为DateTime + StampToDateTime(string timeStamp)
+        #region 时间戳转为【当地时区】的DateTime + StampToLocal(string timeStamp)
         /// <summary>
-        /// 时间戳转为DateTime
+        /// 时间戳转为【当地时区】的DateTime
         /// </summary>
-        /// <param name="timeStamp"></param>
+        /// <param name="timeStamp">时间戳</param>
         /// <returns></returns>
-        public static DateTime StampToDateTime(string timeStamp)
+        public static DateTime StampToLocal(string timeStamp)
         {
-            long stamp = long.Parse(timeStamp + "0000000");
+            long stamp = long.Parse(string.Concat(timeStamp, "0000000"));
+            DateTime startTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(1970, 1, 1), TimeZoneInfo.Local);//621355968000000000
+            return startTime.Add(new TimeSpan(stamp));//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
+        }
+        #endregion
+
+        #region 时间戳转为【Utc时区】的DateTime + StampToUtc(long timeStamp)
+        /// <summary>
+        /// 时间戳转为【Utc时区】的DateTime
+        /// 要到 2286/11/21 01:46:40 才会变成11位（10000000000）
+        /// int范围 -2,147,483,648 到 2,147,483,647
+        /// </summary>
+        /// <param name="timeStamp">时间戳</param>
+        /// <returns></returns>
+        public static DateTime StampToUtc(long timeStamp)
+        {
+            timeStamp *= 10000000;//new DateTime(621355968000000000 + long.Parse(timestamp) * 10000000);//更简单的方法
             DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);//621355968000000000
-            TimeSpan toNow = new TimeSpan(stamp);//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
-            return startTime.Add(toNow);
+            return startTime.Add(new TimeSpan(timeStamp));//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
+        }
+        #endregion
+
+        #region 时间戳转为【Utc时区】的DateTime + StampToUtc(string timeStamp)
+        /// <summary>
+        /// 时间戳转为【Utc时区】的DateTime
+        /// </summary>
+        /// <param name="timeStamp">时间戳</param>
+        /// <returns></returns>
+        public static DateTime StampToUtc(string timeStamp)
+        {
+            long stamp = long.Parse(string.Concat(timeStamp, "0000000"));
+            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);//621355968000000000
+            return startTime.Add(new TimeSpan(stamp));//以nanosecond为单位，nanosecond：十亿分之一秒   new TimeSpan(10,000,000)为一秒
         }
         #endregion
 
@@ -228,7 +290,7 @@ namespace Kane.Extension
         /// <returns></returns>
         public static int ToStamp(this DateTime value)
         {
-            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Local);
+            DateTime startTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(1970, 1, 1), TimeZoneInfo.Local);
             return (int)(value - startTime).TotalSeconds;
         }
         #endregion
@@ -237,7 +299,7 @@ namespace Kane.Extension
         /// <summary>
         /// 以当前时间为基准，计算时间差
         /// </summary>
-        /// <param name="datetime"></param>
+        /// <param name="datetime">要计算的时间</param>
         /// <returns></returns>
         public static string TimeDiff(this DateTime datetime) => datetime.TimeDiff(DateTime.Now);
         #endregion
