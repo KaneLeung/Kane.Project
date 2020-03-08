@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:25:16
-* 更新时间 ：2020/02/28 18:00:16
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/03/08 18:00:16
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -32,6 +32,7 @@ namespace Kane.Extension
         #region 泛型转换为Int,失败时返回默认值0 + ToInt<T>(this T value, int returnValue = 0)
         /// <summary>
         /// 泛型转换为Int,失败时返回默认值0
+        /// <para>可转【100.001】【-100.001】【  -100.001  】</para>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value">要转换的对象</param>
@@ -40,7 +41,9 @@ namespace Kane.Extension
         public static int ToInt<T>(this T value, int returnValue = 0)
         {
             if (value.IsNull() || value.ToString().IsNullOrEmpty()) return returnValue;
-            int.TryParse(value.ToString(), out returnValue);
+            var temp = value.ToString();
+            if (temp.IndexOf('.') >= 0) temp = temp.Split('.')[0];
+            int.TryParse(temp, out returnValue);
             return returnValue;
         }
         #endregion
@@ -48,6 +51,7 @@ namespace Kane.Extension
         #region 泛型转换为Int?(注意是可空类型) + ToNInt<T>(this T value)
         /// <summary>
         /// 泛型转换为Int?(注意是可空类型)
+        /// <para>可转【100.001】【-100.001】【  -100.001  】</para>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value">要转换的对象</param>
@@ -55,7 +59,9 @@ namespace Kane.Extension
         public static int? ToNInt<T>(this T value)
         {
             if (value.IsNull() || value.ToString().IsNullOrEmpty()) return null;
-            if (int.TryParse(value.ToString(), out int returnValue)) return returnValue;
+            var temp = value.ToString();
+            if (temp.IndexOf('.') >= 0) temp = temp.Split('.')[0];
+            if (int.TryParse(temp, out int returnValue)) return returnValue;
             else return null;
         }
         #endregion
@@ -160,7 +166,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="value">要转换的值</param>
         /// <returns></returns>
-        public static string ToAmoutInWords(decimal value)
+        public static string ToAmoutInWords(this decimal value)
         {
             var valueString = value.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
             var temp = Regex.Replace(valueString, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
@@ -176,7 +182,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="value">要转换的值</param>
         /// <returns></returns>
-        public static string ToAmoutInWords(double value)
+        public static string ToAmoutInWords(this double value)
         {
             var valueString = value.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
             var temp = Regex.Replace(valueString, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
@@ -188,8 +194,8 @@ namespace Kane.Extension
         #region 泛型转Decimal,默认保留两位小数，默认【采用4舍6入5取偶】 + ToRoundDec<T>(this T value, int digits = 2, int returnValue = 0)
         /// <summary>
         /// 泛型转Decimal,默认保留两位小数，默认【采用4舍6入5取偶】
-        /// 采用Banker's rounding（银行家算法），即：四舍六入五取偶。事实上这也是IEEE的规范。
-        /// 备注：MidpointRounding.AwayFromZero可以用来实现传统意义上的"四舍五入"。
+        /// <para>采用Banker's rounding（银行家算法），即：四舍六入五取偶。事实上这也是IEEE的规范。</para>
+        /// <para>备注：<see cref="MidpointRounding.AwayFromZero"/>可以用来实现传统意义上的"四舍五入"。</para>
         /// </summary>
         /// <param name="value">要转的值</param>
         /// <param name="digits">保留的小数位数</param>
@@ -279,7 +285,7 @@ namespace Kane.Extension
         #region 常规字符串转换DateTime，可设置失败后的返回值 + ToDT(this string value, DateTime returnValue)
         /// <summary>
         /// 常规字符串转换DateTime，可设置失败后的返回值
-        /// 对象中的格式设置信息分析字符串value，该对象由当前线程区域性隐式提供。
+        /// <para>对象中的格式设置信息分析字符串value，该对象由当前线程区域性隐式提供。</para>
         /// </summary>
         /// <param name="value">要转的字符串</param>
         /// <param name="returnValue">失败后的返回值</param>
