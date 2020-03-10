@@ -21,6 +21,11 @@ using Kane.Extension;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+#if NETCOREAPP3_0 ||　NETCOREAPP3_1
+using Kane.Extension.Json;
+#else
+using Kane.Extension.JsonNet;
+#endif
 
 namespace Kane.CloudApi.Tencent
 {

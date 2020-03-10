@@ -25,6 +25,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+#if NETCOREAPP3_0 ||　NETCOREAPP3_1
+using Kane.Extension.Json;
+#else
+using Kane.Extension.JsonNet;
+#endif
 
 namespace Kane.Extension
 {
@@ -41,7 +46,7 @@ namespace Kane.Extension
         /// </summary>
         static HttpEx()
         {
-#if NETCOREAPP3_0 ||　NETCOREAPP3_1
+#if NETCOREAPP3_0 || NETCOREAPP3_1
             var handler = new HttpClientHandler() { UseCookies = true, AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli };
 #else
             var handler = new HttpClientHandler() { UseCookies = true, AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
@@ -49,7 +54,7 @@ namespace Kane.Extension
             client = new HttpClient(handler);
         }
 
-        #region 将【Json字符串】发送【POST】请求，返回【实体对象】 + PostJsonAsync<TResult>(string url, string json, string token = null)
+#region 将【Json字符串】发送【POST】请求，返回【实体对象】 + PostJsonAsync<TResult>(string url, string json, string token = null)
         /// <summary>
         /// 将【Json字符串】发送【POST】请求，返回【实体对象】
         /// </summary>
@@ -59,9 +64,9 @@ namespace Kane.Extension
         /// <param name="token">Authorization标头的Token</param>
         /// <returns></returns>
         public static async Task<TResult> PostJsonAsync<TResult>(string url, string json, string token = null) => (await PostJsonAsync(url, json, token)).ToObject<TResult>();
-        #endregion
+#endregion
 
-        #region 将【实体对象】发送【POST】请求，返回【实体对象】 + PostObjAsync<TResult, TSend>(string url, TSend data, string token = null)
+#region 将【实体对象】发送【POST】请求，返回【实体对象】 + PostObjAsync<TResult, TSend>(string url, TSend data, string token = null)
         /// <summary>
         /// 将【实体对象】发送【POST】请求，返回【实体对象】
         /// </summary>
@@ -72,9 +77,9 @@ namespace Kane.Extension
         /// <param name="token">Authorization标头的Token</param>
         /// <returns></returns>
         public static async Task<TResult> PostObjAsync<TResult, TSend>(string url, TSend data, string token = null) => (await PostJsonAsync(url, data.ToJson(), token)).ToObject<TResult>();
-        #endregion
+#endregion
 
-        #region 将【实体对象】发送【POST】请求，返回字符串 + PostObjAsync<TSend>(string url, TSend data, string token = null)
+#region 将【实体对象】发送【POST】请求，返回字符串 + PostObjAsync<TSend>(string url, TSend data, string token = null)
         /// <summary>
         /// 将【实体对象】发送【POST】请求，返回字符串
         /// </summary>
@@ -84,9 +89,9 @@ namespace Kane.Extension
         /// <param name="token">Authorization标头的Token</param>
         /// <returns></returns>
         public static async Task<string> PostObjAsync<TSend>(string url, TSend data, string token = null) => await PostJsonAsync(url, data.ToJson(), token);
-        #endregion
+#endregion
 
-        #region 将【Json字符串】发送【POST】请求，返回字符串 + PostJsonAsync(string url, string json, string token = null)
+#region 将【Json字符串】发送【POST】请求，返回字符串 + PostJsonAsync(string url, string json, string token = null)
         /// <summary>
         /// 将【Json字符串】发送【POST】请求，返回字符串
         /// </summary>
@@ -104,9 +109,9 @@ namespace Kane.Extension
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
-        #endregion
+#endregion
 
-        #region 异步POST请求 + PostAsync(...)
+#region 异步POST请求 + PostAsync(...)
         /// <summary>
         /// 异步POST请求
         /// </summary>
@@ -140,9 +145,9 @@ namespace Kane.Extension
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
-        #endregion
+#endregion
 
-        #region 发送【GET】请求，返回【实体对象】 + GetAsyncToObj<TResult>(string url, string token = null)
+#region 发送【GET】请求，返回【实体对象】 + GetAsyncToObj<TResult>(string url, string token = null)
         /// <summary>
         /// 发送【GET】请求，返回【实体对象】
         /// </summary>
@@ -151,9 +156,9 @@ namespace Kane.Extension
         /// <param name="token">Authorization标头的Token</param>
         /// <returns></returns>
         public static async Task<TResult> GetAsyncToObj<TResult>(string url, string token = null) => (await GetAsync(url, token: token)).ToObject<TResult>();
-        #endregion
+#endregion
 
-        #region 异步Get请求 + GetAsync(string url, string contentType = "application/json", Dictionary<string, string> headers = null, string token = null)
+#region 异步Get请求 + GetAsync(string url, string contentType = "application/json", Dictionary<string, string> headers = null, string token = null)
         /// <summary>
         /// 异步Get请求
         /// </summary>
@@ -175,7 +180,7 @@ namespace Kane.Extension
             HttpResponseMessage response = await client.GetAsync(url);
             return await response.Content.ReadAsStringAsync();
         }
-        #endregion
+#endregion
     }
 }
 #endif
