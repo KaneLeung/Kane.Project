@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/23 0:00:15
-* 更新时间 ：2020/2/23 0:00:15
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/16 0:00:15
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -63,10 +63,10 @@ namespace Kane.CloudApi.Tencent
         /// <returns></returns>
         public async Task<(bool success, string message)> RequestService(string paramJson, string actionName = null, [CallerMemberName] string callerName = null)
         {
-            Common.CheckParameter(SecretID, nameof(SecretID));
-            Common.CheckParameter(SecretKey, nameof(SecretKey));
-            Common.CheckParameter(ServiceHost, nameof(ServiceHost));
-            Common.CheckParameter(XtcVersion, nameof(XtcVersion));
+            Common.ThrowIfNull(SecretID, nameof(SecretID));
+            Common.ThrowIfNull(SecretKey, nameof(SecretKey));
+            Common.ThrowIfNull(ServiceHost, nameof(ServiceHost));
+            Common.ThrowIfNull(XtcVersion, nameof(XtcVersion));
             try
             {
                 var crypto = new CryptoHelper();

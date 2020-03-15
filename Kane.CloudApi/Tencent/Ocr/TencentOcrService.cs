@@ -30,7 +30,7 @@ using Kane.Extension.JsonNet;
 namespace Kane.CloudApi.Tencent
 {
     /// <summary>
-    /// 
+    /// 腾讯云OcrApi服务
     /// </summary>
     public class TencentOcrService : TencentService
     {
@@ -72,7 +72,7 @@ namespace Kane.CloudApi.Tencent
         /// <returns></returns>
         internal async Task<TComOcrResult> CommonOCR(string actionName, string imageBase64 = null, string imageUrl = null)
         {
-            Common.CheckParameter(actionName, nameof(actionName));
+            Common.ThrowIfNull(actionName, nameof(actionName));
             var imagedata = new
             {
                 ImageBase64 = imageBase64,
