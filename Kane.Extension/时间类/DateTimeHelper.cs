@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:17:28
-* 更新时间 ：2020/03/03 23:17:28
-* 版 本 号 ：v1.0.3.0
+* 更新时间 ：2020/03/15 23:17:28
+* 版 本 号 ：v1.0.4.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -170,53 +170,54 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 将秒转换成时长字符串，包含天、时、分、秒 + TimeString(int second)
+        #region 将秒转换成时长字符串，包含天、时、分、秒 + TimeString(int seconds)
         /// <summary>
         /// 将秒转换成运行时间
         /// </summary>
-        /// <param name="second">秒</param>
+        /// <param name="seconds">秒</param>
         /// <returns></returns>
-        public static string TimeString(int second)
+        public static string TimeString(int seconds)
         {
-            int min = second / 60;
-            second %= 60;
+            int min = seconds / 60;
+            seconds %= 60;
             int hour = min / 60;
             min %= 60;
             int day = hour / 24;
             hour %= 24;
-            return string.Format("{0}天{1:00}小时{2:00}分{3:00}秒", day, hour, min, second);
+            return string.Format("{0}天{1:00}小时{2:00}分{3:00}秒", day, hour, min, seconds);
         }
         #endregion
 
-        #region 将秒转换成时长字符串,没有天数，只有时、分、秒 + TimeStringNoDays(int second)
+        #region 将秒转换成时长字符串,没有天数，只有时、分、秒 + TimeStringNoDays(int seconds)
         /// <summary>
         /// 将秒转换成时长字符串,没有天数，只有时分秒
         /// </summary>
-        /// <param name="second">秒</param>
+        /// <param name="seconds">秒</param>
         /// <returns></returns>
-        public static string TimeStringNoDays(int second)
+        public static string TimeStringNoDays(int seconds)
         {
-            int min = second / 60;
-            second %= 60;
+            int min = seconds / 60;
+            seconds %= 60;
             int hour = min / 60;
             min %= 60;
-            return string.Format("{0:00}小时{1:00}分{2:00}秒", hour, min, second);
+            return string.Format("{0:00}小时{1:00}分{2:00}秒", hour, min, seconds);
         }
         #endregion
 
-        #region 获取时间戳 + TimeStamp()
+        #region 获取时间戳，可增加或减少【秒】 + TimeStamp(int seconds = 0)
         /// <summary>  
-        /// 获取时间戳
+        /// 获取时间戳，可增加或减少【秒】
         /// 时间戳, 又叫Unix Stamp. 从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数，不考虑闰秒。
         /// </summary>  
+        /// <param name="seconds">增加或减少【秒】</param>
         /// <returns></returns>  
-        public static string TimeStamp()
+        public static string TimeStamp(int seconds = 0)
         {
 #if NET40 || NET45
-            TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            TimeSpan ts = DateTime.UtcNow.AddSeconds(seconds) - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             return Convert.ToInt64(ts.TotalSeconds).ToString();
 #else
-            return DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();//和【DateTimeOffset.Now.ToUnixTimeSeconds()】结果一样
+            return DateTimeOffset.UtcNow.AddSeconds(seconds).ToUnixTimeSeconds().ToString();//和【DateTimeOffset.Now.ToUnixTimeSeconds()】结果一样
 #endif
         }
         #endregion
