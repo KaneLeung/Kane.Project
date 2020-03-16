@@ -29,7 +29,7 @@ namespace Kane.CloudApi.Tencent
     /// <para>https://cloud.tencent.com/document/product/436/7730</para>
     /// </summary>
     [XmlRoot("Error")]
-    public class TencentCosResult
+    public class TencentCosError
     {
         /// <summary>
         /// 错误码，用来定位唯一的错误条件和确定错误场景
@@ -46,12 +46,12 @@ namespace Kane.CloudApi.Tencent
         /// <summary>
         /// 每次请求发送时，服务端将会自动为请求生成一个 ID，遇到问题时，该 ID 能更快地协助 COS 定位问题
         /// </summary>
-        [XmlAttribute("RequestID")]
+        [XmlAttribute("RequestId")]
         public string RequestID { get; set; }
         /// <summary>
         /// 每次请求出错时，服务端将会自动为这个错误生成一个ID，遇到问题时，该 ID 能更快地协助 COS 定位问题
         /// </summary>
-        [XmlAttribute("TraceID")]
+        [XmlAttribute("TraceId")]
         public string TraceID { get; set; }
     }
 }

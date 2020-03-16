@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/3/1 23:46:44
-* 更新时间 ：2020/3/1 23:46:44
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/16 23:46:44
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -25,7 +25,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace Kane.CloudApi.Tencent
 {
@@ -50,6 +49,10 @@ namespace Kane.CloudApi.Tencent
         /// 哈希方法，固定字符串
         /// </summary>
         private const string SignAlgorithm = "sha1";
+        /// <summary>
+        /// Host: 查询全部存储桶列表指定为service.cos.myqcloud.com，查询特定地域下的存储桶列表指定为cos.[Region].myqcloud.com。
+        /// </summary>
+        public const string Host = "https://service.cos.myqcloud.com/";
         private readonly static HttpClient client;
         static TencentCosService() => client = new HttpClient();
 
@@ -64,6 +67,23 @@ namespace Kane.CloudApi.Tencent
             SecretKey = secretKey;
         }
 
+        #region 获取所有所有存储空间列表 + GetBucketsAsync()
+        /// <summary>
+        /// 获取所有所有存储空间列表
+        /// </summary>
+        /// <remarks>See: https://cloud.tencent.com/document/product/436/8291 </remarks>
+        /// <returns></returns>
+        public async Task<TencentCosBuckets> GetBucketsAsync()
+        {
+            var req = new HttpRequestMessage(HttpMethod.Get, Host);
+            using var resp = await SendAsync(req);
+            if (!resp.IsSuccessStatusCode) ThrowFailure(HttpMethod.Get, resp.StatusCode, await resp.Content.ReadAsStringAsync());
+            using Stream sr = await resp.Content.ReadAsStreamAsync();
+            return sr.ToObject<TencentCosBuckets>();
+        }
+        #endregion
+
+        #region 上传文件到指定位置 + PutObjectAsync(string uri, Stream content, Dictionary<string, string> headers = null)
         /// <summary>
         /// 上传文件到指定位置
         /// </summary>
@@ -79,17 +99,13 @@ namespace Kane.CloudApi.Tencent
             {
                 Content = new StreamContent(content)
             };
-            if (headers?.Count > 0)
-            {
-                foreach (var header in headers)
-                    req.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            }
-            req.Headers.TryAddWithoutValidation("Authorization", BuildAuthorization(req));
-            using var resp = await client.SendAsync(req);
-            if (resp.StatusCode != HttpStatusCode.OK) RequestFailure(HttpMethod.Put, resp.StatusCode, await resp.Content.ReadAsStringAsync());
+            using var resp = await SendAsync(req, headers);
+            if (resp.StatusCode != HttpStatusCode.OK) ThrowFailure(HttpMethod.Put, resp.StatusCode, await resp.Content.ReadAsStringAsync());
             return new Uri(uri);
         }
+        #endregion
 
+        #region 上传文件到指定位置 + PutObjectAsync(string baseUri, string directory, string name, Stream content, Dictionary<string, string> headers = null)
         /// <summary>
         /// 上传文件到指定位置
         /// </summary>
@@ -106,12 +122,32 @@ namespace Kane.CloudApi.Tencent
             var uri = new Uri(baseUri).Append(directory, name);
             return await PutObjectAsync(uri.ToString(), content, headers);
         }
+        #endregion
 
-
+        #region 发送请求共有方法 + SendAsync(HttpRequestMessage req, Dictionary<string, string> headers = null)
         /// <summary>
+        /// 发送请求共有方法
+        /// </summary>
+        /// <param name="req">Http请求消息</param>
+        /// <param name="headers">HttpHeader集合</param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage req, Dictionary<string, string> headers = null)
+        {
+            if (headers?.Count > 0)
+            {
+                foreach (var header in headers) req.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+            req.Headers.TryAddWithoutValidation("Authorization", BuildAuthorization(req));
+            return await client.SendAsync(req);
+        }
+        #endregion
+
+        #region Cos请求签名 + BuildAuthorization(HttpRequestMessage req)
+        /// <summary>
+        /// Cos请求签名
         /// https://cloud.tencent.com/document/product/436/7778
         /// </summary>
-        /// <param name="req"></param>
+        /// <param name="req">Http请求消息</param>
         /// <returns></returns>
         public string BuildAuthorization(HttpRequestMessage req)
         {
@@ -146,13 +182,21 @@ namespace Kane.CloudApi.Tencent
             };
             return string.Join("&", keys.Select(k => $"{k.Key}={k.Value}")); ;
         }
+        #endregion
 
-        private void RequestFailure(HttpMethod method, HttpStatusCode statusCode, string content)
+        #region 请求失败时抛出异常 + ThrowFailure(HttpMethod method, HttpStatusCode statusCode, string content)
+        /// <summary>
+        /// 请求失败时抛出异常
+        /// </summary>
+        /// <param name="method">请求的方法</param>
+        /// <param name="statusCode">返回的状态码</param>
+        /// <param name="content">返回的内容</param>
+        private void ThrowFailure(HttpMethod method, HttpStatusCode statusCode, string content)
         {
             using var sr = new StringReader(content);
-            var serializer = new XmlSerializer(typeof(TencentCosResult));
-            var result = (TencentCosResult)serializer.Deserialize(sr);
+            var result = sr.ToObject<TencentCosError>();
             throw new Exception($"【{method.ToString()}】【{result?.Resource}】=> 响应码【{statusCode}】错误码【{result?.Code}】错误信息【{result?.Message}】");
         }
+        #endregion
     }
 }
