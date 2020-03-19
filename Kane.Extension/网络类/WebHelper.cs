@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/1/15 16:38:55
-* 更新时间 ：2020/3/15 16:38:55
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/3/18 16:38:55
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -120,7 +120,7 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 将Uri里的QueryString转成集合，并按照字典序排序 + GetQuerys(this Uri uri)
+        #region 将Uri里的QueryString转成集合，并按照字典序排序 + GetQuerys(this Uri uri, bool toLower = true)
         /// <summary>
         /// 将Uri里的QueryString转成集合，并按照字典序排序
         /// </summary>
@@ -130,19 +130,21 @@ namespace Kane.Extension
         public static IOrderedEnumerable<KeyValuePair<string, string>> GetQuerys(this Uri uri, bool toLower = true)
         {
             var collection = HttpUtility.ParseQueryString(uri.Query);
-            return collection.Cast<string>().Select(x => new KeyValuePair<string, string>(true ? x.ToLower() : x, toLower ? collection[x].ToLower() : collection[x])).OrderBy(x => x.Key);
+            return collection.Cast<string>().Where(k => k.IsValuable()).Select(k => new KeyValuePair<string, string>(true ? k.ToLower() : k, toLower ? collection[k].ToLower() : collection[k])).OrderBy(k => k.Key);
         }
         #endregion
 
 #if !NET40
+        #region 将HttpRequestHeaders里的Header转成集合，并按照字典序排序 + GetHeaders(this HttpRequestHeaders headers, string separator = ";")
         /// <summary>
-        /// 
+        /// 将HttpRequestHeaders里的Header转成集合，并按照字典序排序
         /// </summary>
-        /// <param name="headers"></param>
-        /// <param name="separator"></param>
+        /// <param name="headers">要转的<see cref="HttpRequestHeaders"/></param>
+        /// <param name="separator">分隔符</param>
         /// <returns></returns>
         public static IOrderedEnumerable<KeyValuePair<string, string>> GetHeaders(this HttpRequestHeaders headers, string separator = ";")
-            => headers.Select(x => new KeyValuePair<string, string>(x.Key.ToLower(), Uri.EscapeDataString(string.Join(separator, x.Value)))).OrderBy(x => x.Key);
+            => headers.Select(k => new KeyValuePair<string, string>(k.Key.ToLower(), Uri.EscapeDataString(string.Join(separator, k.Value)))).OrderBy(k => k.Key); 
+        #endregion
 #endif
 
         #region 对URL字符串进行编码，默认使用【UTF8】编码 + UrlEncode(this string value)

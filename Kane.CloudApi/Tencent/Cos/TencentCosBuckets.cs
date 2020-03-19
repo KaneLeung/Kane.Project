@@ -64,7 +64,7 @@ namespace Kane.CloudApi.Tencent
     public class Bucket
     {
         /// <summary>
-        /// 存储桶的名称，格式为<BucketName-APPID>
+        /// 存储桶的名称，格式为【BucketName-APPID】
         /// <para>例如 examplebucket-1250000000</para>
         /// </summary>
         public string Name { get; set; }

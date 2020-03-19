@@ -46,6 +46,19 @@ namespace Kane.CloudApi.Tencent
         /// </summary>
         public int Expires { get; set; } = 180;
         /// <summary>
+        /// 分块上传分块大小，默认10M，
+        /// </summary>
+        public int BlockSize { get; set; } = 10;
+        /// <summary>
+        /// 存储桶
+        /// <remarks>See:存储桶名称由两部分组成：用户自定义字符串和系统生成数字串（APPID），两者以中划线“-”相连。例如examplebucket-1250000000，其中 examplebucket 为用户自定义字符串，1250000000 为系统生成数字串（APPID）</remarks>
+        /// </summary>
+        public string Bucket { get; set; }
+        /// <summary>
+        /// 地域信息，枚举值可参见 可用地域 文档，例如：ap-beijing、ap-hongkong、eu-frankfurt 等
+        /// </summary>
+        public string Region { get; set; } = "ap-guangzhou";
+        /// <summary>
         /// 哈希方法，固定字符串
         /// </summary>
         private const string SignAlgorithm = "sha1";
@@ -66,6 +79,17 @@ namespace Kane.CloudApi.Tencent
             SecretID = secretID;
             SecretKey = secretKey;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bucket"></param>
+        /// <param name="region"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public Uri BaseUri(string bucket, string region, string path = "") => new Uri($"https://{bucket}.cos.{region}.myqcloud.com").Append(path);
+
+        public Uri BaseUri(string path = "") => new Uri($"https://{Bucket}.cos.{Region}.myqcloud.com").Append(path);
 
         #region 获取所有所有存储空间列表 + GetBucketsAsync()
         /// <summary>
@@ -123,6 +147,133 @@ namespace Kane.CloudApi.Tencent
             return await PutObjectAsync(uri.ToString(), content, headers);
         }
         #endregion
+
+        #region 请求实现初始化分片上传 + MultipartUploadInit(string baseUri, string objectName)
+        /// <summary>
+        /// 请求实现初始化分片上传
+        /// </summary>
+        /// <param name="baseUri">存储桶位置</param>
+        /// <param name="objectName">对象名称</param>
+        /// <returns></returns>
+        public async Task<TencentCosMUInit> MultipartUploadInit(string baseUri, string objectName)
+        {
+            var uri = new Uri(baseUri).Append($"{Uri.EscapeDataString(objectName)}?uploads");
+            var req = new HttpRequestMessage(HttpMethod.Post, uri);
+            using var resp = await SendAsync(req);
+            if (!resp.IsSuccessStatusCode) ThrowFailure(HttpMethod.Post, resp.StatusCode, await resp.Content.ReadAsStringAsync());
+            using Stream sr = await resp.Content.ReadAsStreamAsync();
+            return sr.ToObject<TencentCosMUInit>();
+        }
+        #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uri">由【key】【partNumber】【uploadId】组成的Uri</param>
+        /// <param name="content"></param>
+        /// <param name="headers"></param>
+        /// <returns></returns>
+        public async Task<(bool Success,string Etag)> MultipartUpload(string uri, byte[] content, Dictionary<string, string> headers = null)
+        {
+            var req = new HttpRequestMessage(HttpMethod.Put, uri)
+            {
+                Content = new ByteArrayContent(content)
+            };
+            using var resp = await SendAsync(req, headers);
+            if (resp.StatusCode == HttpStatusCode.OK) return (true, resp.Headers.ETag.Tag);
+            else return (false, string.Empty);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseUri"></param>
+        /// <param name="key"></param>
+        /// <param name="uploadID"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public async Task<TencentCosMUCompleteResult> MultipartUploadComplete(string baseUri, string key, string uploadID, TencentCosMUComplete data)
+        {
+            var uri = new Uri(baseUri).Append($"{Uri.EscapeDataString(key)}?uploadId={uploadID}");
+            var req = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = new StringContent(data.ToXml(true,true))
+            };
+            using var resp = await SendAsync(req);
+            if (!resp.IsSuccessStatusCode) ThrowFailure(HttpMethod.Post, resp.StatusCode, await resp.Content.ReadAsStringAsync());
+            using Stream sr = await resp.Content.ReadAsStreamAsync();
+            return sr.ToObject<TencentCosMUCompleteResult>();
+        }
+
+        public async Task<(bool,string)> MultipartUploadAsnyc(Stream stream, string objectName, string bucket, string region, string path)
+        {
+            objectName.ThrowIfNull(nameof(objectName));
+            bucket.ThrowIfNull(nameof(bucket));
+            region.ThrowIfNull(nameof(region));
+
+            var baseUri = BaseUri(bucket, region, path);
+            var init = await MultipartUploadInit(baseUri.ToString(), objectName);
+            if (init.Key.IsValuable() && init.UploadID.IsValuable())//分块上传初始化成功
+            {
+                int blockSize = BlockSize * 1024 * 1024;
+                var blockCount = stream.Length / blockSize;
+                if ((blockSize * blockCount) < stream.Length) blockCount += 1;
+                stream.Seek(0, SeekOrigin.Begin);
+                var complete = new TencentCosMUComplete();
+                for (int i = 1; i <= blockCount; i++)
+                {
+                    long bufferSize = i == blockCount ? (stream.Length - blockSize * (i - 1)) : blockSize;
+                    byte[] buffer = new byte[bufferSize];
+                    stream.Read(buffer, 0, (int)bufferSize);
+                    var result = await MultipartUpload(BaseUri(bucket,region).Append($"{init.Key.UrlEncode()}?partNumber={i}&uploadId={init.UploadID}").ToString(), buffer);
+                    complete.Part.Add(new Part { PartNumber = i, ETag = result.Etag });
+                }
+                if (complete.Part.Count == blockCount)
+                {
+                    var result = await MultipartUploadComplete(BaseUri(bucket, region).ToString(), init.Key, init.UploadID, complete);
+                    return (true, result.Location);
+                }
+            }
+            return (false, string.Empty);
+
+
+            //var te = MultipartUploadInit("https://mp-1256147466.cos.ap-guangzhou.myqcloud.com/mall", "Git.exe").Result;
+            //if (te.Key.IsValuable() && te.UploadID.IsValuable())
+            //{
+            //    int CHUNK_SIZE = 10 * 1024 * 1024;//10M
+            //    using var steam = new FileStream("D:\\Git.exe", FileMode.Open, FileAccess.Read);
+            //    long FileLength = steam.Length;
+            //    List<long> PkgList = new List<long>();
+            //    for (long iIdx = 0; iIdx < FileLength / Convert.ToInt64(CHUNK_SIZE); iIdx++)
+            //    {
+            //        PkgList.Add(Convert.ToInt64(CHUNK_SIZE));
+            //    }
+            //    long s = FileLength % CHUNK_SIZE;
+            //    if (s != 0)
+            //    {
+            //        PkgList.Add(s);
+            //    }
+            //    var resultdata = new TencentCosMUComplete();
+            //    for (int iPkgIdx = 0; iPkgIdx < PkgList.Count; iPkgIdx++)
+            //    {
+            //        long bufferSize = PkgList[iPkgIdx];
+            //        byte[] buffer = new byte[bufferSize];
+            //        int bytesRead = steam.Read(buffer, 0, (int)bufferSize);
+            //        var baseUri = $"https://mp-1256147466.cos.ap-guangzhou.myqcloud.com/{te.Key.UrlEncode()}?partNumber={iPkgIdx + 1}&uploadId={te.UploadID}";
+            //        var result = MultipartUpload(baseUri, buffer).Result;
+            //        resultdata.Part.Add(new Part { PartNumber = iPkgIdx+1,ETag = result.Etag });
+            //    }
+
+            //   var tt = MultipartUploadComplete("https://mp-1256147466.cos.ap-guangzhou.myqcloud.com/", te.Key, te.UploadID, resultdata).Result;
+            //}
+
+            
+
+        }
+
+
+        
+
 
         #region 发送请求共有方法 + SendAsync(HttpRequestMessage req, Dictionary<string, string> headers = null)
         /// <summary>
@@ -195,7 +346,7 @@ namespace Kane.CloudApi.Tencent
         {
             using var sr = new StringReader(content);
             var result = sr.ToObject<TencentCosError>();
-            throw new Exception($"【{method.ToString()}】【{result?.Resource}】=> 响应码【{statusCode}】错误码【{result?.Code}】错误信息【{result?.Message}】");
+            throw new Exception($"【{method}】【{result?.Resource}】=> 响应码【{statusCode}】错误码【{result?.Code}】错误信息【{result?.Message}】");
         }
         #endregion
     }

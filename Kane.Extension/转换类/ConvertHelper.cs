@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:25:16
-* 更新时间 ：2020/03/08 18:00:16
-* 版 本 号 ：v1.0.2.0
+* 更新时间 ：2020/03/18 18:00:16
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace Kane.Extension
@@ -419,6 +420,21 @@ namespace Kane.Extension
         /// <param name="value">要转的电话号码</param>
         /// <returns></returns>
         public static string ToISPhoneNo(this string value) => value.StartsWith("+86") ? value : "+86".Add(value);
+        #endregion
+
+        #region 将Stream转成byte[] + ToBytes(this Stream stream)
+        /// <summary>
+        /// 将Stream转成byte[]
+        /// </summary>
+        /// <param name="stream">要转的Stream</param>
+        /// <returns></returns>
+        public static byte[] ToBytes(this Stream stream)
+        {
+            byte[] result = new byte[stream.Length];
+            stream.Seek(0, SeekOrigin.Begin);//设置当前流的位置为流的开始
+            stream.Read(result, 0, result.Length);
+            return result;
+        }
         #endregion
     }
 }
