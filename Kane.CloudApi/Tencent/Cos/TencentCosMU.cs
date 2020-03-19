@@ -110,4 +110,38 @@ namespace Kane.CloudApi.Tencent
         public string ETag { get; set; }
     }
     #endregion
+
+    [XmlRoot("ListPartsResult")]
+    public class TencentCosMUPartsResult
+    {
+        public string Bucket { get; set; }
+        [XmlElement("Encoding-Type")]
+        public string Encoding { get; set; }
+        public string Key { get; set; }
+        [XmlElement("UploadId")]
+        public string UploadID { get; set; }
+        public Initiator Initiator { get; set; }
+        public Owner Owner { get; set; }
+        public string PartNumberMarker { get; set; }
+        [XmlElement]
+        public PartItem[] Part { get; set; }
+        public string NextPartNumberMarker { get; set; }
+        public string StorageClass { get; set; }
+        public string MaxParts { get; set; }
+        public bool IsTruncated { get; set; }
+    }
+
+    public class Initiator
+    {
+        public string ID { get; set; }
+        public string DisplayName { get; set; }
+    }
+
+    public class PartItem
+    {
+        public int PartNumber { get; set; }
+        public string LastModified { get; set; }
+        public string ETag { get; set; }
+        public int Size { get; set; }
+    }
 }

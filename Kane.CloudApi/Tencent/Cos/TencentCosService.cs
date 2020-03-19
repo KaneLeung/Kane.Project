@@ -192,7 +192,7 @@ namespace Kane.CloudApi.Tencent
         /// <param name="uploadID"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public async Task<TencentCosMUCompleteResult> MultipartUploadComplete(string baseUri, string key, string uploadID, TencentCosMUComplete data)
+        public async Task<TencentCosMUCompleteResult> MultipartUploadComplete(string baseUri, string key, string uploadID, TencentCosMUComplete data, Dictionary<string, string> headers = null)
         {
             var uri = new Uri(baseUri).Append($"{Uri.EscapeDataString(key)}?uploadId={uploadID}");
             var req = new HttpRequestMessage(HttpMethod.Post, uri)
@@ -205,7 +205,7 @@ namespace Kane.CloudApi.Tencent
             return sr.ToObject<TencentCosMUCompleteResult>();
         }
 
-        public async Task<(bool,string)> MultipartUploadAsnyc(Stream stream, string objectName, string bucket, string region, string path)
+        public async Task<(bool,string)> MultipartUploadAsnyc(Stream stream, string objectName, string bucket, string region, string path, Dictionary<string, string> headers = null)
         {
             objectName.ThrowIfNull(nameof(objectName));
             bucket.ThrowIfNull(nameof(bucket));
@@ -216,64 +216,51 @@ namespace Kane.CloudApi.Tencent
             if (init.Key.IsValuable() && init.UploadID.IsValuable())//分块上传初始化成功
             {
                 int blockSize = BlockSize * 1024 * 1024;
-                var blockCount = stream.Length / blockSize;
-                if ((blockSize * blockCount) < stream.Length) blockCount += 1;
                 stream.Seek(0, SeekOrigin.Begin);
                 var complete = new TencentCosMUComplete();
-                for (int i = 1; i <= blockCount; i++)
+                int index = 0;
+                bool flag = true;//上传正常标志
+                while (stream.Length > stream.Position && flag)
                 {
-                    long bufferSize = i == blockCount ? (stream.Length - blockSize * (i - 1)) : blockSize;
+                    long bufferSize = (stream.Length - stream.Position) > blockSize ? blockSize : stream.Length - stream.Position;
                     byte[] buffer = new byte[bufferSize];
                     stream.Read(buffer, 0, (int)bufferSize);
-                    var result = await MultipartUpload(BaseUri(bucket,region).Append($"{init.Key.UrlEncode()}?partNumber={i}&uploadId={init.UploadID}").ToString(), buffer);
-                    complete.Part.Add(new Part { PartNumber = i, ETag = result.Etag });
+                    var result = await MultipartUpload(BaseUri(bucket, region).Append($"{init.Key.UrlEncode()}?partNumber={++index}&uploadId={init.UploadID}").ToString(), buffer, headers);
+                    if (result.Success) complete.Part.Add(new Part { PartNumber = index, ETag = result.Etag });
+                    else
+                    {
+                        flag = false;
+                        await MultipartUploadAbort(init.Key, init.UploadID, bucket, region, headers);
+                        return (flag, string.Empty);
+                    }
                 }
-                if (complete.Part.Count == blockCount)
+                if (complete.Part.Count == index)
                 {
-                    var result = await MultipartUploadComplete(BaseUri(bucket, region).ToString(), init.Key, init.UploadID, complete);
+                    var result = await MultipartUploadComplete(BaseUri(bucket, region).ToString(), init.Key, init.UploadID, complete, headers);
                     return (true, result.Location);
                 }
             }
             return (false, string.Empty);
-
-
-            //var te = MultipartUploadInit("https://mp-1256147466.cos.ap-guangzhou.myqcloud.com/mall", "Git.exe").Result;
-            //if (te.Key.IsValuable() && te.UploadID.IsValuable())
-            //{
-            //    int CHUNK_SIZE = 10 * 1024 * 1024;//10M
-            //    using var steam = new FileStream("D:\\Git.exe", FileMode.Open, FileAccess.Read);
-            //    long FileLength = steam.Length;
-            //    List<long> PkgList = new List<long>();
-            //    for (long iIdx = 0; iIdx < FileLength / Convert.ToInt64(CHUNK_SIZE); iIdx++)
-            //    {
-            //        PkgList.Add(Convert.ToInt64(CHUNK_SIZE));
-            //    }
-            //    long s = FileLength % CHUNK_SIZE;
-            //    if (s != 0)
-            //    {
-            //        PkgList.Add(s);
-            //    }
-            //    var resultdata = new TencentCosMUComplete();
-            //    for (int iPkgIdx = 0; iPkgIdx < PkgList.Count; iPkgIdx++)
-            //    {
-            //        long bufferSize = PkgList[iPkgIdx];
-            //        byte[] buffer = new byte[bufferSize];
-            //        int bytesRead = steam.Read(buffer, 0, (int)bufferSize);
-            //        var baseUri = $"https://mp-1256147466.cos.ap-guangzhou.myqcloud.com/{te.Key.UrlEncode()}?partNumber={iPkgIdx + 1}&uploadId={te.UploadID}";
-            //        var result = MultipartUpload(baseUri, buffer).Result;
-            //        resultdata.Part.Add(new Part { PartNumber = iPkgIdx+1,ETag = result.Etag });
-            //    }
-
-            //   var tt = MultipartUploadComplete("https://mp-1256147466.cos.ap-guangzhou.myqcloud.com/", te.Key, te.UploadID, resultdata).Result;
-            //}
-
-            
-
         }
 
+        public async Task<bool> MultipartUploadAbort(string key,string uploadID, string bucket, string region, Dictionary<string, string> headers = null)
+        {
+            var uri = BaseUri(bucket, region).Append($"{key.UrlEncode()}?uploadId={uploadID}");
+            var req = new HttpRequestMessage(HttpMethod.Delete, uri);
+            using var resp = await SendAsync(req, headers);
+            if (resp.StatusCode == HttpStatusCode.NoContent) return true;
+            else return false;
+        }
 
-        
-
+        public async Task<TencentCosMUPartsResult> MultipartUploadPartsList(string key, string uploadID, string bucket, string region, Dictionary<string, string> headers = null)
+        {
+            var uri = BaseUri(bucket, region).Append($"{key.UrlEncode()}?uploadId={uploadID}");
+            var req = new HttpRequestMessage(HttpMethod.Get, uri);
+            using var resp = await SendAsync(req, headers);
+            if (!resp.IsSuccessStatusCode) ThrowFailure(HttpMethod.Get, resp.StatusCode, await resp.Content.ReadAsStringAsync());
+            using Stream sr = await resp.Content.ReadAsStreamAsync();
+            return sr.ToObject<TencentCosMUPartsResult>();
+        }
 
         #region 发送请求共有方法 + SendAsync(HttpRequestMessage req, Dictionary<string, string> headers = null)
         /// <summary>
