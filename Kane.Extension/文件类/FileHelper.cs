@@ -10,18 +10,18 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/30 0:01:37
-* 更新时间 ：2020/01/16 0:01:37
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/03/20 16:01:37
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Kane.Extension
 {
@@ -111,5 +111,42 @@ namespace Kane.Extension
             return filename.IndexOfAny(forbidChars) == -1;
         }
         #endregion
+
+        #region 字节数组保存文件 + SaveFile(this byte[] bytes, string path)
+        /// <summary>
+        /// 字节数组保存文件
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="path"></param>
+        public static void SaveFile(this byte[] bytes, string path)
+        {
+            using FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+            fs.Write(bytes, 0, bytes.Length);
+        }
+        #endregion
+
+#if !NET40
+        #region 字节数组保存大文件，可设置缓存大小，默认为【1M】 + SaveBigFileAsnyc(this byte[] bytes, string path, int bufferSize = 1)
+        /// <summary>
+        /// 字节数组保存大文件，可设置缓存大小，默认为【1M】
+        /// </summary>
+        /// <param name="bytes">字节数组数据</param>
+        /// <param name="path">保存至指定路径，包含文件名</param>
+        /// <param name="bufferSize">缓存大小，默认为【1M】</param>
+        /// <returns></returns>
+        public static async Task SaveBigFileAsnyc(this byte[] bytes, string path, int bufferSize = 1)
+        {
+            using var ms = new MemoryStream(bytes);
+            using var stream = new FileStream(path, FileMode.Create);
+            var buffer = new byte[bufferSize * 1024 * 1024];
+            var size = await ms.ReadAsync(buffer, 0, buffer.Length);
+            while (size > 0)
+            {
+                await stream.WriteAsync(buffer, 0, size);
+                size = await ms.ReadAsync(buffer, 0, buffer.Length);
+            }
+        }
+        #endregion
+#endif
     }
 }
