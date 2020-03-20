@@ -1,9 +1,9 @@
 ﻿#region << 版 本 注 释 >>
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.CloudApi.Tencent
-* 项目描述 ：
+* 项目描述 ：常用云服务Api
 * 类 名 称 ：TencentCosBuckets
-* 类 描 述 ：
+* 类 描 述 ：腾讯云Cos存储桶相关实体
 * 所在的域 ：KK-HOME
 * 命名空间 ：Kane.CloudApi.Tencent
 * 机器名称 ：KK-HOME 
@@ -17,10 +17,8 @@
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
-using Kane.Extension;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace Kane.CloudApi.Tencent

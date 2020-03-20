@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/3/1 23:46:44
-* 更新时间 ：2020/3/16 23:46:44
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/3/20 17:46:44
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -69,27 +69,48 @@ namespace Kane.CloudApi.Tencent
         private readonly static HttpClient client;
         static TencentCosService() => client = new HttpClient();
 
+        #region 带参数的构造函数 + TencentCosService(string secretID, string secretKey)
         /// <summary>
-        /// 
+        /// 带参数的构造函数
         /// </summary>
-        /// <param name="secretID"></param>
-        /// <param name="secretKey"></param>
+        /// <param name="secretID">在云API密钥上申请的标识身份的 SecretID，一个 SecretID 对应唯一的 SecretKey</param>
+        /// <param name="secretKey">SecretID 对应唯一的 SecretKey</param>
         public TencentCosService(string secretID, string secretKey)
         {
             SecretID = secretID;
             SecretKey = secretKey;
         }
+        #endregion
 
+        #region 获取存储桶服务器地址，可设置路径 + BaseUri(string bucket, string region, string path = "")
         /// <summary>
-        /// 
+        /// 获取存储桶服务器地址，可设置路径
         /// </summary>
-        /// <param name="bucket"></param>
-        /// <param name="region"></param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="path">路径</param>
+        /// <returns></returns>
+        public Uri BaseUri(string bucket, string region, string path = "")
+        {
+            bucket.ThrowIfNull(nameof(bucket));
+            region.ThrowIfNull(nameof(region));
+            return new Uri($"https://{bucket}.cos.{region}.myqcloud.com").Append(path);
+        }
+        #endregion
+
+        #region 获取存储桶服务器地址，可设置路径 + BaseUri(string path = "")
+        /// <summary>
+        /// 获取存储桶服务器地址，可设置路径
+        /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Uri BaseUri(string bucket, string region, string path = "") => new Uri($"https://{bucket}.cos.{region}.myqcloud.com").Append(path);
-
-        public Uri BaseUri(string path = "") => new Uri($"https://{Bucket}.cos.{Region}.myqcloud.com").Append(path);
+        public Uri BaseUri(string path = "")
+        {
+            Bucket.ThrowIfNull(nameof(Bucket));
+            Region.ThrowIfNull(nameof(Region));
+            return new Uri($"https://{Bucket}.cos.{Region}.myqcloud.com").Append(path);
+        }
+        #endregion
 
         #region 获取所有所有存储空间列表 + GetBucketsAsync()
         /// <summary>
@@ -107,44 +128,83 @@ namespace Kane.CloudApi.Tencent
         }
         #endregion
 
-        #region 上传文件到指定位置 + PutObjectAsync(string uri, Stream content, Dictionary<string, string> headers = null)
+        #region 上传文件到Cos + PutObjectAsync(Stream content, string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
         /// <summary>
-        /// 上传文件到指定位置
+        /// 上传文件到Cos
         /// </summary>
-        /// <param name="uri">存放位置，包含文件名</param>
-        /// <param name="content">文件内容</param>
-        /// <param name="headers">请求头部信息</param>
+        /// <param name="content">上传数据流</param>
+        /// <param name="objectName">Object 的名称，可包含路径，也可不包含路径</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="path">路径</param>
+        /// <param name="headers">其他请求头部参数</param>
         /// <returns></returns>
-        public async Task<Uri> PutObjectAsync(string uri, Stream content, Dictionary<string, string> headers = null)
+        public async Task<Uri> PutObjectAsync(Stream content, string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
         {
-            Common.ThrowIfNull(uri, nameof(uri));
-            Common.ThrowIfNull(content, nameof(content));
+            var uri = BaseUri(bucket, region, path).Append(objectName.UrlEncode());
+            return await PutObjectAsync(content, uri, headers);
+        }
+        #endregion
+
+        #region 上传文件到Cos + PutObjectAsync(byte[] content, string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
+        /// <summary>
+        /// 上传文件到Cos
+        /// </summary>
+        /// <param name="content">上传数据字节流</param>
+        /// <param name="objectName">Object 的名称，可包含路径，也可不包含路径</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="path">路径</param>
+        /// <param name="headers">其他请求头部参数</param>
+        /// <returns></returns>
+        public async Task<Uri> PutObjectAsync(byte[] content, string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
+        {
+            var uri = BaseUri(bucket, region, path).Append(objectName.UrlEncode());
+            return await PutObjectAsync(content, uri, headers);
+        }
+        #endregion
+
+        #region 上传文件到Cos + PutObjectAsync(Stream content,Uri uri, Dictionary<string, string> headers = null)
+        /// <summary>
+        /// 上传文件到Cos
+        /// </summary>
+        /// <param name="content">上传数据流</param>
+        /// <param name="uri">上传的路径</param>
+        /// <param name="headers">其他请求头部参数</param>
+        /// <returns></returns>
+        public async Task<Uri> PutObjectAsync(Stream content, Uri uri, Dictionary<string, string> headers = null)
+        {
+            content.ThrowIfNull(nameof(content));
+            uri.ThrowIfNull(nameof(uri));
             var req = new HttpRequestMessage(HttpMethod.Put, uri)
             {
                 Content = new StreamContent(content)
             };
             using var resp = await SendAsync(req, headers);
             if (resp.StatusCode != HttpStatusCode.OK) ThrowFailure(HttpMethod.Put, resp.StatusCode, await resp.Content.ReadAsStringAsync());
-            return new Uri(uri);
+            return uri;
         }
         #endregion
 
-        #region 上传文件到指定位置 + PutObjectAsync(string baseUri, string directory, string name, Stream content, Dictionary<string, string> headers = null)
+        #region 上传文件到Cos + PutObjectAsync(byte[] content, Uri uri, Dictionary<string, string> headers = null)
         /// <summary>
-        /// 上传文件到指定位置
+        /// 上传文件到Cos
         /// </summary>
-        /// <param name="baseUri">存储桶位置</param>
-        /// <param name="directory">文件夹</param>
-        /// <param name="name">文件名</param>
-        /// <param name="content">文件内容</param>
-        /// <param name="headers">请求头部信息</param>
+        /// <param name="content">上传数据字节流</param>
+        /// <param name="uri">上传的路径</param>
+        /// <param name="headers">其他请求头部参数</param>
         /// <returns></returns>
-        public async Task<Uri> PutObjectAsync(string baseUri, string directory, string name, Stream content, Dictionary<string, string> headers = null)
+        public async Task<Uri> PutObjectAsync(byte[] content, Uri uri, Dictionary<string, string> headers = null)
         {
-            Common.ThrowIfNull(baseUri, nameof(baseUri));
-            Common.ThrowIfNull(name, nameof(name));
-            var uri = new Uri(baseUri).Append(directory, name);
-            return await PutObjectAsync(uri.ToString(), content, headers);
+            content.ThrowIfNull(nameof(content));
+            uri.ThrowIfNull(nameof(uri));
+            var req = new HttpRequestMessage(HttpMethod.Put, uri)
+            {
+                Content = new ByteArrayContent(content)
+            };
+            using var resp = await SendAsync(req, headers);
+            if (resp.StatusCode != HttpStatusCode.OK) ThrowFailure(HttpMethod.Put, resp.StatusCode, await resp.Content.ReadAsStringAsync());
+            return uri;
         }
         #endregion
 
@@ -152,28 +212,32 @@ namespace Kane.CloudApi.Tencent
         /// <summary>
         /// 请求实现初始化分片上传
         /// </summary>
-        /// <param name="baseUri">存储桶位置</param>
-        /// <param name="objectName">对象名称</param>
+        /// <param name="objectName">Object 的名称，可包含路径，也可不包含路径</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="path">路径</param>
+        /// <param name="headers">其他请求头部参数</param>
         /// <returns></returns>
-        public async Task<TencentCosMUInit> MultipartUploadInit(string baseUri, string objectName)
+        public async Task<TencentCosMUInit> MultipartUploadInit(string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
         {
-            var uri = new Uri(baseUri).Append($"{Uri.EscapeDataString(objectName)}?uploads");
+            var uri = BaseUri(bucket, region, path).Append($"{objectName.UrlEncode()}?uploads");
             var req = new HttpRequestMessage(HttpMethod.Post, uri);
-            using var resp = await SendAsync(req);
+            using var resp = await SendAsync(req, headers);
             if (!resp.IsSuccessStatusCode) ThrowFailure(HttpMethod.Post, resp.StatusCode, await resp.Content.ReadAsStringAsync());
             using Stream sr = await resp.Content.ReadAsStreamAsync();
             return sr.ToObject<TencentCosMUInit>();
         }
         #endregion
 
+        #region 分块上传数据到Cos + MultipartUpload(Uri uri, byte[] content, Dictionary<string, string> headers = null)
         /// <summary>
-        /// 
+        /// 分块上传数据到Cos
         /// </summary>
         /// <param name="uri">由【key】【partNumber】【uploadId】组成的Uri</param>
-        /// <param name="content"></param>
-        /// <param name="headers"></param>
+        /// <param name="content">上传的数据【Byte[]】</param>
+        /// <param name="headers">其他请求头部参数</param>
         /// <returns></returns>
-        public async Task<(bool Success,string Etag)> MultipartUpload(string uri, byte[] content, Dictionary<string, string> headers = null)
+        public async Task<(bool Success, string Etag)> MultipartUpload(Uri uri, byte[] content, Dictionary<string, string> headers = null)
         {
             var req = new HttpRequestMessage(HttpMethod.Put, uri)
             {
@@ -183,49 +247,65 @@ namespace Kane.CloudApi.Tencent
             if (resp.StatusCode == HttpStatusCode.OK) return (true, resp.Headers.ETag.Tag);
             else return (false, string.Empty);
         }
+        #endregion
 
+        #region 分块上传已完成请求 + MultipartUploadComplete(string key, string uploadID, string bucket, string region, TencentCosMUComplete data, Dictionary<string, string> headers = null)
         /// <summary>
-        /// 
+        /// 分块上传已完成请求
         /// </summary>
-        /// <param name="baseUri"></param>
-        /// <param name="key"></param>
-        /// <param name="uploadID"></param>
-        /// <param name="data"></param>
+        /// <param name="key">Object 的名称，包含路径</param>
+        /// <param name="uploadID">上传中使用的ID</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="data">提交的分块信息数据</param>
+        /// <param name="headers">其他请求头部参数</param>
         /// <returns></returns>
-        public async Task<TencentCosMUCompleteResult> MultipartUploadComplete(string baseUri, string key, string uploadID, TencentCosMUComplete data, Dictionary<string, string> headers = null)
+        public async Task<TencentCosMUCompleteResult> MultipartUploadComplete(string key, string uploadID, string bucket, string region, TencentCosMUComplete data, Dictionary<string, string> headers = null)
         {
-            var uri = new Uri(baseUri).Append($"{Uri.EscapeDataString(key)}?uploadId={uploadID}");
+            var uri = BaseUri(bucket, region).Append($"{key.UrlEncode()}?uploadId={uploadID}");
             var req = new HttpRequestMessage(HttpMethod.Post, uri)
             {
-                Content = new StringContent(data.ToXml(true,true))
+                Content = new StringContent(data.ToXml(true, true))
             };
-            using var resp = await SendAsync(req);
+            using var resp = await SendAsync(req, headers);
             if (!resp.IsSuccessStatusCode) ThrowFailure(HttpMethod.Post, resp.StatusCode, await resp.Content.ReadAsStringAsync());
             using Stream sr = await resp.Content.ReadAsStreamAsync();
             return sr.ToObject<TencentCosMUCompleteResult>();
         }
+        #endregion
 
-        public async Task<(bool,string)> MultipartUploadAsnyc(Stream stream, string objectName, string bucket, string region, string path, Dictionary<string, string> headers = null)
+        #region 分块的方式上传到COS + MultipartUploadAsnyc(Stream content, string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
+        /// <summary>
+        /// 分块的方式上传到COS,默认大小10MB
+        /// <para>每个分块大小为1MB - 5GB</para>
+        /// </summary>
+        /// <param name="content">要上传的数据流</param>
+        /// <param name="objectName">Object 的名称，可包含路径，也可不包含路径</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="path">路径</param>
+        /// <param name="headers">其他请求头部参数</param>
+        /// <returns></returns>
+        public async Task<(bool, string)> MultipartUploadAsnyc(Stream content, string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
         {
             objectName.ThrowIfNull(nameof(objectName));
             bucket.ThrowIfNull(nameof(bucket));
             region.ThrowIfNull(nameof(region));
 
-            var baseUri = BaseUri(bucket, region, path);
-            var init = await MultipartUploadInit(baseUri.ToString(), objectName);
+            var init = await MultipartUploadInit(objectName, bucket, region, path, headers);
             if (init.Key.IsValuable() && init.UploadID.IsValuable())//分块上传初始化成功
             {
                 int blockSize = BlockSize * 1024 * 1024;
-                stream.Seek(0, SeekOrigin.Begin);
+                content.Seek(0, SeekOrigin.Begin);
                 var complete = new TencentCosMUComplete();
                 int index = 0;
                 bool flag = true;//上传正常标志
-                while (stream.Length > stream.Position && flag)
+                while (content.Length > content.Position && flag)
                 {
-                    long bufferSize = (stream.Length - stream.Position) > blockSize ? blockSize : stream.Length - stream.Position;
+                    long bufferSize = (content.Length - content.Position) > blockSize ? blockSize : content.Length - content.Position;
                     byte[] buffer = new byte[bufferSize];
-                    stream.Read(buffer, 0, (int)bufferSize);
-                    var result = await MultipartUpload(BaseUri(bucket, region).Append($"{init.Key.UrlEncode()}?partNumber={++index}&uploadId={init.UploadID}").ToString(), buffer, headers);
+                    content.Read(buffer, 0, (int)bufferSize);
+                    var result = await MultipartUpload(BaseUri(bucket, region).Append($"{init.Key.UrlEncode()}?partNumber={++index}&uploadId={init.UploadID}"), buffer, headers);
                     if (result.Success) complete.Part.Add(new Part { PartNumber = index, ETag = result.Etag });
                     else
                     {
@@ -236,14 +316,25 @@ namespace Kane.CloudApi.Tencent
                 }
                 if (complete.Part.Count == index)
                 {
-                    var result = await MultipartUploadComplete(BaseUri(bucket, region).ToString(), init.Key, init.UploadID, complete, headers);
+                    var result = await MultipartUploadComplete(init.Key, init.UploadID, bucket, region, complete, headers);
                     return (true, result.Location);
                 }
             }
             return (false, string.Empty);
         }
+        #endregion
 
-        public async Task<bool> MultipartUploadAbort(string key,string uploadID, string bucket, string region, Dictionary<string, string> headers = null)
+        #region 中止一个分块上传并删除已上传的块 + MultipartUploadAbort(string key, string uploadID, string bucket, string region, Dictionary<string, string> headers = null)
+        /// <summary>
+        /// 中止一个分块上传并删除已上传的块
+        /// </summary>
+        /// <param name="key">Object 的名称，包含路径</param>
+        /// <param name="uploadID">上传中使用的ID</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="headers">其他请求头部参数</param>
+        /// <returns></returns>
+        public async Task<bool> MultipartUploadAbort(string key, string uploadID, string bucket, string region, Dictionary<string, string> headers = null)
         {
             var uri = BaseUri(bucket, region).Append($"{key.UrlEncode()}?uploadId={uploadID}");
             var req = new HttpRequestMessage(HttpMethod.Delete, uri);
@@ -251,7 +342,18 @@ namespace Kane.CloudApi.Tencent
             if (resp.StatusCode == HttpStatusCode.NoContent) return true;
             else return false;
         }
+        #endregion
 
+        #region 查询指定 UploadID 所属的所有已上传成功的分块 + MultipartUploadPartsList(string key, string uploadID, string bucket, string region, Dictionary<string, string> headers = null)
+        /// <summary>
+        /// 查询指定 UploadID 所属的所有已上传成功的分块
+        /// </summary>
+        /// <param name="key">Object 的名称，包含路径</param>
+        /// <param name="uploadID">上传中使用的ID</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="headers">其他请求头部参数</param>
+        /// <returns></returns>
         public async Task<TencentCosMUPartsResult> MultipartUploadPartsList(string key, string uploadID, string bucket, string region, Dictionary<string, string> headers = null)
         {
             var uri = BaseUri(bucket, region).Append($"{key.UrlEncode()}?uploadId={uploadID}");
@@ -261,6 +363,27 @@ namespace Kane.CloudApi.Tencent
             using Stream sr = await resp.Content.ReadAsStreamAsync();
             return sr.ToObject<TencentCosMUPartsResult>();
         }
+        #endregion
+
+        #region 获取存储桶中的对象（Object）下载至本地 + GetObjectAsync(string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
+        /// <summary>
+        /// 获取存储桶中的对象（Object）下载至本地，返回Byte[]
+        /// </summary>
+        /// <param name="objectName">Object 的名称，可包含路径，也可不包含路径</param>
+        /// <param name="bucket">存储桶</param>
+        /// <param name="region">区域</param>
+        /// <param name="path">路径</param>
+        /// <param name="headers">其他请求头部参数</param>
+        /// <returns></returns>
+        public async Task<byte[]> GetObjectAsync(string objectName, string bucket, string region, string path = "", Dictionary<string, string> headers = null)
+        {
+            var uri = BaseUri(bucket, region, path).Append(objectName.UrlEncode());
+            var req = new HttpRequestMessage(HttpMethod.Get, uri);
+            using var resp = await SendAsync(req, headers);
+            if (!resp.IsSuccessStatusCode) ThrowFailure(HttpMethod.Get, resp.StatusCode, await resp.Content.ReadAsStringAsync());
+            return await resp.Content.ReadAsByteArrayAsync();
+        }
+        #endregion
 
         #region 发送请求共有方法 + SendAsync(HttpRequestMessage req, Dictionary<string, string> headers = null)
         /// <summary>
