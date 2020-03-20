@@ -67,6 +67,43 @@ namespace Kane.Extension
         }
         #endregion
 
+        #region 泛型转换为Long,失败时返回默认值0 + ToLong<T>(this T value, long returnValue = 0)
+        /// <summary>
+        /// 泛型转换为Long,失败时返回默认值0
+        /// <para>可转【100.001】【-100.001】【  -100.001  】</para>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">要转换的对象</param>
+        /// <param name="returnValue">可设置失败后的返回值，默认为0</param>
+        /// <returns></returns>
+        public static long ToLong<T>(this T value, long returnValue = 0)
+        {
+            if (value.IsNull() || value.ToString().IsNullOrEmpty()) return returnValue;
+            var temp = value.ToString();
+            if (temp.IndexOf('.') >= 0) temp = temp.Split('.')[0];
+            long.TryParse(temp, out returnValue);
+            return returnValue;
+        }
+        #endregion
+
+        #region 泛型转换为Long?(注意是可空类型) + ToNLong<T>(this T value)
+        /// <summary>
+        /// 泛型转换为Long?(注意是可空类型)
+        /// <para>可转【100.001】【-100.001】【  -100.001  】</para>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">要转换的对象</param>
+        /// <returns></returns>
+        public static long? ToNLong<T>(this T value)
+        {
+            if (value.IsNull() || value.ToString().IsNullOrEmpty()) return null;
+            var temp = value.ToString();
+            if (temp.IndexOf('.') >= 0) temp = temp.Split('.')[0];
+            if (long.TryParse(temp, out long returnValue)) return returnValue;
+            else return null;
+        }
+        #endregion
+
         #region 泛型转换为Float,失败时返回默认值0 + ToFloat<T>(this T value, float returnValue = 0)
         /// <summary>
         /// 泛型转换为Float,失败时返回默认值0

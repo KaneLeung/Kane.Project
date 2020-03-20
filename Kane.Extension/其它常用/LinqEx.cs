@@ -21,13 +21,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Kane.Extension
 {
     /// <summary>
     /// Linq扩展类
-    /// https://docs.microsoft.com/zh-cn/dotnet/api/system.linq.queryable?view=netcore-3.1
+    /// <para>https://docs.microsoft.com/zh-cn/dotnet/api/system.linq.queryable?view=netcore-3.1</para>
     /// </summary>
     public static class LinqEx
     {

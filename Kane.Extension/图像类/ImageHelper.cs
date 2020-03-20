@@ -47,7 +47,7 @@ namespace Kane.Extension
         /// <summary>
         /// 检查该文件是否为图片文件，可设置ImageExtEx进行全局扩展
         /// </summary>
-        /// <param name="path">文件路径</param>
+        /// <param name="path">文件完整路径</param>
         /// <returns></returns>
         public static bool IsImageFile(this string path)
         {
@@ -60,8 +60,8 @@ namespace Kane.Extension
         /// <summary>
         /// 检查该文件是否为图片文件，可临时进行扩充比较，如【.tif】
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="ex"></param>
+        /// <param name="path">文件完整路径</param>
+        /// <param name="ex">补充的后缀名，，如【.tif】</param>
         /// <returns></returns>
         public static bool IsImageFile(this string path, params string[] ex)
         {

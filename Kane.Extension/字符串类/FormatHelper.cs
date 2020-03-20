@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/20 19:38:55
-* 更新时间 ：2020/2/20 19:38:55
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/20 19:28:55
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Kane.Extension
@@ -35,9 +34,9 @@ namespace Kane.Extension
         #region 检测字符串是否为中国公民身份证 + IsIDCard(string value)
         /// <summary>
         /// 检测字符串是否为中国公民身份证
-        /// 15位身份证号码=6位地区代码+6位生日+3位编号
-        /// 18位身份证号码=6位地区代码+8位生日+3位编号+1位检验码
-        /// https://www.cnblogs.com/gc2013/p/4054048.html
+        /// <para>15位身份证号码=6位地区代码+6位生日+3位编号</para>
+        /// <para>18位身份证号码=6位地区代码+8位生日+3位编号+1位检验码</para>
+        /// <para>https://www.cnblogs.com/gc2013/p/4054048.html</para>
         /// </summary>
         /// <param name="value">要检测的字符串</param>
         /// <returns></returns>
@@ -99,7 +98,7 @@ namespace Kane.Extension
         #region 检测字符串是否为IPv4地址 + IsIPv4(string value)
         /// <summary>
         /// 检测字符串是否为IPv4地址,可包含端口
-        /// 如【192.168.1.168】或【192.168.1.168:8080】
+        /// <para>如【192.168.1.168】或【192.168.1.168:8080】</para>
         /// </summary>
         /// <param name="value">要检测的字符串</param>
         /// <returns></returns>
@@ -119,7 +118,7 @@ namespace Kane.Extension
         #region 检测字符串是否为IPv6地址 + IsIPv6(string value)
         /// <summary>
         /// 检测字符串是否为IPv6地址,可包含端口
-        /// 如【[2001:0DB8:02de::0e13]】或【[2001:0DB8:02de::0e13]:8080】
+        /// <para>如【[2001:0DB8:02de::0e13]】或【[2001:0DB8:02de::0e13]:8080】</para>
         /// </summary>
         /// <param name="value">要检测的字符串</param>
         /// <returns></returns>
@@ -139,7 +138,7 @@ namespace Kane.Extension
         #region 检测字符串是否为IP地址 + IsIP(string value)
         /// <summary>
         /// 检测字符串是否为IP地址,可包含端口
-        /// 如【192.168.1.168】或【192.168.1.168:8080】或【[2001:0DB8:02de::0e13]】或【[2001:0DB8:02de::0e13]:8080】
+        /// <para>如【192.168.1.168】或【192.168.1.168:8080】或【[2001:0DB8:02de::0e13]】或【[2001:0DB8:02de::0e13]:8080】</para>
         /// </summary>
         /// <param name="value">要检测的字符串</param>
         /// <returns></returns>
@@ -155,10 +154,10 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 检测字符串是否为中国国内手机号码段 + IsMobilePhone(string value)
+        #region 检测字符串是否为中国国内手机号码段，数据更新日期【2020-03-19】 + IsMobilePhone(string value)
         /// <summary>
-        /// 检测字符串是否为中国国内手机号码段
-        /// 【资料来源】https://baike.baidu.com/item/手机号码
+        /// 检测字符串是否为中国国内手机号码段，数据更新日期【2020-03-19】
+        /// <para>【资料来源】https://baike.baidu.com/item/手机号码 </para>
         /// </summary>
         /// <param name="value">要检测字符串</param>
         /// <returns></returns>
@@ -175,12 +174,12 @@ namespace Kane.Extension
                 string[] ChinaTelecomVirtualPrefix = "1700、1701、1702、162".Split('、');
                 string[] ChinaMobileVirtualPrefix = "1703、1705、1706、165".Split('、');
                 string[] ChinaUnicomVirtualPrefix = "1704、1707、1708、1709、171、167".Split('、');
-                string[] SatelliteCommunicationPrefix = new[] { "1349" };
+                string[] SatelliteCommunicationPrefix = "1349、174".Split('、');
 
                 prefix.AddRange(ChinaTelecomPrefix); // 中国电信号段
                 prefix.AddRange(ChinaUnicomPrefix); // 中国联通号段
 
-                for (var i = 0; i <= 8; i++) prefix.Add($"134{i.ToString()}");//中国移动 134 号段特殊处理
+                for (var i = 0; i <= 8; i++) prefix.Add($"134{i}");//中国移动 134 号段特殊处理
                 prefix.AddRange(ChinaMobilePrefix.Skip(1)); // 中国移动号段
                 prefix.AddRange(ChinaBroadcstPrefix); // 中国广电号段
                 prefix.AddRange(ChinaTelecomVirtualPrefix); // 中国电信虚拟运营商号段
@@ -190,7 +189,7 @@ namespace Kane.Extension
                 return value.StartsWith(prefix.ToArray());
             }
             else return false;
-        } 
+        }
         #endregion
     }
 }
