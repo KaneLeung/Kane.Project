@@ -134,17 +134,41 @@ namespace Kane.Extension
         /// <param name="path">保存至指定路径，包含文件名</param>
         /// <param name="bufferSize">缓存大小，默认为【1M】</param>
         /// <returns></returns>
-        public static async Task SaveBigFileAsnyc(this byte[] bytes, string path, int bufferSize = 1)
+        public static async Task<bool> SaveBigFileAsnyc(this byte[] bytes, string path, int bufferSize = 1)
         {
             using var ms = new MemoryStream(bytes);
-            using var stream = new FileStream(path, FileMode.Create);
+            using var fs = new FileStream(path, FileMode.Create);
             var buffer = new byte[bufferSize * 1024 * 1024];
             var size = await ms.ReadAsync(buffer, 0, buffer.Length);
             while (size > 0)
             {
-                await stream.WriteAsync(buffer, 0, size);
+                await fs.WriteAsync(buffer, 0, size);
                 size = await ms.ReadAsync(buffer, 0, buffer.Length);
             }
+            return true;
+        }
+        #endregion
+
+        #region 流数据保存大文件，可设置缓存大小，默认为【1M】 + SaveBigFileAsnyc(this byte[] bytes, string path, int bufferSize = 1)
+        /// <summary>
+        /// 流数据保存大文件，可设置缓存大小，默认为【1M】
+        /// </summary>
+        /// <param name="stream">流数据</param>
+        /// <param name="path">保存至指定路径，包含文件名</param>
+        /// <param name="bufferSize">缓存大小，默认为【1M】</param>
+        /// <returns></returns>
+        public static async Task<bool> SaveBigFileAsnyc(this Stream stream, string path, int bufferSize = 1)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            using var fs = new FileStream(path, FileMode.Create);
+            var buffer = new byte[bufferSize * 1024 * 1024];
+            var size = await stream.ReadAsync(buffer, 0, buffer.Length);
+            while (size > 0)
+            {
+                await fs.WriteAsync(buffer, 0, size);
+                size = await stream.ReadAsync(buffer, 0, buffer.Length);
+            }
+            return true;
         }
         #endregion
 #endif
