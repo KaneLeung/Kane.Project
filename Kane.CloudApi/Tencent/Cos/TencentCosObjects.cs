@@ -10,13 +10,14 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/3/21 11:36:55
-* 更新时间 ：2020/3/21 11:36:55
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/21 16:36:55
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
+using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
@@ -109,6 +110,11 @@ namespace Kane.CloudApi.Tencent
         /// 对象存储类型。
         /// </summary>
         public StorageClass StorageClass { get; set; }
+        /// <summary>
+        /// 对象最后修改时间，转为当前时区的DateTime
+        /// </summary>
+        [XmlIgnore]
+        public DateTime CreationDateLocal { get => DateTime.Parse(LastModified); }
     }
     #endregion
 

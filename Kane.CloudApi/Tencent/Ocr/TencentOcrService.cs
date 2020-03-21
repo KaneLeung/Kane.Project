@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/23 20:48:40
-* 更新时间 ：2020/2/23 20:48:40
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/21 18:48:40
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -62,15 +62,15 @@ namespace Kane.CloudApi.Tencent
         #region 通用文字识别 + CommonOCR(string actionName, string imageBase64 = null, string imageUrl = null)
         /// <summary>
         /// 通用文字识别
-        /// 格式：PNG、JPG、JPEG，暂不支持 GIF 格式。
-        /// 图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。
-        /// 图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
         /// </summary>
         /// <param name="actionName">操作的接口名称</param>
         /// <param name="imageBase64">图片的Base64值</param>
         /// <param name="imageUrl">图片的Url地址</param>
         /// <returns></returns>
-        internal async Task<TComOcrResult> CommonOCR(string actionName, string imageBase64 = null, string imageUrl = null)
+        internal async Task<TencentOcrResult> CommonOCR(string actionName, string imageBase64 = null, string imageUrl = null)
         {
             Common.ThrowIfNull(actionName, nameof(actionName));
             var imagedata = new
@@ -78,10 +78,10 @@ namespace Kane.CloudApi.Tencent
                 ImageBase64 = imageBase64,
                 ImageUrl = imageUrl,
             };
-            var result = await base.RequestService(imagedata.ToJson(), actionName: actionName);
+            var result = await base.RequestService(imagedata.ToJson(), actionName);
             if (result.success)
             {
-                var data = result.message.ToObject<TComOcrResult>();
+                var data = result.message.ToObject<TencentOcrResult>();
                 if (data.Response.Error.IsNull() && data.Response.TextDetections.Length > 0)
                 {
                     int confidence = 0;
@@ -103,77 +103,133 @@ namespace Kane.CloudApi.Tencent
                     return data;
                 }
             }
-            else return new TComOcrResult() { Success = false, Message = result.message };
+            else return new TencentOcrResult() { Success = false, Message = result.message };
         }
         #endregion
 
         #region 英文识别 + EnglishOcr(string imageBase64 = null, string imageUrl = null)
         /// <summary>
         /// 英文识别
-        /// 格式：PNG、JPG、JPEG，暂不支持 GIF 格式。
-        /// 图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。
-        /// 图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
         /// </summary>
         /// <param name="imageBase64">图片的Base64值</param>
         /// <param name="imageUrl">图片的Url地址</param>
         /// <returns></returns>
-        public async Task<TComOcrResult> EnglishOcr(string imageBase64 = null, string imageUrl = null)
+        public async Task<TencentOcrResult> EnglishOcr(string imageBase64 = null, string imageUrl = null)
             => await this.CommonOCR("EnglishOCR", imageBase64, imageUrl);
         #endregion
 
         #region 英文识别 + EnglishOcr(Image image)
         /// <summary>
         /// 英文识别，使用Image格式
-        /// 格式：PNG、JPG、JPEG，暂不支持 GIF 格式。
-        /// 图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。
-        /// 图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
         /// </summary>
         /// <param name="image">Image格式图片</param>
         /// <returns></returns>
-        public async Task<TComOcrResult> EnglishOcr(Image image)
+        public async Task<TencentOcrResult> EnglishOcr(Image image)
         {
             var base64 = image.ToBase64();
-            if (base64.IsNullOrEmpty()) return new TComOcrResult() { Success = false, Message = "图像转成Base64失败" };
+            if (base64.IsNullOrEmpty()) return new TencentOcrResult() { Success = false, Message = "图像转成Base64失败" };
             return await this.EnglishOcr(base64);
         }
+        #endregion
+
+        #region 通用印刷体识别（高精度版） + GeneralAccurateOcr(string imageBase64 = null, string imageUrl = null)
+        /// <summary>
+        /// 通用印刷体识别（高精度版）
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
+        /// </summary>
+        /// <param name="imageBase64">图片的Base64值</param>
+        /// <param name="imageUrl">图片的Url地址</param>
+        /// <returns></returns>
+        public async Task<TencentOcrResult> GeneralAccurateOcr(string imageBase64 = null, string imageUrl = null)
+            => await CommonOCR("GeneralAccurateOCR", imageBase64, imageUrl);
+        #endregion
+
+        #region 通用印刷体识别 + GeneralBasicOcr(string imageBase64 = null, string imageUrl = null)
+        /// <summary>
+        /// 通用印刷体识别
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
+        /// </summary>
+        /// <param name="imageBase64">图片的Base64值</param>
+        /// <param name="imageUrl">图片的Url地址</param>
+        /// <returns></returns>
+        public async Task<TencentOcrResult> GeneralBasicOcr(string imageBase64 = null, string imageUrl = null)
+            => await CommonOCR("GeneralBasicOCR", imageBase64, imageUrl);
         #endregion
 
         #region 通用印刷体识别（精简版） + GeneralEfficientOcr(string imageBase64 = null, string imageUrl = null) 
         /// <summary>
         /// 通用印刷体识别（精简版）
-        /// 格式：PNG、JPG、JPEG，暂不支持 GIF 格式。
-        /// 图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。
-        /// 图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
         /// </summary>
         /// <param name="imageBase64">图片的Base64值</param>
         /// <param name="imageUrl">图片的Url地址</param>
         /// <returns></returns>
-        public async Task<TComOcrResult> GeneralEfficientOcr(string imageBase64 = null, string imageUrl = null)
+        public async Task<TencentOcrResult> GeneralEfficientOcr(string imageBase64 = null, string imageUrl = null)
             => await CommonOCR("GeneralEfficientOCR", imageBase64, imageUrl);
+        #endregion
+
+        #region 通用印刷体识别（高速版） + GeneralFastOcr(string imageBase64 = null, string imageUrl = null)
+        /// <summary>
+        /// 通用印刷体识别（高速版）
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
+        /// </summary>
+        /// <param name="imageBase64">图片的Base64值</param>
+        /// <param name="imageUrl">图片的Url地址</param>
+        /// <returns></returns>
+        public async Task<TencentOcrResult> GeneralFastOcr(string imageBase64 = null, string imageUrl = null)
+            => await CommonOCR("GeneralFastOCR", imageBase64, imageUrl);
+        #endregion
+
+        #region 通用手写体识别 + GeneralHandwritingOcr(string imageBase64 = null, string imageUrl = null)
+        /// <summary>
+        /// 通用手写体识别
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
+        /// </summary>
+        /// <param name="imageBase64">图片的Base64值</param>
+        /// <param name="imageUrl">图片的Url地址</param>
+        /// <returns></returns>
+        public async Task<TencentOcrResult> GeneralHandwritingOcr(string imageBase64 = null, string imageUrl = null)
+            => await CommonOCR("GeneralHandwritingOCR", imageBase64, imageUrl);
         #endregion
 
         #region 二维码和条形码识别 + QrcodeOcr(string imageBase64 = null, string imageUrl = null)
         /// <summary>
         /// 二维码和条形码识别
-        /// 本接口支持条形码和二维码的识别（包括 DataMatrix 和 PDF417）。
-        /// 格式：PNG、JPG、JPEG，暂不支持 GIF 格式。
-        /// 图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。
-        /// 图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
+        /// <para>本接口支持条形码和二维码的识别（包括 DataMatrix 和 PDF417）。</para>
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
         /// </summary>
         /// <param name="imageBase64">图片的Base64值</param>
         /// <param name="imageUrl">图片的Url地址</param>
         /// <returns></returns>
-        public async Task<TQrcodrOcrResult> QrcodeOcr(string imageBase64 = null, string imageUrl = null)
+        public async Task<TencentQrcodeResult> QrcodeOcr(string imageBase64 = null, string imageUrl = null)
         {
             var imagedata = new
             {
                 ImageBase64 = imageBase64,
                 ImageUrl = imageUrl,
             };
-            var result = await base.RequestService(imagedata.ToJson(), actionName: "QrcodeOCR");
+            var result = await base.RequestService(imagedata.ToJson(), "QrcodeOCR");
             if (result.success)
             {
-                var data = result.message.ToObject<TQrcodrOcrResult>();
+                var data = result.message.ToObject<TencentQrcodeResult>();
                 if (data.Response.Error.IsNull() && data.Response.CodeResults.Length > 0)
                 {
                     data.Message = "Success";
@@ -186,7 +242,46 @@ namespace Kane.CloudApi.Tencent
                     return data;
                 }
             }
-            else return new TQrcodrOcrResult() { Success = false, Message = result.message };
+            else return new TencentQrcodeResult() { Success = false, Message = result.message };
+        }
+        #endregion
+
+        #region 快速文本检测 + TextDetect(string imageBase64 = null, string imageUrl = null)
+        /// <summary>
+        /// 快速文本检测
+        /// <para>本接口通过检测图片中的文字信息特征，快速判断图片中有无文字并返回判断结果，帮助用户过滤无文字的图片。默认接口请求频率限制：5次/秒。</para>
+        /// <para>本接口支持条形码和二维码的识别（包括 DataMatrix 和 PDF417）。</para>
+        /// <para>格式：PNG、JPG、JPEG，暂不支持 GIF 格式。</para>
+        /// <para>图片大小：所下载图片经 Base64 编码后不超过 3M。图片下载时间不超过 3 秒。</para>
+        /// <para>图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。</para>
+        /// </summary>
+        /// <param name="imageBase64">图片的Base64值</param>
+        /// <param name="imageUrl">图片的Url地址</param>
+        /// <returns></returns>
+        public async Task<TencentTextDetectResult> TextDetect(string imageBase64 = null, string imageUrl = null)
+        {
+            var imagedata = new
+            {
+                ImageBase64 = imageBase64,
+                ImageUrl = imageUrl,
+            };
+            var result = await RequestService(imagedata.ToJson(), "TextDetect");
+            if (result.success)
+            {
+                var data = result.message.ToObject<TencentTextDetectResult>();
+                if (data.Response.Error.IsNull())
+                {
+                    data.Message = "Success";
+                    return data;
+                }
+                else
+                {
+                    data.Success = false;
+                    data.Message = data.Response.Error.Message;
+                    return data;
+                }
+            }
+            else return new TencentTextDetectResult() { Success = false, Message = result.message };
         }
         #endregion
     }

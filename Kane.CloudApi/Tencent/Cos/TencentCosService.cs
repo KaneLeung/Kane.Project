@@ -817,7 +817,7 @@ namespace Kane.CloudApi.Tencent
                 { "q-url-param-list",   urlParamList },
                 { "q-signature",        signature }
             };
-            return string.Join("&", keys.Select(k => $"{k.Key}={k.Value}")); ;
+            return string.Join("&", keys.Select(k => $"{k.Key}={k.Value}"));
         }
         #endregion
 

@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/23 0:00:15
-* 更新时间 ：2020/3/16 0:00:15
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/3/21 18:00:15
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -20,7 +20,6 @@
 using Kane.Extension;
 using System;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -53,20 +52,21 @@ namespace Kane.CloudApi.Tencent
         /// </summary>
         public string XtcVersion { get; set; }
 
-        #region 腾讯云ApiPost请求服务 + RequestService(string paramJson, string actionName = null, [CallerMemberName] string callerName = null)
+        #region 腾讯云ApiPost请求服务 + RequestService(string paramJson, string actionName)
         /// <summary>
         /// 腾讯云ApiPost请求服务
         /// </summary>
         /// <param name="paramJson">参数Json字符串</param>
         /// <param name="actionName">操作的接口名称。取值参考接口文档中输入参数公共参数 Action 的说明。</param>
-        /// <param name="callerName">操作的接口名称。取值参考接口文档中输入参数公共参数 Action 的说明。</param>
         /// <returns></returns>
-        public async Task<(bool success, string message)> RequestService(string paramJson, string actionName = null, [CallerMemberName] string callerName = null)
+        public async Task<(bool success, string message)> RequestService(string paramJson, string actionName)
         {
-            Common.ThrowIfNull(SecretID, nameof(SecretID));
-            Common.ThrowIfNull(SecretKey, nameof(SecretKey));
-            Common.ThrowIfNull(ServiceHost, nameof(ServiceHost));
-            Common.ThrowIfNull(XtcVersion, nameof(XtcVersion));
+            SecretID.ThrowIfNull(nameof(SecretID));
+            SecretKey.ThrowIfNull(nameof(SecretKey));
+            ServiceHost.ThrowIfNull(nameof(ServiceHost));
+            XtcVersion.ThrowIfNull(nameof(XtcVersion));
+            actionName.ThrowIfNull(nameof(actionName));
+
             try
             {
                 var crypto = new CryptoHelper();
@@ -88,7 +88,7 @@ namespace Kane.CloudApi.Tencent
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Timestamp", timestamp);
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Version", XtcVersion);
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Region", XtcRegion);
-                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Action", actionName ?? callerName);
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-TC-Action", actionName);
                 using var content = new StringContent(paramJson, Encoding.UTF8, "application/json");
                 using var request = new HttpRequestMessage(HttpMethod.Post, $"https://{ServiceHost}".ToUrl());
                 request.Content = content;
@@ -101,7 +101,7 @@ namespace Kane.CloudApi.Tencent
             {
                 return (false, ex.Message);
             }
-        } 
+        }
         #endregion
     }
 }

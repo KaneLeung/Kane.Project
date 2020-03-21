@@ -78,7 +78,7 @@ namespace Kane.CloudApi.Tencent
                 PhoneNumberSet = phoneNumbers.Select(k => k.ToISPhoneNo()),
                 TemplateParamSet = templateParams,
             };
-            var result = await RequestService(content.ToJson());
+            var result = await RequestService(content.ToJson(), "SendSms");
             if (result.success)
             {
                 var data = result.message.ToObject<TSendSmsResult>();

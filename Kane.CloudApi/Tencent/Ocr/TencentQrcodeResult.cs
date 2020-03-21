@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/23 0:45:44
-* 更新时间 ：2020/2/23 0:45:44
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/21 17:45:44
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -29,7 +29,7 @@ namespace Kane.CloudApi.Tencent
     /// 腾讯云二维码和条形码识别返回结果模型实体
     /// https://cloud.tencent.com/document/api/866/38292
     /// </summary>
-    public class TQrcodrOcrResult : TencentResultBase<TQrcodrOcrResponse>
+    public class TencentQrcodeResult : TencentResultBase<TencentQrcodeResponse>
     {
         /// <summary>
         /// 是否成功
@@ -46,7 +46,7 @@ namespace Kane.CloudApi.Tencent
     /// <summary>
     /// QrcodeOCR返回的Response
     /// </summary>
-    public class TQrcodrOcrResponse : TencentResponseBase
+    public class TencentQrcodeResponse : TencentResponseBase
     {
         /// <summary>
         /// 二维码/条形码识别结果信息

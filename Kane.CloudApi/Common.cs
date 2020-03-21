@@ -67,7 +67,7 @@ namespace Kane.CloudApi
         public static void ThrowIfNull<T>(this T value, string parameter)
         {
             if (value is string && value.ToString().IsNullOrWhiteSpace()) throw new ArgumentNullException(parameter, $"参数【{parameter}】不能为空");
-            if (value.IsNull()) throw new ArgumentNullException(parameter, $"参数【{parameter}】不能为空");
+            else if (value.IsNull()) throw new ArgumentNullException(parameter, $"参数【{parameter}】不能为空");
         }
         #endregion
 

@@ -1,11 +1,11 @@
 ﻿#region << 版 本 注 释 >>
 /*-----------------------------------------------------------------
-* 项目名称 ：Kane.CloudApi.Tencent.Ocr
+* 项目名称 ：Kane.CloudApi.Tencent
 * 项目描述 ：常用云服务Api
-* 类 名 称 ：TEnglishOcrResult
+* 类 名 称 ：TencentOcrResult
 * 类 描 述 ：腾讯云通用文字识别返回结果模型实体
 * 所在的域 ：KK-HOME
-* 命名空间 ：Kane.CloudApi.Tencent.Ocr
+* 命名空间 ：Kane.CloudApi.Tencent
 * 机器名称 ：KK-HOME 
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
@@ -29,7 +29,7 @@ namespace Kane.CloudApi.Tencent
     /// 腾讯云通用文字识别返回结果模型实体
     /// https://cloud.tencent.com/document/product/866/34938
     /// </summary>
-    public class TComOcrResult : TencentResultBase<TComOcrResponse>
+    public class TencentOcrResult : TencentResultBase<TComOcrResponse>
     {
         /// <summary>
         /// 平均置信度 0 ~ 100
@@ -86,5 +86,20 @@ namespace Kane.CloudApi.Tencent
         /// 此字段为扩展字段。GeneralBasicOcr接口返回段落信息Parag，包含ParagNo。
         /// </summary>
         public string AdvancedInfo { get; set; }
+    }
+
+    /// <summary>
+    /// 坐标
+    /// </summary>
+    public class Coord
+    {
+        /// <summary>
+        /// 横坐标
+        /// </summary>
+        public int X { get; set; }
+        /// <summary>
+        /// 纵坐标
+        /// </summary>
+        public int Y { get; set; }
     }
 }
