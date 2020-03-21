@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/23 16:20:36
-* 更新时间 ：2020/2/23 16:20:36
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/21 16:20:36
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -19,6 +19,7 @@
 #endregion
 using Kane.Extension;
 using System;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace Kane.CloudApi
@@ -67,6 +68,17 @@ namespace Kane.CloudApi
         {
             if (value is string && value.ToString().IsNullOrWhiteSpace()) throw new ArgumentNullException(parameter, $"参数【{parameter}】不能为空");
             if (value.IsNull()) throw new ArgumentNullException(parameter, $"参数【{parameter}】不能为空");
+        }
+        #endregion
+
+        #region 判断该路径的文件是否存在，不存在则抛【FileNotFoundException】 + ThrowIfNotExist(this string file)
+        /// <summary>
+        /// 判断该路径的文件是否存在，不存在则抛【FileNotFoundException】
+        /// </summary>
+        /// <param name="file">文件完整路径</param>
+        public static void ThrowIfNotExist(this string file)
+        {
+            if (!File.Exists(file)) throw new FileNotFoundException($"【{file}】该路径文件不存在");
         }
         #endregion
     }

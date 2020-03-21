@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/1/15 16:38:55
-* 更新时间 ：2020/3/18 16:38:55
-* 版 本 号 ：v1.0.2.0
+* 更新时间 ：2020/3/21 15:38:55
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -143,13 +143,15 @@ namespace Kane.Extension
         /// <param name="separator">分隔符</param>
         /// <returns></returns>
         public static IOrderedEnumerable<KeyValuePair<string, string>> GetHeaders(this HttpRequestHeaders headers, string separator = ";")
-            => headers.Select(k => new KeyValuePair<string, string>(k.Key.ToLower(), Uri.EscapeDataString(string.Join(separator, k.Value)))).OrderBy(k => k.Key); 
+            => headers.Select(k => new KeyValuePair<string, string>(k.Key.ToLower(), Uri.EscapeDataString(string.Join(separator, k.Value)))).OrderBy(k => k.Key);
         #endregion
 #endif
 
         #region 对URL字符串进行编码，默认使用【UTF8】编码 + UrlEncode(this string value)
         /// <summary>
         /// 对URL字符串进行编码，默认使用【UTF8】编码
+        /// <para>这个使用时，会对空格转成+号，注意！！！并对编码后的结果小写，并对一些特殊符号不进行编码</para>
+        /// <para>必须搭配<see cref="UrlEncode(string)"/>进行解码</para>
         /// </summary>
         /// <param name="value">要编码的值</param>
         /// <returns></returns>
@@ -159,6 +161,8 @@ namespace Kane.Extension
         #region 对URL字符串进行编码，可设置编码 + UrlEncode(this string value, Encoding encoding)
         /// <summary>
         /// 对URL字符串进行编码，可设置编码
+        /// <para>这个使用时，会对空格转成+号，注意！！！并对编码后的结果小写，并对一些特殊符号不进行编码</para>
+        /// <para>必须搭配<see cref="UrlEncode(string, Encoding)"/>进行解码</para>
         /// </summary>
         /// <param name="value">要编码的值</param>
         /// <param name="encoding">编码</param>
@@ -185,6 +189,25 @@ namespace Kane.Extension
         public static string UrlDecode(this string value, Encoding encoding) => HttpUtility.UrlDecode(value, encoding);
         #endregion
 
+        #region 将字符串转换为它的转义表示形式，可以转一些特殊符号 + ToEscape(this string value)
+        /// <summary>
+        /// 将字符串转换为它的转义表示形式，可以转一些特殊符号
+        /// <para>并对转义后的结果大写，可使用<see cref="ToUnescape(string)"/>进行还原</para>
+        /// </summary>
+        /// <param name="value">要转义的字符串</param>
+        /// <returns></returns>
+        public static string ToEscape(this string value) => Uri.EscapeDataString(value);
+        #endregion
+
+        #region 将字符串转换为它的非转义表示形式 + ToUnescape(this string value)
+        /// <summary>
+        /// 将字符串转换为它的非转义表示形式
+        /// </summary>
+        /// <param name="value">要还原的字符串</param>
+        /// <returns></returns>
+        public static string ToUnescape(this string value) => Uri.UnescapeDataString(value);
+        #endregion
+
         #region Uri累加路径 + Append(this Uri uri, params string[] paths)
         /// <summary>
         /// Uri累加路径
@@ -193,7 +216,7 @@ namespace Kane.Extension
         /// <param name="paths">要加入的路径</param>
         /// <returns></returns>
         public static Uri Append(this Uri uri, params string[] paths)
-            => new Uri(paths.Aggregate(uri.AbsoluteUri, (current, path) => $"{current.TrimEnd('/')}/{path.TrimStart('/')}")); 
+            => new Uri(paths.Aggregate(uri.AbsoluteUri, (current, path) => $"{current.TrimEnd('/')}/{path.TrimStart('/')}"));
         #endregion
     }
 }
