@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:19:31
-* 更新时间 ：2020/02/26 18:19:31
-* 版 本 号 ：v1.0.2.0
+* 更新时间 ：2020/03/21 22:19:31
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -29,7 +29,7 @@ namespace Kane.Extension
     /// </summary>
     public static class RandomHelper
     {
-        #region 产生随机字符串，可设定类型，也可以排除不要的字符 + RandCode(int length, RandMethod method, params char[] exceptChar)
+        #region 产生随机字符串，可设定类型，也可以排除不要的字符 + RandCode(int length, RandMethod method = RandMethod.All, params char[] exceptChar)
         /// <summary>
         /// 产生随机字符串，可设定类型，也可以排除不要的字符
         /// </summary>
@@ -37,7 +37,7 @@ namespace Kane.Extension
         /// <param name="method">随机字符串包含类型枚举类</param>
         /// <param name="exceptChar">排除的字符</param>
         /// <returns></returns>
-        public static string RandCode(int length, RandMethod method, params char[] exceptChar)
+        public static string RandCode(int length, RandMethod method = RandMethod.All, params char[] exceptChar)
         {
             var charList = new List<char>();
             if (method.HasFlag(RandMethod.All) || method.HasFlag(RandMethod.Numeric))
@@ -51,8 +51,9 @@ namespace Kane.Extension
             if (exceptChar.Length > 0) charList = charList.Except(exceptChar).ToList();
             StringBuilder result = new StringBuilder();
             Random random = new Random(DateTime.Now.Millisecond);
+            int charCount = charList.Count;
             for (int i = 0; i < length; i++)
-                result.Append(charList[random.Next(0, charList.Count)]);
+                result.Append(charList[random.Next(0, charCount)]);
             return result.ToString();
         }
         #endregion

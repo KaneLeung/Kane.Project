@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/24 23:09:25
-* 更新时间 ：2020/2/24 23:09:25
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/21 23:09:25
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -34,7 +34,7 @@ namespace Kane.Extension
         [Description("全部")]
         All = 1,
         /// <summary>
-        /// 只有大小写字母
+        /// 大小写字母【a-zA-Z】
         /// </summary>
         [Description("字母")]
         Letter = 2,
@@ -49,7 +49,7 @@ namespace Kane.Extension
         [Description("小写字母")]
         Lowercase = 8,
         /// <summary>
-        /// 小写字母【A-Z】
+        /// 大写字母【A-Z】
         /// </summary>
         [Description("大写字母")]
         Uppercase = 16,
