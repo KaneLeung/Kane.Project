@@ -69,7 +69,7 @@ namespace Kane.CloudApi.Tencent
         /// <param name="phoneNumbers">下发手机号码，采用 e.164 标准，格式为+[国家或地区码][手机号]</param>
         /// <param name="templateParams">模板参数，若无模板参数，则设置为空。</param>
         /// <returns></returns>
-        public async Task<TSendSmsResult> SendSms(string smsSdkAppid, string templateID, IEnumerable<string> phoneNumbers, params string[] templateParams)
+        public async Task<TencentSmsResult> SendSms(string smsSdkAppid, string templateID, IEnumerable<string> phoneNumbers, params string[] templateParams)
         {
             var content = new
             {
@@ -81,7 +81,7 @@ namespace Kane.CloudApi.Tencent
             var result = await RequestService(content.ToJson(), "SendSms");
             if (result.success)
             {
-                var data = result.message.ToObject<TSendSmsResult>();
+                var data = result.message.ToObject<TencentSmsResult>();
                 if (data.Response.Error.IsNull() && data.Response.SendStatusSet.Length > 0)
                 {
                     foreach (var item in data.Response.SendStatusSet)
@@ -113,7 +113,7 @@ namespace Kane.CloudApi.Tencent
                     return data;
                 }
             }
-            else return new TSendSmsResult() { AllSuccess = false, Message = result.message };
+            else return new TencentSmsResult() { AllSuccess = false, Message = result.message };
         }
         #endregion
 
@@ -126,7 +126,7 @@ namespace Kane.CloudApi.Tencent
         /// <param name="phoneNumber">下发手机号码，采用 e.164 标准，格式为+[国家或地区码][手机号]</param>
         /// <param name="templateParams">模板参数，若无模板参数，则设置为空。</param>
         /// <returns></returns>
-        public async Task<TSendSmsResult> SendSms(string smsSdkAppid, string templateID, string phoneNumber, params string[] templateParams)
+        public async Task<TencentSmsResult> SendSms(string smsSdkAppid, string templateID, string phoneNumber, params string[] templateParams)
             => await SendSms(smsSdkAppid, templateID, new string[] { phoneNumber }, templateParams); 
         #endregion
     }

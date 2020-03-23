@@ -72,7 +72,7 @@ namespace Kane.CloudApi.Tencent
         /// <returns></returns>
         internal async Task<TencentOcrResult> CommonOCR(string actionName, string imageBase64 = null, string imageUrl = null)
         {
-            Common.ThrowIfNull(actionName, nameof(actionName));
+            actionName.ThrowIfNull(nameof(actionName));
             var imagedata = new
             {
                 ImageBase64 = imageBase64,

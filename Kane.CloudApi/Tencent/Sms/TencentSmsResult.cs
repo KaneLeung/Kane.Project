@@ -2,7 +2,7 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.CloudApi.Tencent
 * 项目描述 ：常用云服务Api
-* 类 名 称 ：TSendSmsResult
+* 类 名 称 ：TencentSmsResult
 * 类 描 述 ：腾讯云发送短信返回结果模型实体
 * 所在的域 ：KK-HOME
 * 命名空间 ：Kane.CloudApi.Tencent
@@ -30,7 +30,7 @@ namespace Kane.CloudApi.Tencent
     /// 腾讯云发送短信返回结果模型实体
     /// https://cloud.tencent.com/document/product/382/38778
     /// </summary>
-    public class TSendSmsResult : TencentResultBase<TSendSmsResponse>
+    public class TencentSmsResult : TencentResultBase<TencentSmsResponse>
     {
         /// <summary>
         /// 发送成功数
@@ -72,7 +72,7 @@ namespace Kane.CloudApi.Tencent
     /// <summary>
     /// 发送短信的响应类
     /// </summary>
-    public class TSendSmsResponse : TencentResponseBase
+    public class TencentSmsResponse : TencentResponseBase
     {
         /// <summary>
         /// 短信发送状态数组
