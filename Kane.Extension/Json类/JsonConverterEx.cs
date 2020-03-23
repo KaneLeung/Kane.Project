@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/19 23:23:07
-* 更新时间 ：2020/2/19 23:23:07
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/3/23 13:23:07
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -74,14 +74,14 @@ namespace Kane.Extension
             }
             #endregion
 
-            #region 重写转换器Write方法 + Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options) => writer.WriteBooleanValue(value);
+            #region 重写转换器Write方法 + Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options) => writer.WriteNumberValue(value);
             /// <summary>
             /// 重写转换器Write方法
             /// </summary>
             /// <param name="writer"></param>
             /// <param name="value"></param>
             /// <param name="options"></param>
-            public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString());
+            public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options) => writer.WriteNumberValue(value);
             #endregion
         }
         #endregion
