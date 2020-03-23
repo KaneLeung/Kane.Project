@@ -10,16 +10,13 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:24:14
-* 更新时间 ：2019/10/16 23:24:14
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/03/23 13:24:14
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Kane.Extension
@@ -37,10 +34,7 @@ namespace Kane.Extension
         /// <param name="regex">正则表达式</param>
         /// <param name="word">要替换的字符串</param>
         /// <returns></returns>
-        public static string RegexReplce(this string value, string regex, string word)
-        {
-            return Regex.Replace(value, regex, word);
-        }
+        public static string RegexReplce(this string value, string regex, string word) => Regex.Replace(value, regex, word);
         #endregion
 
         #region 利用正则表达式查找某字符串出现的次数 + RegexCount(this string value, string pattern)

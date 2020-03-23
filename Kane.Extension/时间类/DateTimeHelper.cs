@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:17:28
-* 更新时间 ：2020/03/15 23:17:28
-* 版 本 号 ：v1.0.4.0
+* 更新时间 ：2020/03/23 13:17:28
+* 版 本 号 ：v1.0.5.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -104,7 +104,7 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取明天时间段，通常用法 Start ≥ X ＜ End + GetYesterday()
+        #region 获取明天时间段，通常用法 Start ≥ X ＜ End + GetTomorrow()
         /// <summary>
         /// 获取明天时间段，通常用法 Start ≥ X ＜ End
         /// </summary>
@@ -137,7 +137,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="dateTime">要获取的那一周其中一个时间</param>
         /// <returns></returns>
-        public static (DateTime Start, DateTime End) GetOneWeek(DateTime dateTime)
+        public static (DateTime Start, DateTime End) GetOneWeek(this DateTime dateTime)
         {
             var dayOfWeek = (int)dateTime.DayOfWeek;
             var start = dateTime.AddDays(1 - (dayOfWeek == 0 ? 7 : dayOfWeek)).DayStart();
@@ -163,7 +163,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="dateTime">要获取的那一月的其中一个时间</param>
         /// <returns></returns>
-        public static (DateTime Start, DateTime End) GetOneMonth(DateTime dateTime)
+        public static (DateTime Start, DateTime End) GetOneMonth(this DateTime dateTime)
         {
             var start = dateTime.MonthStart();
             return (start, start.AddMonths(1));
