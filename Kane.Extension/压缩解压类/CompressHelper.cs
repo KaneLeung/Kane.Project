@@ -10,7 +10,7 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/12/4 21:25:22
-* 更新时间 ：2020/03/01 21:25:22
+* 更新时间 ：2020/05/05 11:25:22
 * 版 本 号 ：v1.0.0.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
@@ -169,7 +169,7 @@ namespace Kane.Extension
         /// <param name="data">要解压的字节数组</param>
         /// <param name="method">压缩方法<see cref="CompressMethod"/></param>
         /// <returns></returns>
-        public string DeCompressFromByte(byte[] data, CompressMethod method) => DeCompress(data, method).ByteToString(Encoding.UTF8);
+        public string DeCompressFromByte(byte[] data, CompressMethod method) => DeCompress(data, method).BytesToString(Encoding.UTF8);
         #endregion
 
         #region 字节数组解压成字符串，可设置编码 + DeCompressFromByte(byte[] data, CompressMethod method, Encoding encoding)
@@ -180,7 +180,7 @@ namespace Kane.Extension
         /// <param name="method">压缩方法<see cref="CompressMethod"/></param>
         /// <param name="encoding">编码</param>
         /// <returns></returns>
-        public string DeCompressFromByte(byte[] data, CompressMethod method, Encoding encoding) => DeCompress(data, method).ByteToString(encoding);
+        public string DeCompressFromByte(byte[] data, CompressMethod method, Encoding encoding) => DeCompress(data, method).BytesToString(encoding);
         #endregion
 
         #region Base64字符串解压成字符串，默认使用UTF8编码 + DeCompressFromBase64(string data, CompressMethod method)

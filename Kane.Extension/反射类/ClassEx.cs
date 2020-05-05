@@ -2,7 +2,7 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
-* 类 名 称 ：ClassHelper
+* 类 名 称 ：ClassEx
 * 类 描 述 ：反射类扩展
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.Extension
@@ -10,7 +10,7 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:08:22
-* 更新时间 ：2019/12/29 10:42:22
+* 更新时间 ：2020/05/05 10:42:22
 * 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
@@ -28,7 +28,7 @@ namespace Kane.Extension
     /// <summary>
     /// 反射类扩展
     /// </summary>
-    public static class ClassHelper
+    public static class ClassEx
     {
         internal const BindingFlags BINDING_FLAGS = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 
@@ -39,6 +39,17 @@ namespace Kane.Extension
         /// <param name="target">反射对象</param>
         /// <returns>属性信息</returns>
         public static PropertyInfo[] GetProps<T>(this T target) => target.GetType().GetProperties(BINDING_FLAGS);
+        #endregion
+
+        #region 检测对象是否包含指定【属性】 + HasProp<T>(this T target, string name)
+        /// <summary>
+        /// 检测对象是否包含指定【属性】
+        /// </summary>
+        /// <typeparam name="T">要检测对象类型</typeparam>
+        /// <param name="target">要检测对象</param>
+        /// <param name="name">属性名</param>
+        /// <returns></returns>
+        public static bool HasProp<T>(this T target, string name) => target.GetType().GetProperty(name, BINDING_FLAGS) != null;
         #endregion
 
         #region 获取属性的值 + GetPropValue<T>(this object target, string name)
@@ -167,7 +178,7 @@ namespace Kane.Extension
             //创建类型。
             Type result = typeBuilder.CreateTypeInfo();
             //保存程序集,以便可以被Ildasm.exe解析,或被测试程序引用。  
-            //builder.Save(myAsmName.Name + ".dll");  
+            //builder.Save(DynamicAssembly.Name + ".dll");  
             return result;
         }
         #endregion
@@ -286,8 +297,6 @@ namespace Kane.Extension
         }
         #endregion
 
-
-
         #region 删除对象的属性并返回新对象实例 + DeleteProp(this object target, string property)
         /// <summary>
         /// 删除对象的属性并返回新对象实例
@@ -369,11 +378,9 @@ namespace Kane.Extension
             {
                 //定义字段。  
                 FieldBuilder customerNameBldr = typeBuilder.DefineField(info.FieldName, info.Type, FieldAttributes.Private);
-                //customerNameBldr.SetConstant("11111111");
                 //定义属性。  
                 //最后一个参数为null,因为属性没有参数。  
                 var custNamePropBldr = typeBuilder.DefineProperty(info.PropName, PropertyAttributes.HasDefault, info.Type, null);
-                //custNamePropBldr.SetConstant("111111111");
                 //定义Get方法。  
                 var custNameGetPropMthdBldr = typeBuilder.DefineMethod(info.GetPropertyMethodName, attr, info.Type, Type.EmptyTypes);
                 var custNameGetIL = custNameGetPropMthdBldr.GetILGenerator();
@@ -395,7 +402,6 @@ namespace Kane.Extension
                 custNameSetIL.Emit(OpCodes.Ldarg_1);
                 custNameSetIL.Emit(OpCodes.Stfld, customerNameBldr);
                 custNameSetIL.Emit(OpCodes.Ret);
-                //custNamePropBldr.SetConstant("ceshi");  
                 //把创建的两个方法(Get,Set)加入到PropertyBuilder中。  
                 custNamePropBldr.SetGetMethod(custNameGetPropMthdBldr);
                 custNamePropBldr.SetSetMethod(custNameSetPropMthdBldr);
@@ -428,7 +434,7 @@ namespace Kane.Extension
             //创建类型。
             Type result = typeBuilder.CreateTypeInfo();
             //保存程序集,以便可以被Ildasm.exe解析,或被测试程序引用。  
-            //builder.Save(name.Name + ".dll");  
+            //builder.Save(DynamicAssembly.Name + ".dll");  
             return result;
         }
         #endregion
@@ -479,7 +485,7 @@ namespace Kane.Extension
             {
                 get
                 {
-                    if (PropName.Length < 1) return "";
+                    if (PropName.Length < 1) return string.Empty;
                     return PropName.Substring(0, 1).ToLower() + PropName.Substring(1);
                 }
             }

@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/20 19:38:55
-* 更新时间 ：2020/3/20 19:28:55
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/5/05 12:28:55
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -82,22 +82,22 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 检测字符串是否包含汉字 + HasChineseCharacters(string value)
+        #region 检测字符串是否包含汉字 + HasChinese(string value)
         /// <summary>
         /// 检测字符串是否包含汉字
         /// </summary>
         /// <param name="value">要检测的字符串</param>
         /// <returns></returns>
-        public bool HasChineseCharacters(string value)
+        public bool HasChinese(string value)
         {
             if (value.IsNullOrWhiteSpace()) return false;
             return Regex.IsMatch(value, @"[\u4e00-\u9fa5]+");
         }
         #endregion
 
-        #region 检测字符串是否为IPv4地址 + IsIPv4(string value)
+        #region 检测字符串是否为IPv4地址，可包含端口 + IsIPv4(string value)
         /// <summary>
-        /// 检测字符串是否为IPv4地址,可包含端口
+        /// 检测字符串是否为IPv4地址，可包含端口
         /// <para>如【192.168.1.168】或【192.168.1.168:8080】</para>
         /// </summary>
         /// <param name="value">要检测的字符串</param>
@@ -159,7 +159,7 @@ namespace Kane.Extension
         /// 检测字符串是否为中国国内手机号码段，数据更新日期【2020-03-19】
         /// <para>【资料来源】https://baike.baidu.com/item/手机号码 </para>
         /// </summary>
-        /// <param name="value">要检测字符串</param>
+        /// <param name="value">要检测的字符串</param>
         /// <returns></returns>
         public bool IsMobilePhone(string value)
         {
@@ -189,6 +189,24 @@ namespace Kane.Extension
                 return value.StartsWith(prefix.ToArray());
             }
             else return false;
+        }
+        #endregion
+
+        #region 判断字符串是否为安全Sql语句
+        /// <summary>
+        /// 判断字符串是否为安全Sql语句
+        /// </summary>
+        /// <param name="value">要检测的Sql语句</param>
+        /// <returns></returns>
+        public bool IsSafeSql(string value)
+        {
+            if (value.IsNullOrWhiteSpace()) return false;
+            if (value.IsMatch(@"[-|;|,|\/|\(|\)|\[|\]|\}|\{|%|@|\*|!|\']") ||
+                value.IsMatch(@"select|insert|delete|from|count(|drop table|update|truncate|asc(|mid(|Char(|xp_cmdshell|exec master|netlocalgroup administrators|:|net user|""|or|and"))
+            {
+                return true;
+            }
+            return false;
         }
         #endregion
     }

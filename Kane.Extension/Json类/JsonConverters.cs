@@ -2,7 +2,7 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
-* 类 名 称 ：JsonConverterEx
+* 类 名 称 ：JsonConverters
 * 类 描 述 ：自定义JsonConverter扩展
 * 所在的域 ：KK-HOME
 * 命名空间 ：Kane.Extension
@@ -27,7 +27,7 @@ namespace Kane.Extension
     /// <summary>
     /// 自定义JsonConverter扩展
     /// </summary>
-    public class JsonConverterEx
+    public class JsonConverters
     {
         #region 自定义IntConverter + IntConverter : JsonConverter<int>
         /// <summary>

@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/30 0:01:37
-* 更新时间 ：2020/03/20 22:31:37
-* 版 本 号 ：v1.0.3.0
+* 更新时间 ：2020/05/02 12:31:37
+* 版 本 号 ：v1.0.4.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -115,7 +115,7 @@ namespace Kane.Extension
         #region 字节数组保存文件 + ToFile(this byte[] bytes, string path)
 #if !NET40
         /// <summary>
-        /// 字节数组保存文件，建议小文件才使用，大文件请使用<see cref="ToBigFile(byte[], string, int)"/>或【Net.40以上】<see cref="ToBigFileAsnyc(byte[], string, int)"/>
+        /// 字节数组保存文件，建议小文件才使用，大文件请使用<see cref="ToBigFile(byte[], string, int)"/>或【Net.40以上】<see cref="ToBigFileAsync(byte[], string, int)"/>
         /// </summary>
         /// <param name="bytes">字节数组数据</param>
         /// <param name="path">保存至指定路径，包含文件名</param>
@@ -136,7 +136,7 @@ namespace Kane.Extension
         #region 流数据保存文件，建议小文件才使用 + ToFile(this Stream bytes, string path)
 #if !NET40
         /// <summary>
-        /// 流数据保存文件，建议小文件才使用，大文件请使用<see cref="ToBigFile(Stream, string, int)"/>或【Net.40以上】<see cref="ToBigFileAsnyc(Stream, string, int)"/>
+        /// 流数据保存文件，建议小文件才使用，大文件请使用<see cref="ToBigFile(Stream, string, int)"/>或【Net.40以上】<see cref="ToBigFileAsync(Stream, string, int)"/>
         /// </summary>
         /// <param name="stream">流数据</param>
         /// <param name="path">保存至指定路径，包含文件名</param>
@@ -193,7 +193,7 @@ namespace Kane.Extension
         #endregion
 
 #if !NET40
-        #region 字节数组异步保存大文件，可设置缓存大小，默认为【1M】 + ToBigFileAsnyc(this byte[] bytes, string path, int bufferSize = 1)
+        #region 字节数组异步保存大文件，可设置缓存大小，默认为【1M】 + ToBigFileAsync(this byte[] bytes, string path, int bufferSize = 1)
         /// <summary>
         /// 字节数组异步保存大文件，可设置缓存大小，默认为【1M】
         /// </summary>
@@ -201,14 +201,14 @@ namespace Kane.Extension
         /// <param name="path">保存至指定路径，包含文件名</param>
         /// <param name="bufferSize">缓存大小，默认为【1M】</param>
         /// <returns></returns>
-        public static async Task<bool> ToBigFileAsnyc(this byte[] bytes, string path, int bufferSize = 1)
+        public static async Task<bool> ToBigFileAsync(this byte[] bytes, string path, int bufferSize = 1)
         {
             using var stream = new MemoryStream(bytes);
-            return await ToBigFileAsnyc(stream, path, bufferSize);
+            return await ToBigFileAsync(stream, path, bufferSize);
         }
         #endregion
 
-        #region 流数据异步保存大文件，可设置缓存大小，默认为【1M】 + ToBigFileAsnyc(this Stream stream, string path, int bufferSize = 1)
+        #region 流数据异步保存大文件，可设置缓存大小，默认为【1M】 + ToBigFileAsync(this Stream stream, string path, int bufferSize = 1)
         /// <summary>
         /// 流数据异步保存大文件，可设置缓存大小，默认为【1M】
         /// </summary>
@@ -216,7 +216,7 @@ namespace Kane.Extension
         /// <param name="path">保存至指定路径，包含文件名</param>
         /// <param name="bufferSize">缓存大小，默认为【1M】</param>
         /// <returns></returns>
-        public static async Task<bool> ToBigFileAsnyc(this Stream stream, string path, int bufferSize = 1)
+        public static async Task<bool> ToBigFileAsync(this Stream stream, string path, int bufferSize = 1)
         {
             stream.Seek(0, SeekOrigin.Begin);
             using var fileStream = new FileStream(path, FileMode.Create);

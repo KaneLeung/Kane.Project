@@ -48,9 +48,9 @@ namespace Kane.Extension.Json
                 IgnoreNullValues = true,//忽略Null值
                 //PropertyNameCaseInsensitive = true;//反序列化是否不区分大小写
             };
-            options.Converters.Add(new JsonConverterEx.DateTimeConverter());//使用【2020-02-21 17:06:15】时间格式
-            options.Converters.Add(new JsonConverterEx.BoolConverter());//"true"/"false"识别为boolean的True/False
-            options.Converters.Add(new JsonConverterEx.IntConverter());//"88"转为Int
+            options.Converters.Add(new JsonConverters.DateTimeConverter());//使用【2020-02-21 17:06:15】时间格式
+            options.Converters.Add(new JsonConverters.BoolConverter());//"true"/"false"识别为boolean的True/False
+            options.Converters.Add(new JsonConverters.IntConverter());//"88"转为Int
             options.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);//中文不会被编码
             options.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
             #endregion

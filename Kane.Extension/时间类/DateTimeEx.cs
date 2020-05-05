@@ -2,16 +2,16 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
-* 类 名 称 ：DateTimeHelper
-* 类 描 述 ：时间类扩展
+* 类 名 称 ：DateTimeEx
+* 类 描 述 ：时间类扩展类
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.Extension
 * 机器名称 ：KK-MAGICBOOK 
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:17:28
-* 更新时间 ：2020/03/23 13:17:28
-* 版 本 号 ：v1.0.5.0
+* 更新时间 ：2020/05/05 13:17:28
+* 版 本 号 ：v1.0.6.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -22,9 +22,9 @@ using System;
 namespace Kane.Extension
 {
     /// <summary>
-    /// 时间类扩展
+    /// 时间类扩展类
     /// </summary>
-    public static class DateTimeHelper
+    public static class DateTimeEx
     {
         #region 将DateTime转成当天起始时间 + DayStart(this DateTime value)
         /// <summary>
@@ -44,7 +44,7 @@ namespace Kane.Extension
         public static DateTime NextDayStart(this DateTime value) => value.DayStart().AddDays(1);
         #endregion
 
-        #region 将DateTime转成上一天的开始时间 + NextDayStart(this DateTime value)
+        #region 将DateTime转成上一天的开始时间 + LastDayStart(this DateTime value)
         /// <summary>
         /// 将DateTime转成上一天的开始时间
         /// </summary>
@@ -62,7 +62,7 @@ namespace Kane.Extension
         public static DateTime MonthStart(this DateTime value) => new DateTime(value.Year, value.Month, 1);
         #endregion
 
-        #region 将DateTime转成下个月初的开始时间 + DateTime NextMonthStart(this DateTime value)
+        #region 将DateTime转成下个月初的开始时间 + NextMonthStart(this DateTime value)
         /// <summary>
         /// 将DateTime转成下个月初的开始时间
         /// </summary>
@@ -71,7 +71,7 @@ namespace Kane.Extension
         public static DateTime NextMonthStart(this DateTime value) => value.MonthStart().AddMonths(1);
         #endregion
 
-        #region 将DateTime转成上个月初的开始时间 + DateTime NextMonthStart(this DateTime value)
+        #region 将DateTime转成上个月初的开始时间 + LastMonthStart(this DateTime value)
         /// <summary>
         /// 将DateTime转成上个月初的开始时间
         /// </summary>
@@ -119,7 +119,7 @@ namespace Kane.Extension
         #region 获取本周时间段，通常用法 Start ≥ X < End + GetThisWeek()
         /// <summary>
         /// 获取本周时间段，通常用法 Start ≥ X ＜ End
-        /// 中国人习惯星期一为星期开始，因为星期日为0，所以要减七
+        /// <para>中国人习惯星期一为星期开始，因为星期日为0，所以要减七</para>
         /// </summary>
         /// <returns></returns>
         public static (DateTime Start, DateTime End) GetThisWeek()
@@ -130,10 +130,10 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取某一周时间段，通常用法 Start ≥ X ＜ End + GetOneWeek(DateTime dateTime)
+        #region 获取某一周时间段，通常用法 Start ≥ X ＜ End + GetOneWeek(this DateTime dateTime)
         /// <summary>
         /// 获取本周时间段，通常用法 Start ≥ X ＜ End
-        /// 中国人习惯星期一为星期开始，因为星期日为0，所以要减七
+        /// <para>中国人习惯星期一为星期开始，因为星期日为0，所以要减七</para>
         /// </summary>
         /// <param name="dateTime">要获取的那一周其中一个时间</param>
         /// <returns></returns>
@@ -172,7 +172,7 @@ namespace Kane.Extension
 
         #region 将秒转换成时长字符串，包含天、时、分、秒 + TimeString(int seconds)
         /// <summary>
-        /// 将秒转换成运行时间
+        /// 将秒转换成时长字符串
         /// </summary>
         /// <param name="seconds">秒</param>
         /// <returns></returns>
@@ -207,7 +207,7 @@ namespace Kane.Extension
         #region 获取时间戳，可增加或减少【秒】 + TimeStamp(int seconds = 0)
         /// <summary>  
         /// 获取时间戳，可增加或减少【秒】
-        /// 时间戳, 又叫Unix Stamp. 从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数，不考虑闰秒。
+        /// <para>时间戳, 又叫Unix Stamp. 从1970年1月1日（UTC/GMT的午夜）开始所经过的秒数，不考虑闰秒。</para>
         /// </summary>  
         /// <param name="seconds">增加或减少【秒】</param>
         /// <returns></returns>  
@@ -225,8 +225,8 @@ namespace Kane.Extension
         #region 时间戳转为【当地时区】的DateTime + StampToLocal(long timeStamp)
         /// <summary>
         /// 时间戳转为【当地时区】的DateTime
-        /// 要到 2286/11/21 01:46:40 才会变成11位（10000000000）
-        /// int范围 -2,147,483,648 到 2,147,483,647
+        /// <para>要到 2286/11/21 01:46:40 才会变成11位（10000000000）</para>
+        /// <para>int范围 -2,147,483,648 到 2,147,483,647</para>
         /// </summary>
         /// <param name="timeStamp">时间戳</param>
         /// <returns></returns>
@@ -255,8 +255,8 @@ namespace Kane.Extension
         #region 时间戳转为【Utc时区】的DateTime + StampToUtc(long timeStamp)
         /// <summary>
         /// 时间戳转为【Utc时区】的DateTime
-        /// 要到 2286/11/21 01:46:40 才会变成11位（10000000000）
-        /// int范围 -2,147,483,648 到 2,147,483,647
+        /// <para>要到 2286/11/21 01:46:40 才会变成11位（10000000000）</para>
+        /// <para>int范围 -2,147,483,648 到 2,147,483,647</para>
         /// </summary>
         /// <param name="timeStamp">时间戳</param>
         /// <returns></returns>
@@ -285,7 +285,7 @@ namespace Kane.Extension
         #region DateTime时间格式转换为Unix时间戳格式 + ToStamp(this DateTime value)
         /// <summary>
         /// DateTime时间格式转换为Unix时间戳格式
-        /// 用Int最大值是2038年01月19日03时14分07秒，超过可用Long
+        /// <para>用Int最大值是2038年01月19日03时14分07秒，超过可用Long</para>
         /// </summary>
         /// <param name="value">要转换的时间</param>
         /// <returns></returns>
@@ -330,6 +330,47 @@ namespace Kane.Extension
             if (timeSpan.Minutes != 0)
                 return $"{(timeSpan.Minutes < 0 ? timeSpan.Minutes * -1 : timeSpan.Minutes)}分钟{tag}";
             return $"{(timeSpan.Seconds < 0 ? timeSpan.Seconds * -1 : timeSpan.Seconds)}秒{tag}";
+        }
+        #endregion
+
+        #region 计算周岁年龄 + GetAge(this DateTime dateOfBirth)
+        /// <summary>
+        /// 计算周岁年龄
+        /// </summary>
+        /// <param name="dateOfBirth">出生日期</param>
+        public static int GetAge(this DateTime dateOfBirth) => GetAge(dateOfBirth, DateTime.Now.Date);
+        #endregion
+
+        #region 计算周岁年龄，指定参考日期 + GetAge(this DateTime dateOfBirth, DateTime point)
+        /// <summary>
+        /// 计算周岁年龄，指定参考日期
+        /// </summary>
+        /// <param name="dateOfBirth">出生日期</param>
+        /// <param name="point">时间基准点</param>
+        public static int GetAge(this DateTime dateOfBirth, DateTime point)
+        {
+            var age = point.Year - dateOfBirth.Year;
+            if (point.Month < dateOfBirth.Month || (point.Month == dateOfBirth.Month && point.Day < dateOfBirth.Day)) --age;
+            return age;
+        }
+        #endregion
+
+        #region 根据当前时间获取当前是第几周 + WeekIndex(this DateTime datetime, bool crossover = false)
+        /// <summary>
+        /// 根据当前时间获取当前是第几周
+        /// </summary>
+        /// <param name="datetime">当前时间</param>
+        /// <param name="crossover">开启【交叉年】：像2016年12月31号与2017年1月1号刚好在同一星期，【开启】交叉年后，则12月31号为第【1】周，否则为【53】周</param>
+        /// <returns></returns>
+        public static int WeekIndex(this DateTime datetime, bool crossover = false)
+        {
+            int dayOfYear = datetime.DayOfYear;//求出此时间在一年中的位置
+            int dayOfWeek = (int)new DateTime(datetime.Year, 1, 1).DayOfWeek;//当年第一天的星期几
+            dayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;//当年第一天是星期几，中国人习惯星期一为星期开始，因为星期日为0，所以为7
+            var (Start, End) = datetime.GetOneWeek();
+            int index = (int)Math.Ceiling(((double)dayOfYear + dayOfWeek - 1) / 7);//确定当前是第几周
+            if (crossover && Start.Year < End.Year) index = 1;//判断是否为交叉年
+            return index;
         }
         #endregion
     }

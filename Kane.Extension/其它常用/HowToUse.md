@@ -1,7 +1,7 @@
 
 ### 100线程并发
 ```
-    var scheduler = new KaneTaskScheduler(100);
+    var scheduler = new TaskSchedulerMax(100);
     Task[] tasks = new Task[100];
     for (int i = 0; i < 100; i++)
     {

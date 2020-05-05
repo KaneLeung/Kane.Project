@@ -21,7 +21,6 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace Kane.WinForm
 {
@@ -116,7 +115,7 @@ namespace Kane.WinForm
         {
             using Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
             return (int)graphics.DpiX;
-        } 
+        }
         #endregion
     }
 }

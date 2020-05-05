@@ -308,7 +308,7 @@ namespace Kane.Extension
                 {
                     tempMemory.Write(Buffer, 0, readBytes);
                 }
-                return tempMemory.ToArray().ByteToString();
+                return tempMemory.ToArray().BytesToString();
             }
             catch
             {
@@ -374,7 +374,7 @@ namespace Kane.Extension
                 int len = cryptoStream.Read(tmp, 0, byteValue.Length);
                 var byteResult = new byte[len];
                 Array.Copy(tmp, 0, byteResult, 0, len);
-                return byteResult.ByteToString();
+                return byteResult.BytesToString();
             }
             catch
             {
@@ -440,7 +440,7 @@ namespace Kane.Extension
                 int len = cryptoStream.Read(tmp, 0, byteValue.Length);
                 var byteResult = new byte[len];
                 Array.Copy(tmp, 0, byteResult, 0, len);
-                return byteResult.ByteToString();
+                return byteResult.BytesToString();
             }
             catch
             {

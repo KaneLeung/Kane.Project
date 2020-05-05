@@ -3,6 +3,7 @@
 ##https://docs.microsoft.com/zh-cn/windows/win32/winmsg/about-messages-and-message-queues
 ##http://www.pinvoke.net/default.aspx/Constants/WM.html
 ##http://pinvoke.net/default.aspx/Enums/WindowsMessages.html
+##https://github.com/dotnet/winforms/blob/5d7ad6eb0e/src/System.Windows.Forms.Primitives/src/Interop/User32/Interop.WindowMessage.cs
 
 ``` CSharp
 namespace WindowsUtilities

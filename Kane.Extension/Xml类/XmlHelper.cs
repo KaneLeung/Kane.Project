@@ -64,7 +64,7 @@ namespace Kane.Extension
         /// <param name="removeVersion">是否去掉版本信息</param>
         /// <returns></returns>
         public static string ToXml<T>(this T value, bool removeNamespace = false, bool removeVersion = false) where T : class, new()
-            => ToXmlBytes(value, removeNamespace, removeVersion).ByteToString();
+            => ToXmlBytes(value, removeNamespace, removeVersion).BytesToString();
         #endregion
 
         #region 将对象Xml序列化成字节数组【Btye[]】 + ToXmlBytes<T>(this T value, bool removeNamespace = false, bool removeVersion = false) where T : class, new()

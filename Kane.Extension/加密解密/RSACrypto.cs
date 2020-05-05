@@ -192,7 +192,7 @@ namespace Kane.Extension
         {
             using RSA rsa = RSA.Create();
             RSAFromJson(rsa, privateKey);
-            byte[] valueBytes = StringHelper.HexToByte(value);
+            byte[] valueBytes = StringEx.HexToByte(value);
             byte[] outBytes = rsa.Decrypt(valueBytes, padding);
             return Encoding.UTF8.GetString(outBytes);
         }
@@ -227,7 +227,7 @@ namespace Kane.Extension
         {
             using RSA rsa = RSA.Create();
             RSAFromJson(rsa, privateKey);
-            byte[] valueBytes = StringHelper.HexToByte(value);
+            byte[] valueBytes = StringEx.HexToByte(value);
             byte[] outBytes = rsa.DecryptValue(valueBytes);
             return Encoding.UTF8.GetString(outBytes);
         }

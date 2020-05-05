@@ -2,16 +2,16 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
-* 类 名 称 ：ConvertHelper
-* 类 描 述 ：转换类扩展
+* 类 名 称 ：ConvertEx
+* 类 描 述 ：转换类扩展类
 * 所在的域 ：KK-MAGICBOOK
 * 命名空间 ：Kane.Extension
 * 机器名称 ：KK-MAGICBOOK 
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:25:16
-* 更新时间 ：2020/03/18 18:00:16
-* 版 本 号 ：v1.0.3.0
+* 更新时间 ：2020/05/05 13:00:16
+* 版 本 号 ：v1.0.4.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -26,9 +26,9 @@ using System.Text.RegularExpressions;
 namespace Kane.Extension
 {
     /// <summary>
-    /// 转换类扩展
+    /// 转换类扩展类
     /// </summary>
-    public static class ConvertHelper
+    public static class ConvertEx
     {
         #region 泛型转换为Int,失败时返回默认值0 + ToInt<T>(this T value, int returnValue = 0)
         /// <summary>
@@ -197,10 +197,42 @@ namespace Kane.Extension
         }
         #endregion
 
+        #region 转换大写金额 + ToAmoutInWords(float value)
+        /// <summary>
+        /// 转换大写金额
+        /// <para>【资料来源】https://baike.baidu.com/item/大写金额</para>
+        /// </summary>
+        /// <param name="value">要转换的值</param>
+        /// <returns></returns>
+        public static string ToAmoutInWords(this float value)
+        {
+            var valueString = value.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
+            var temp = Regex.Replace(valueString, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
+            var result = Regex.Replace(temp, ".", m => "负元空零壹贰叁肆伍陆柒捌玖空空空空空空空分角拾佰仟万亿兆京垓秭穰"[m.Value[0] - '-'].ToString());
+            return result;
+        }
+        #endregion
+
+        #region 转换大写金额 + ToAmoutInWords(double value)
+        /// <summary>
+        /// 转换大写金额
+        /// <para>【资料来源】https://baike.baidu.com/item/大写金额</para>
+        /// </summary>
+        /// <param name="value">要转换的值</param>
+        /// <returns></returns>
+        public static string ToAmoutInWords(this double value)
+        {
+            var valueString = value.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
+            var temp = Regex.Replace(valueString, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
+            var result = Regex.Replace(temp, ".", m => "负元空零壹贰叁肆伍陆柒捌玖空空空空空空空分角拾佰仟万亿兆京垓秭穰"[m.Value[0] - '-'].ToString());
+            return result;
+        }
+        #endregion
+
         #region 转换大写金额 + ToAmoutInWords(decimal value)
         /// <summary>
         /// 转换大写金额
-        /// https://baike.baidu.com/item/大写金额
+        /// <para>【资料来源】https://baike.baidu.com/item/大写金额</para>
         /// </summary>
         /// <param name="value">要转换的值</param>
         /// <returns></returns>
@@ -213,19 +245,23 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 转换大写金额 + ToAmoutInWords(double value)
+        #region 转换大写金额 + ToAmoutInWords(this string value)
         /// <summary>
-        /// 转换大写金额
-        /// https://baike.baidu.com/item/大写金额
+        /// 字符串转换大写金额，失败返回【string.Empty】
+        /// <para>【资料来源】https://baike.baidu.com/item/大写金额</para>
         /// </summary>
-        /// <param name="value">要转换的值</param>
+        /// <param name="value">要转换的字符串</param>
         /// <returns></returns>
-        public static string ToAmoutInWords(this double value)
+        public static string ToAmoutInWords(this string value)
         {
-            var valueString = value.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
-            var temp = Regex.Replace(valueString, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
-            var result = Regex.Replace(temp, ".", m => "负元空零壹贰叁肆伍陆柒捌玖空空空空空空空分角拾佰仟万亿兆京垓秭穰"[m.Value[0] - '-'].ToString());
-            return result;
+            if (decimal.TryParse(value, out decimal dec))
+            {
+                value = dec.ToString("#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A");
+                var temp = Regex.Replace(value, @"((?<=-|^)[^1-9]*)|((?'z'0)[0A-E]*((?=[1-9])|(?'-z'(?=[F-L\.]|$))))|((?'b'[F-L])(?'z'0)[0A-L]*((?=[1-9])|(?'-z'(?=[\.]|$))))", "${b}${z}");
+                var result = Regex.Replace(temp, ".", m => "负元空零壹贰叁肆伍陆柒捌玖空空空空空空空分角拾佰仟万亿兆京垓秭穰"[m.Value[0] - '-'].ToString());
+                return result;
+            }
+            else return string.Empty;
         }
         #endregion
 
@@ -441,7 +477,7 @@ namespace Kane.Extension
         #region 将电话号码转换为国际标准【International Standard】的电话号码，可自定义国家代码 + ToISPhoneNo(this string value, string code)
         /// <summary>
         /// 将电话号码转换为国际标准【International Standard】的电话号码，可自定义国家代码
-        /// https://zh.wikipedia.org/wiki/国际电话区号列表
+        /// <para>【资料来源】https://zh.wikipedia.org/wiki/国际电话区号列表</para>
         /// </summary>
         /// <param name="value">要转的电话号码</param>
         /// <param name="code">国家代码</param>
@@ -452,7 +488,7 @@ namespace Kane.Extension
         #region 将国内号码转换为国际标准【International Standard】的电话号码 + ToISPhoneNo(this string value)
         /// <summary>
         /// 将国内号码转换为国际标准【International Standard】的电话号码
-        /// https://zh.wikipedia.org/wiki/国际电话区号列表
+        /// <para>【资料来源】https://zh.wikipedia.org/wiki/国际电话区号列表</para>
         /// </summary>
         /// <param name="value">要转的电话号码</param>
         /// <returns></returns>

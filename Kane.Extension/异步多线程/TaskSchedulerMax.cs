@@ -2,7 +2,7 @@
 /*-----------------------------------------------------------------
 * 项目名称 ：Kane.Extension
 * 项目描述 ：通用扩展工具
-* 类 名 称 ：KaneTaskScheduler
+* 类 名 称 ：TaskSchedulerMax
 * 类 描 述 ：自定义任务计划
 * 所在的域 ：KK-HOME
 * 命名空间 ：Kane.Extension
@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/29 23:19:25
-* 更新时间 ：2020/2/29 23:19:25
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/5/05 13:19:25
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -30,7 +30,7 @@ namespace Kane.Extension
     /// 自定义任务计划，可控件多线程并发线
     /// <para>https://docs.microsoft.com/zh-cn/dotnet/api/system.threading.tasks.taskscheduler?view=netcore-3.1</para>
     /// </summary>
-    public class KaneTaskScheduler : TaskScheduler, IDisposable
+    public class TaskSchedulerMax : TaskScheduler, IDisposable
     {
         #region 私有成员
         private BlockingCollection<Task> TASK_LIST = new BlockingCollection<Task>();
@@ -44,12 +44,12 @@ namespace Kane.Extension
         public override int MaximumConcurrencyLevel { get => THREAD_LIST.Count; }
         #endregion
 
-        #region 构造函数 + KaneTaskScheduler(int max = 5)
+        #region 构造函数 + TaskSchedulerMax(int max = 5)
         /// <summary>
         /// 构造函数，默认并发数为【5】
         /// </summary>
         /// <param name="max">最大并发数，最小为【1】</param>
-        public KaneTaskScheduler(int max = 5)
+        public TaskSchedulerMax(int max = 5)
         {
             if (max < 1) throw new ArgumentOutOfRangeException(nameof(max), "最小线程数不能少于【1】");
             THREAD_LIST.AddRange(Enumerable.Range(0, max).Select(_ =>

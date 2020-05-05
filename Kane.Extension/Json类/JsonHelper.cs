@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/11/15 23:56:17
-* 更新时间 ：2020/01/15 23:16:17
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/05/05 11:16:17
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -39,9 +39,14 @@ namespace Kane.Extension
         private string JSON_DATA;
         private bool IS_FILE = false;
         private string FILE_PATH = string.Empty;
+        /// <summary>
+        /// 默认分割的字符，默认为【:】半角冒号
+        /// </summary>
+        public static char SplitChar = ':';
 #if (NETCOREAPP3_0 || NETCOREAPP3_1)
         /// <summary>
         /// 字符串转JsonDocument时设置的参数，可设置深度
+        /// <para>【MaxDepth】深度默认为64</para>
         /// </summary>
         public static JsonDocumentOptions Options = default;
 #else
@@ -119,18 +124,18 @@ namespace Kane.Extension
         #region 根据关键词，获取对应的值 + GetValue<T>(string keys, T returnValue = default)
         /// <summary>
         /// 根据关键词，获取对应的值，关键词可用 Key1:Key2:Key3进行遍历，
-        /// 如果最后一级是Int值，可以取数组的索引对应的值
-        /// 最大深度为64
+        /// <para>如果最后一级是Int值，可以取数组的索引对应的值</para>
+        /// <para>默认最大【深度】为64</para>
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时可用【:】半角冒号分割</param>
         /// <param name="returnValue">失败返回值</param>
         /// <returns></returns>
         public T GetValue<T>(string keys, T returnValue = default)
         {
             try
             {
-                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                var keyValues = keys.Trim(SplitChar).Split(SplitChar);
                 using var doc = JsonDocument.Parse(JSON_DATA, Options);
                 List<JsonElement> result = new List<JsonElement>();
                 if (keyValues.Length > 1 && int.TryParse(keyValues.LastOrDefault(), out int index))//大于两个元素，并且最后一位能转为Int类型
@@ -224,6 +229,7 @@ namespace Kane.Extension
                 else if (type.Equals(typeof(short))) return element.TryGetInt16(out short result) ? (T)Convert.ChangeType(result, type) : returnValue;
                 else if (type.Equals(typeof(int))) return element.TryGetInt32(out int result) ? (T)Convert.ChangeType(result, type) : returnValue;
                 else if (type.Equals(typeof(long))) return element.TryGetInt64(out long result) ? (T)Convert.ChangeType(result, type) : returnValue;
+                else if (type.Equals(typeof(float))) return element.TryGetSingle(out float result) ? (T)Convert.ChangeType(result, type) : returnValue;
                 else if (type.Equals(typeof(double))) return element.TryGetDouble(out double result) ? (T)Convert.ChangeType(result, type) : returnValue;
                 else if (type.Equals(typeof(decimal))) return element.TryGetDecimal(out decimal result) ? (T)Convert.ChangeType(result, type) : returnValue;
                 else if (type.Equals(typeof(bool))) return (T)Convert.ChangeType(element.ToString().ToBool(), type);
@@ -235,12 +241,13 @@ namespace Kane.Extension
                     else if (actType.Equals(typeof(short))) return element.TryGetInt16(out short result) ? (T)Convert.ChangeType(result, actType) : returnValue;
                     else if (actType.Equals(typeof(int))) return element.TryGetInt32(out int result) ? (T)Convert.ChangeType(result, actType) : returnValue;
                     else if (actType.Equals(typeof(long))) return element.TryGetInt64(out long result) ? (T)Convert.ChangeType(result, actType) : returnValue;
+                    else if (actType.Equals(typeof(float))) return element.TryGetSingle(out float result) ? (T)Convert.ChangeType(result, actType) : returnValue;
                     else if (actType.Equals(typeof(double))) return element.TryGetDouble(out double result) ? (T)Convert.ChangeType(result, actType) : returnValue;
                     else if (actType.Equals(typeof(decimal))) return element.TryGetDecimal(out decimal result) ? (T)Convert.ChangeType(result, actType) : returnValue;
                     else if (actType.Equals(typeof(bool))) return (T)Convert.ChangeType(element.ToString().ToBool(), actType);
                     else return default;
                 }
-                else return (T)Convert.ChangeType(JsonSerializer.Deserialize(element.ToString(), type), type);//一些如Array\List\的集合
+                else return JsonSerializer.Deserialize<T>(element.ToString());//一些如Array、List 的集合
             }
             catch (Exception ex)
             {
@@ -257,14 +264,14 @@ namespace Kane.Extension
         /// 在原有的JSON字符串中修改或添加新的Json元素
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="value">修改或添加的内容</param>
         /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValue<T>(string keys, T value)
         {
             try
             {
-                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                var keyValues = keys.Trim(SplitChar).Split(SplitChar);
                 var buffer = new System.Buffers.ArrayBufferWriter<byte>();
                 using var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = true });
                 writer.WriteStartObject();
@@ -293,7 +300,7 @@ namespace Kane.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="source">源数据，可以是Json字符串或文件路径</param>
         /// <param name="encoding">编码</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="value">修改或添加的内容</param>
         /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValue<T>(string source, Encoding encoding, string keys, T value)
@@ -301,7 +308,7 @@ namespace Kane.Extension
             try
             {
                 if (File.Exists(source)) source = File.ReadAllText(source, encoding);
-                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                var keyValues = keys.Trim(SplitChar).Split(SplitChar);
                 var buffer = new System.Buffers.ArrayBufferWriter<byte>();
                 using var writer = new Utf8JsonWriter(buffer, new JsonWriterOptions { Indented = true });
                 writer.WriteStartObject();
@@ -328,7 +335,7 @@ namespace Kane.Extension
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="write">Utf8JsonWriter写入器</param>
-        /// <param name="keys">关键词，可以是多个，用【:】冒号分割</param>
+        /// <param name="keys">关键词，可以是多个，默认用【:】半角冒号分割</param>
         /// <param name="properties">Json属性</param>
         /// <param name="value">要写入的值</param>
         /// <param name="flag">查找到目标标志</param>
@@ -378,6 +385,7 @@ namespace Kane.Extension
                     else if (type.Equals(typeof(short))) write.WriteNumber(item.Name, (short)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(int))) write.WriteNumber(item.Name, (int)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(long))) write.WriteNumber(item.Name, (long)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(float))) write.WriteNumber(item.Name, (float)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(double))) write.WriteNumber(item.Name, (double)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(decimal))) write.WriteNumber(item.Name, (decimal)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(bool))) write.WriteBoolean(item.Name, (bool)Convert.ChangeType(value, type));
@@ -400,6 +408,7 @@ namespace Kane.Extension
                     else if (type.Equals(typeof(short))) write.WriteNumber(keys[index], (short)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(int))) write.WriteNumber(keys[index], (int)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(long))) write.WriteNumber(keys[index], (long)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(float))) write.WriteNumber(keys[index], (float)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(double))) write.WriteNumber(keys[index], (double)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(decimal))) write.WriteNumber(keys[index], (decimal)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(bool))) write.WriteBoolean(keys[index], (bool)Convert.ChangeType(value, type));
@@ -427,7 +436,7 @@ namespace Kane.Extension
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="write">Utf8JsonWriter写入器</param>
-        /// <param name="keys">关键词，可以是多个，用【:】冒号分割</param>
+        /// <param name="keys">关键词，可以是多个，默认用【:】半角冒号分割</param>
         /// <param name="elements">Json元素</param>
         /// <param name="value">要写入的值</param>
         /// <param name="flag">查找到目标标志</param>
@@ -474,17 +483,16 @@ namespace Kane.Extension
         /// <summary>
         /// 根据关键词，获取对应的值，关键词可用 Key1:Key2:Key3进行遍历，
         /// 如果最后一级是Int值，可以取数组的索引对应的值
-        /// 最大深度为64
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="returnValue">失败返回值</param>
         /// <returns></returns>
         public T GetValue<T>(string keys, T returnValue = default)
         {
             try
             {
-                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                var keyValues = keys.Trim(SplitChar).Split(SplitChar);
                 var rootData = JObject.Parse(JSON_DATA, Settings);
                 if (keyValues.Length > 1)
                 {
@@ -514,7 +522,7 @@ namespace Kane.Extension
 #if DEBUG
                 Console.WriteLine(ex.Message);
 #endif
-                throw;
+                throw ex;
                 //return returnValue;
             }
         }
@@ -542,14 +550,14 @@ namespace Kane.Extension
         /// 在原有的JSON字符串中修改或添加新的Json元素
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="value">修改或添加的内容</param>
         /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValue<T>(string keys, T value)
         {
             try
             {
-                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                var keyValues = keys.Trim(SplitChar).Split(SplitChar);
                 StringWriter stringWriter = new StringWriter();
                 using JsonWriter writer = new JsonTextWriter(stringWriter) { Formatting = Formatting.Indented };
                 writer.WriteStartObject();
@@ -565,9 +573,9 @@ namespace Kane.Extension
                 return JSON_DATA;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         #endregion
@@ -579,7 +587,7 @@ namespace Kane.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="source">源数据，可以是Json字符串或文件路径</param>
         /// <param name="encoding">编码</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="value">修改或添加的内容</param>
         /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValue<T>(string source, Encoding encoding, string keys, T value)
@@ -587,7 +595,7 @@ namespace Kane.Extension
             try
             {
                 if (File.Exists(source)) source = File.ReadAllText(source, encoding);
-                var keyValues = keys.TrimStart(':').TrimEnd(':').Split(':');
+                var keyValues = keys.Trim(SplitChar).Split(SplitChar);
                 StringWriter stringWriter = new StringWriter();
                 using JsonWriter writer = new JsonTextWriter(stringWriter) { Formatting = Formatting.Indented };
                 writer.WriteStartObject();
@@ -614,7 +622,7 @@ namespace Kane.Extension
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="write">JsonWriter写入器</param>
-        /// <param name="keys">关键词，可以是多个，用【:】冒号分割</param>
+        /// <param name="keys">关键词，可以是多个，默认用【:】半角冒号分割</param>
         /// <param name="properties">Json属性</param>
         /// <param name="value">要写入的值</param>
         /// <param name="flag">查找到目标标志</param>
@@ -706,6 +714,7 @@ namespace Kane.Extension
                     else if (type.Equals(typeof(short))) write.WriteValue((short)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(int))) write.WriteValue((int)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(long))) write.WriteValue((long)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(float))) write.WriteValue((float)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(double))) write.WriteValue((double)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(decimal))) write.WriteValue((decimal)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(bool))) write.WriteValue((bool)Convert.ChangeType(value, type));
@@ -729,6 +738,7 @@ namespace Kane.Extension
                     else if (type.Equals(typeof(short))) write.WriteValue((short)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(int))) write.WriteValue((int)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(long))) write.WriteValue((long)Convert.ChangeType(value, type));
+                    else if (type.Equals(typeof(float))) write.WriteValue((float)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(double))) write.WriteValue((double)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(decimal))) write.WriteValue((decimal)Convert.ChangeType(value, type));
                     else if (type.Equals(typeof(bool))) write.WriteValue((bool)Convert.ChangeType(value, type));
@@ -757,7 +767,7 @@ namespace Kane.Extension
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="write">JsonWriter写入器</param>
-        /// <param name="keys">关键词，可以是多个，用【:】冒号分割</param>
+        /// <param name="keys">关键词，可以是多个，默认用【:】半角冒号分割</param>
         /// <param name="tokens">Json元素</param>
         /// <param name="value">要写入的值</param>
         /// <param name="flag">查找到目标标志</param>
@@ -833,7 +843,7 @@ namespace Kane.Extension
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source">源数据，可以是Json字符串或文件路径</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="value">修改或添加的内容</param>
         /// <returns>修改后或添加后的Json字符串</returns>
         public string SetValue<T>(string source, string keys, T value) => SetValue(source, Encoding.UTF8, keys, value);
@@ -861,7 +871,7 @@ namespace Kane.Extension
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source">源数据，可以是Json字符串或文件路径</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="value">修改或添加的内容</param>
         /// <param name="path">保存的文件路径+文件名</param>
         /// <returns>修改后的Json字符串</returns>
@@ -875,13 +885,13 @@ namespace Kane.Extension
         /// <typeparam name="T"></typeparam>
         /// <param name="source">源数据，可以是Json字符串或文件路径</param>
         /// <param name="encoding">编码</param>
-        /// <param name="keys">关键词，多级时可用【:】冒号分割</param>
+        /// <param name="keys">关键词，多级时默认用【:】半角冒号分割</param>
         /// <param name="value">修改或添加的内容</param>
         /// <param name="path">保存的文件路径+文件名</param>
         /// <returns>修改后的Json字符串</returns>
         public string SetValueSaveFile<T>(string source, Encoding encoding, string keys, T value, string path)
         {
-            var data = SetValue<T>(source, encoding, keys, value);
+            var data = SetValue(source, encoding, keys, value);
             File.WriteAllText(path, data, encoding);
             return data;
         }
@@ -900,9 +910,9 @@ namespace Kane.Extension
                 File.WriteAllText(FILE_PATH, JSON_DATA);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
         #endregion
