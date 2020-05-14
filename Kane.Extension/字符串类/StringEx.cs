@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:26:06
-* 更新时间 ：2020/05/05 12:26:06
-* 版 本 号 ：v1.0.3.0
+* 更新时间 ：2020/05/14 12:26:06
+* 版 本 号 ：v1.0.4.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -357,23 +357,21 @@ namespace Kane.Extension
             => ignoreCase ? keys.Any(key => value.EndsWith(key, true, null)) : keys.Any(key => value.EndsWith(key));
         #endregion
 
-        #region 判断两个字符串是否相同，忽略大小写 + EqualsIgnoreCase(this string obj, string value, bool strict = false)
+        #region 判断两个字符串是否相同，忽略大小写 + EqualsIgnoreCase(this string str0, string str1, bool strict = false)
         /// <summary>
         /// 判断两个字符串是否相同，忽略大小写
-        /// <para>默认为【非严紧模式】，即【Null】和【string.Empty】比较时为False</para>
-        /// <para>【Null】与【Null】为 True</para>
-        /// <para>【string.Empty】与【""】为 True</para>
-        /// <para>【严紧模式】时，【Null】与【string.Empty】或【""】为 False，否则为True</para>
+        /// <para> 默认为【非严紧模式】，即【Null】和【string.Empty】或【""】比较时为True</para>
+        /// <para>【严紧模式】时，【Null】与【string.Empty】或【""】比较时为 False</para>
         /// </summary>
-        /// <param name="obj">要比较的字符串1</param>
-        /// <param name="value">要比较的字符串2</param>
-        /// <param name="strict">严紧模式，即【Null】和【string.Empty】或【""】比较时为False</param>
+        /// <param name="str0">要比较的字符串1</param>
+        /// <param name="str1">要比较的字符串2</param>
+        /// <param name="strict">是否为严紧模式</param>
         /// <returns></returns>
-        public static bool EqualsIgnoreCase(this string obj, string value, bool strict = false)
+        public static bool EqualsIgnoreCase(this string str0, string str1, bool strict = false)
         {
-            if (strict == false && obj.IsNullOrEmpty() && value.IsNullOrEmpty()) return true;
-            if (obj is null || value is null) return (obj is null && value is null) ? true : false;
-            return obj.Equals(value, StringComparison.OrdinalIgnoreCase);
+            if (strict == false && str0.IsNullOrEmpty() && str1.IsNullOrEmpty()) return true;
+            if (str0 is null || str1 is null) return str0 is null && str1 is null ? true : false;
+            return str0.Equals(str1, StringComparison.OrdinalIgnoreCase);
         }
         #endregion
 
@@ -468,9 +466,9 @@ namespace Kane.Extension
         /// <returns></returns>
         public static string Replace(this string value, int start, int length, char replaceChar = '*')
         {
-            if (value.IsNullOrEmpty()) throw new ArgumentNullException($"【{nameof(value)}】原字符串不能为空");
-            if (value.Length < start) throw new ArgumentOutOfRangeException($"【{nameof(start)}】开始位置超出原字符串的索引范围");
-            if (value.Length < start + length) throw new ArgumentOutOfRangeException($"【{nameof(length)}】替换的长度超出原字符串的索引范围");
+            if (value.IsNullOrEmpty() || value?.Length < start) return value;
+            if (value.Length < start + length) length = value.Length - start;
+            if (length < 1) return value;
             var temp = new char[length];
             for (int i = 0; i < length; i++)
                 temp[i] = replaceChar;

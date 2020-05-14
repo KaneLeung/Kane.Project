@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:16:16
-* 更新时间 ：2020/05/05 13:16:16
-* 版 本 号 ：v1.0.2.0
+* 更新时间 ：2020/05/14 13:16:16
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -40,25 +40,25 @@ namespace Kane.Extension
         public static string Description(this Enum item, bool inherit = false)
         {
             FieldInfo fieldInfo = item.GetType().GetField(item.ToString());
-            DescriptionAttribute[] arrDesc = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), inherit);
-            return arrDesc[0]?.Description ?? string.Empty;
+            var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(fieldInfo, typeof(DescriptionAttribute), inherit);
+            return attribute?.Description ?? string.Empty;
         }
         #endregion
 
 #if !NET40
-        #region 通过描述获取Enum值 + FormDescription<T>(string desc)
+        #region 通过描述获取Enum值 + FromDescription<T>(string description) where T : Enum
         /// <summary>
         /// 通过描述获取Enum值
         /// </summary>
         /// <typeparam name="T">枚举类型</typeparam>
-        /// <param name="desc">描述</param>
-        public static T FormDescription<T>(string desc)
+        /// <param name="description">描述</param>
+        public static T FromDescription<T>(string description) where T : Enum
         {
-            if (desc.IsNullOrEmpty()) throw new ArgumentNullException($"【{nameof(desc)}】不能为空。");
+            if (description.IsNullOrEmpty()) throw new ArgumentNullException($"【{nameof(description)}】不能为空。");
             var type = typeof(T);
             var fieldInfos = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.Default);
-            var fieldInfo = fieldInfos.FirstOrDefault(p => p.GetCustomAttribute<DescriptionAttribute>(false)?.Description == desc);
-            if (fieldInfo == null) throw new ArgumentNullException($"在枚举【{type.FullName}】中，未发现描述特性为【{desc}】的枚举项。");
+            var fieldInfo = fieldInfos.FirstOrDefault(k => k.GetCustomAttribute<DescriptionAttribute>(false)?.Description == description);
+            if (fieldInfo == null) throw new ArgumentNullException($"在枚举【{type.FullName}】中，未发现描述特性为【{description}】的枚举项。");
             return (T)Enum.Parse(type, fieldInfo.Name);
         }
         #endregion
@@ -79,10 +79,10 @@ namespace Kane.Extension
                 var temp = new EnumItem
                 {
                     Key = item.ToString(),
-                    Value = Convert.ToInt32(item)
+                    Value = Convert.ToInt32(item),
                 };
-                var arrDesc = item.GetType().GetField(item.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), inherit);
-                if (arrDesc.Any()) temp.Description = (arrDesc.First() as DescriptionAttribute).Description;
+                var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(item.GetType().GetField(temp.Key), typeof(DescriptionAttribute), inherit);
+                temp.Description = attribute?.Description ?? string.Empty;
                 result.Add(temp);
             }
             return result;
