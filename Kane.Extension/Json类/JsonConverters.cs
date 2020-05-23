@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/19 23:23:07
-* 更新时间 ：2020/3/23 13:23:07
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/5/23 10:23:07
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -29,9 +29,9 @@ namespace Kane.Extension
     /// </summary>
     public class JsonConverters
     {
-        #region 自定义IntConverter + IntConverter : JsonConverter<int>
+        #region 自定义IntConverter，可将Json字符串数值转成int + IntConverter : JsonConverter<int>
         /// <summary>
-        /// 自定义IntConverter
+        /// 自定义IntConverter，可将Json字符串数值转成int
         /// </summary>
         public class IntConverter : JsonConverter<int>
         {
@@ -83,6 +83,33 @@ namespace Kane.Extension
             /// <param name="options"></param>
             public override void Write(Utf8JsonWriter writer, int value, JsonSerializerOptions options) => writer.WriteNumberValue(value);
             #endregion
+        }
+        #endregion
+
+        #region 自定义LongConverter，可将Json字符串数值转成long + LongConverter : JsonConverter<long>
+        /// <summary>
+        /// 自定义LongConverter，可将Json字符串数值转成long
+        /// <para>部分long类型值(最大值2^63-1)会超过Javascript的最大安全Number(2^53-1)，浏览器/前端 使用JSON.parse()将不再保证准确性。</para>
+        /// </summary>
+        public class LongConverter : JsonConverter<long>
+        {
+            /// <summary>
+            /// 重写转换器Read方法
+            /// </summary>
+            /// <param name="reader"></param>
+            /// <param name="typeToConvert"></param>
+            /// <param name="options"></param>
+            /// <returns></returns>
+            public override long Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            => long.TryParse(reader.GetString(), out long result) ? result : default;
+
+            /// <summary>
+            /// 重写转换器Write方法
+            /// </summary>
+            /// <param name="writer"></param>
+            /// <param name="value"></param>
+            /// <param name="options"></param>
+            public override void Write(Utf8JsonWriter writer, long value, JsonSerializerOptions options) => writer.WriteStringValue(value.ToString());
         }
         #endregion
 
@@ -138,10 +165,11 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 自定义BoolConverter + BoolConverter : JsonConverter<bool>
+        #region 自定义BoolConverter，可将Json字符串"true"/"false"转成bool + BoolConverter : JsonConverter<bool>
         /// <summary>
-        /// System.Text.Json中接收的json中不能将 "true"/"false"识别为boolean的True/False，这也需要自定义Converter实现bool转换
-        /// https://github.com/dotnet/runtime/blob/master/src/libraries/System.Text.Json/src/System/Text/Json/Serialization/Converters/JsonValueConverterBoolean.cs
+        /// 自定义BoolConverter，可将Json字符串"true"/"false"转成bool
+        /// <para>System.Text.Json中接收的json中不能将 "true"/"false"识别为boolean的True/False，这也需要自定义Converter实现bool转换</para>
+        /// <para>https://github.com/dotnet/runtime/blob/master/src/libraries/System.Text.Json/src/System/Text/Json/Serialization/Converters/JsonValueConverterBoolean.cs</para>
         /// </summary>
         public class BoolConverter : JsonConverter<bool>
         {
