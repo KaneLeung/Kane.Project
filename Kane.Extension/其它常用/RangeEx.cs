@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/5/5 11:00:35
-* 更新时间 ：2020/5/5 11:00:35
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/5/23 11:00:35
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -92,6 +92,29 @@ namespace Kane.Extension
         /// <param name="returnValue">默认值</param>
         /// <returns>short</returns>
         public static short InRange(this short value, short min, short max, short returnValue) => value.InRange(min, max) ? value : returnValue;
+        #endregion
+
+        #region 判断当前【float】值是否在指定范围内 + InRange(this float value, short min, short max)
+        /// <summary>
+        /// 判断当前【float】值是否在指定范围内
+        /// </summary>
+        /// <param name="value">要判断的值</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <returns>bool</returns>
+        public static bool InRange(this float value, short min, short max) => value >= min && value <= max;
+        #endregion
+
+        #region 判断当前【float】值是否在指定范围内，否则返回默认值 + InRange(this float value, short min, short max, float returnValue)
+        /// <summary>
+        /// 判断当前【float】值是否在指定范围内，否则返回默认值
+        /// </summary>
+        /// <param name="value">要判断的值</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="returnValue">默认值</param>
+        /// <returns>short</returns>
+        public static float InRange(this float value, short min, short max, float returnValue) => value.InRange(min, max) ? value : returnValue;
         #endregion
 
         #region 判断当前【Double】值是否在指定范围内 + InRange(this double value, double min, double max)
