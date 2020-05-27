@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:25:16
-* 更新时间 ：2020/05/05 13:00:16
-* 版 本 号 ：v1.0.4.0
+* 更新时间 ：2020/05/16 13:00:16
+* 版 本 号 ：v1.0.5.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Kane.Extension
@@ -508,6 +509,25 @@ namespace Kane.Extension
             stream.Read(result, 0, result.Length);
             return result;
         }
+        #endregion
+
+        #region 将Stream转成String，默认使用UTF8编码 + StreamToString(this Stream stream)
+        /// <summary>
+        /// 将Stream转成String，默认使用UTF8编码
+        /// </summary>
+        /// <param name="stream">要转的Stream</param>
+        /// <returns></returns>
+        public static string StreamToString(this Stream stream) => stream.StreamToString(Encoding.UTF8);
+        #endregion
+
+        #region 将Stream转成String，可自定义编码 + StreamToString(this Stream stream, Encoding encoding)
+        /// <summary>
+        /// 将Stream转成String，可自定义编码
+        /// </summary>
+        /// <param name="stream">要转的Stream</param>
+        /// <param name="encoding">编码</param>
+        /// <returns></returns>
+        public static string StreamToString(this Stream stream, Encoding encoding) => stream.ToBytes().BytesToString(encoding);
         #endregion
     }
 }

@@ -10,14 +10,15 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:08:22
-* 更新时间 ：2020/05/05 10:42:22
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/05/28 10:42:22
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -523,6 +524,24 @@ namespace Kane.Extension
             }
             return (T)newObject;
         }
+        #endregion
+
+        #region 判断类型是否为可空类型 + IsNullable(this Type type)
+        /// <summary>
+        /// 判断类型是否为可空类型
+        /// </summary>
+        /// <param name="type">要判断的类型</param>
+        /// <returns></returns>
+        public static bool IsNullable(this Type type) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>); 
+        #endregion
+
+        #region 判断类型是否为集合类型 + IsCollection(this Type type)
+        /// <summary>
+        /// 判断类型是否为集合类型
+        /// </summary>
+        /// <param name="type">要判断的类型</param>
+        /// <returns></returns>
+        public static bool IsCollection(this Type type) => type.IsArray || type.GetInterfaces().Any(x => x == typeof(ICollection) || x == typeof(IEnumerable)); 
         #endregion
     }
 }

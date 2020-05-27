@@ -24,7 +24,7 @@ namespace Kane.Extension
     /// <summary>
     /// 压缩算法枚举类
     /// </summary>
-    public enum CompressMethod
+    public enum CompressMode
     {
         /// <summary>
         /// 不使用压缩方法

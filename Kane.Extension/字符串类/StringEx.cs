@@ -469,10 +469,7 @@ namespace Kane.Extension
             if (value.IsNullOrEmpty() || value?.Length < start) return value;
             if (value.Length < start + length) length = value.Length - start;
             if (length < 1) return value;
-            var temp = new char[length];
-            for (int i = 0; i < length; i++)
-                temp[i] = replaceChar;
-            return value.Remove(start, length).Insert(start, new string(temp));
+            return value.Remove(start, length).Insert(start, new string(replaceChar, length));
         }
         #endregion
     }

@@ -10,14 +10,15 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:17:28
-* 更新时间 ：2020/05/05 13:17:28
-* 版 本 号 ：v1.0.6.0
+* 更新时间 ：2020/05/16 13:17:28
+* 版 本 号 ：v1.0.7.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
 using System;
+using System.Globalization;
 
 namespace Kane.Extension
 {
@@ -26,58 +27,58 @@ namespace Kane.Extension
     /// </summary>
     public static class DateTimeEx
     {
-        #region 将DateTime转成当天起始时间 + DayStart(this DateTime value)
+        #region 将DateTime转成当天起始时间 + DayStart(this DateTime datetime)
         /// <summary>
         /// 将DateTime转成当天起始时间
         /// </summary>
-        /// <param name="value">要转的日期</param>
+        /// <param name="datetime">要转的日期</param>
         /// <returns></returns>
-        public static DateTime DayStart(this DateTime value) => new DateTime(value.Year, value.Month, value.Day);
+        public static DateTime DayStart(this DateTime datetime) => new DateTime(datetime.Year, datetime.Month, datetime.Day);
         #endregion
 
-        #region 将DateTime转成下一天的开始时间 + NextDayStart(this DateTime value)
+        #region 将DateTime转成下一天的开始时间 + NextDayStart(this DateTime datetime)
         /// <summary>
         /// 将DateTime转成下一天的开始时间
         /// </summary>
-        /// <param name="value">要转的日期</param>
+        /// <param name="datetime">要转的日期</param>
         /// <returns></returns>
-        public static DateTime NextDayStart(this DateTime value) => value.DayStart().AddDays(1);
+        public static DateTime NextDayStart(this DateTime datetime) => datetime.DayStart().AddDays(1);
         #endregion
 
-        #region 将DateTime转成上一天的开始时间 + LastDayStart(this DateTime value)
+        #region 将DateTime转成上一天的开始时间 + LastDayStart(this DateTime datetime)
         /// <summary>
         /// 将DateTime转成上一天的开始时间
         /// </summary>
-        /// <param name="value">要转的日期</param>
+        /// <param name="datetime">要转的日期</param>
         /// <returns></returns>
-        public static DateTime LastDayStart(this DateTime value) => value.DayStart().AddDays(-1);
+        public static DateTime LastDayStart(this DateTime datetime) => datetime.DayStart().AddDays(-1);
         #endregion
 
-        #region 将DateTime转成当月初时间 + MonthStart(this DateTime value)
+        #region 将DateTime转成当月初时间 + MonthStart(this DateTime datetime)
         /// <summary>
         /// 将DateTime转成当月初时间
         /// </summary>
-        /// <param name="value">要转的时间点</param>
+        /// <param name="datetime">要转的时间点</param>
         /// <returns></returns>
-        public static DateTime MonthStart(this DateTime value) => new DateTime(value.Year, value.Month, 1);
+        public static DateTime MonthStart(this DateTime datetime) => new DateTime(datetime.Year, datetime.Month, 1);
         #endregion
 
-        #region 将DateTime转成下个月初的开始时间 + NextMonthStart(this DateTime value)
+        #region 将DateTime转成下个月初的开始时间 + NextMonthStart(this DateTime datetime)
         /// <summary>
         /// 将DateTime转成下个月初的开始时间
         /// </summary>
-        /// <param name="value">要转的时间点</param>
+        /// <param name="datetime">要转的时间点</param>
         /// <returns></returns>
-        public static DateTime NextMonthStart(this DateTime value) => value.MonthStart().AddMonths(1);
+        public static DateTime NextMonthStart(this DateTime datetime) => datetime.MonthStart().AddMonths(1);
         #endregion
 
-        #region 将DateTime转成上个月初的开始时间 + LastMonthStart(this DateTime value)
+        #region 将DateTime转成上个月初的开始时间 + LastMonthStart(this DateTime datetime)
         /// <summary>
         /// 将DateTime转成上个月初的开始时间
         /// </summary>
-        /// <param name="value">要转的时间点</param>
+        /// <param name="datetime">要转的时间点</param>
         /// <returns></returns>
-        public static DateTime LastMonthStart(this DateTime value) => value.MonthStart().AddMonths(-1);
+        public static DateTime LastMonthStart(this DateTime datetime) => datetime.MonthStart().AddMonths(-1);
         #endregion
 
         #region 获取今天时间段，通常常用 Start ≥ X ＜ End + GetToday()
@@ -130,17 +131,17 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取某一周时间段，通常用法 Start ≥ X ＜ End + GetOneWeek(this DateTime dateTime)
+        #region 获取某一周时间段，通常用法 Start ≥ X ＜ End + GetOneWeek(this DateTime datetime)
         /// <summary>
         /// 获取本周时间段，通常用法 Start ≥ X ＜ End
         /// <para>中国人习惯星期一为星期开始，因为星期日为0，所以要减七</para>
         /// </summary>
-        /// <param name="dateTime">要获取的那一周其中一个时间</param>
+        /// <param name="datetime">要获取的那一周其中一个时间</param>
         /// <returns></returns>
-        public static (DateTime Start, DateTime End) GetOneWeek(this DateTime dateTime)
+        public static (DateTime Start, DateTime End) GetOneWeek(this DateTime datetime)
         {
-            var dayOfWeek = (int)dateTime.DayOfWeek;
-            var start = dateTime.AddDays(1 - (dayOfWeek == 0 ? 7 : dayOfWeek)).DayStart();
+            var dayOfWeek = (int)datetime.DayOfWeek;
+            var start = datetime.AddDays(1 - (dayOfWeek == 0 ? 7 : dayOfWeek)).DayStart();
             return (start, start.AddDays(7));
         }
         #endregion
@@ -157,16 +158,48 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region 获取某一月时间段，通常用法 Start ≥ X ＜ End + GetOneMonth(DateTime dateTime)
+        #region 获取某一月时间段，通常用法 Start ≥ X ＜ End + GetOneMonth(DateTime datetime)
         /// <summary>
         /// 获取某一月时间段，通常用法 Start ≥ X ＜ End
         /// </summary>
-        /// <param name="dateTime">要获取的那一月的其中一个时间</param>
+        /// <param name="datetime">要获取的那一月的其中一个时间</param>
         /// <returns></returns>
-        public static (DateTime Start, DateTime End) GetOneMonth(this DateTime dateTime)
+        public static (DateTime Start, DateTime End) GetOneMonth(this DateTime datetime)
         {
-            var start = dateTime.MonthStart();
+            var start = datetime.MonthStart();
             return (start, start.AddMonths(1));
+        }
+        #endregion
+
+        #region 获取当前季度，通常用法 Start ≥ X ＜ End + GetThisQuarter()
+        /// <summary>
+        /// 获取当前季度，通常用法 Start ≥ X ＜ End
+        /// </summary>
+        /// <returns></returns>
+        public static (DateTime Start, DateTime End) GetThisQuarter()
+        {
+            DateTime start;
+            if (DateTime.Now.Month <= 3) start = new DateTime(DateTime.Now.Year, 1, 1);
+            else if (DateTime.Now.Month <= 6) start = new DateTime(DateTime.Now.Year, 4, 1);
+            else if (DateTime.Now.Month <= 9) start = new DateTime(DateTime.Now.Year, 7, 1);
+            else start = new DateTime(DateTime.Now.Year, 10, 1);
+            return (start, start.AddMonths(3));
+        }
+        #endregion
+
+        #region 获取某个时间的一个季度，通常用法 Start ≥ X ＜ End + GetOneQuarter(this DateTime dateTime)
+        /// <summary>
+        /// 获取某个时间的一个季度，通常用法 Start ≥ X ＜ End
+        /// </summary>
+        /// <returns></returns>
+        public static (DateTime Start, DateTime End) GetOneQuarter(this DateTime datetime)
+        {
+            DateTime start;
+            if (datetime.Month <= 3) start = new DateTime(datetime.Year, 1, 1);
+            else if (datetime.Month <= 6) start = new DateTime(datetime.Year, 4, 1);
+            else if (datetime.Month <= 9) start = new DateTime(datetime.Year, 7, 1);
+            else start = new DateTime(datetime.Year, 10, 1);
+            return (start, start.AddMonths(3));
         }
         #endregion
 
@@ -282,17 +315,17 @@ namespace Kane.Extension
         }
         #endregion
 
-        #region DateTime时间格式转换为Unix时间戳格式 + ToStamp(this DateTime value)
+        #region DateTime时间格式转换为Unix时间戳格式 + ToStamp(this DateTime datetime)
         /// <summary>
         /// DateTime时间格式转换为Unix时间戳格式
         /// <para>用Int最大值是2038年01月19日03时14分07秒，超过可用Long</para>
         /// </summary>
-        /// <param name="value">要转换的时间</param>
+        /// <param name="datetime">要转换的时间</param>
         /// <returns></returns>
-        public static int ToStamp(this DateTime value)
+        public static int ToStamp(this DateTime datetime)
         {
             DateTime startTime = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(1970, 1, 1), TimeZoneInfo.Local);
-            return (int)(value - startTime).TotalSeconds;
+            return (int)(datetime - startTime).TotalSeconds;
         }
         #endregion
 
@@ -369,9 +402,50 @@ namespace Kane.Extension
             dayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;//当年第一天是星期几，中国人习惯星期一为星期开始，因为星期日为0，所以为7
             var (Start, End) = datetime.GetOneWeek();
             int index = (int)Math.Ceiling(((double)dayOfYear + dayOfWeek - 1) / 7);//确定当前是第几周
-            if (crossover && Start.Year < End.Year) index = 1;//判断是否为交叉年
+            if (crossover && Start.Year < End.Year) index = 1;//判断是否开启交叉年
             return index;
         }
+        #endregion
+
+        #region 获取当前的年最大周数 + MaxWeekIndex(this DateTime datetime)
+        /// <summary>
+        /// 获取当前的年最大周数
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <returns></returns>
+        public static int MaxWeekIndex(this DateTime datetime) => WeekIndex(new DateTime(datetime.Year, 12, 31), false);
+        #endregion
+
+        #region 将日期时间转成常用的日期时间格式字符串 + ToString(this DateTime datetime, DateTimeFormat format)
+        /// <summary>
+        /// 将日期时间转成常用的日期时间格式字符串
+        /// <para>https://docs.microsoft.com/zh-cn/dotnet/api/system.globalization.cultureinfo.createspecificculture?view=netcore-3.1</para>
+        /// </summary>
+        /// <param name="datetime">要转的日期时间</param>
+        /// <param name="format">格式枚举类</param>
+        /// <returns></returns>
+        public static string ToString(this DateTime datetime, DateTimeFormat format) => format switch
+        {
+            DateTimeFormat.Long => datetime.ToString("yyyy-MM-dd HH:mm:ss"),
+            DateTimeFormat.Short => datetime.ToString("yyyy-M-d H:m:s"),
+            DateTimeFormat.LongDTWeek => datetime.ToString("yyyy年MM月dd日 HH:mm:ss dddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.ShortDTWeek => datetime.ToString("yyyy年M月d日 H:m:s ddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.LongDTShortWeek => datetime.ToString("yyyy年MM月dd日 HH:mm:ss ddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.ShortDTLongWeek => datetime.ToString("yyyy年M月d日 H:m:s dddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.LongDateWeek => datetime.ToString("yyyy年MM月dd日 dddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.ShortDateWeek => datetime.ToString("yyyy年M月d日 ddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.LongDateShortWeek => datetime.ToString("yyyy年MM月dd日 ddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.ShortDateLongWeek => datetime.ToString("yyyy年M月d日 ddddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.LongDT => datetime.ToString("yyyy年MM月dd日 HH:mm:ss"),
+            DateTimeFormat.ShortDT => datetime.ToString("yyyy年M月d日 H:m:s"),
+            DateTimeFormat.LongDate => datetime.ToString("yyyy年MM月dd日"),
+            DateTimeFormat.ShortDate => datetime.ToString("yyyy年M月d日"),
+            DateTimeFormat.LongTime => datetime.ToString("HH:mm:ss"),
+            DateTimeFormat.ShortTime => datetime.ToString("H:m:s"),
+            DateTimeFormat.LongWeek => datetime.ToString("dddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.ShortWeek => datetime.ToString("ddd", new CultureInfo("zh-CN")),
+            _ => datetime.ToString(),//05/16/2020 10:38:18
+        };
         #endregion
     }
 }
