@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/3/1 23:46:44
-* 更新时间 ：2020/3/21 15:14:44
-* 版 本 号 ：v1.0.4.0
+* 更新时间 ：2020/5/31 15:14:44
+* 版 本 号 ：v1.0.5.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -244,7 +244,7 @@ namespace Kane.CloudApi.Tencent
         /// <returns></returns>
         public async Task<(bool success, Uri uri)> PutObjectAsync(string file, string bucket, string region, string objectName = "", string path = "", Dictionary<string, string> headers = null)
         {
-            file.ThrowIfNotExist();
+            file.ThrowFileNotExist();
             if (objectName.IsNullOrEmpty()) objectName = Path.GetFileName(file);
             return await PutObjectAsync(await file.FileToBytesAsync(), objectName, bucket, region, path, headers);
         }
@@ -261,7 +261,7 @@ namespace Kane.CloudApi.Tencent
         /// <returns></returns>
         public async Task<(bool success, Uri uri)> PutObjectAsync(string file, string objectName = "", string path = "", Dictionary<string, string> headers = null)
         {
-            file.ThrowIfNotExist();
+            file.ThrowFileNotExist();
             if (objectName.IsNullOrEmpty()) objectName = Path.GetFileName(file);
             return await PutObjectAsync(await file.FileToBytesAsync(), objectName, path, headers);
         }
@@ -782,7 +782,7 @@ namespace Kane.CloudApi.Tencent
         #region Cos请求签名 + BuildAuthorization(HttpRequestMessage req)
         /// <summary>
         /// Cos请求签名
-        /// https://cloud.tencent.com/document/product/436/7778
+        /// <para>https://cloud.tencent.com/document/product/436/7778</para>
         /// </summary>
         /// <param name="req">Http请求消息</param>
         /// <returns></returns>
@@ -795,18 +795,18 @@ namespace Kane.CloudApi.Tencent
             var startTime = DateTime.Now.AddSeconds(-5); ;
             var timestamp = $"{startTime.ToStamp()};{startTime.AddSeconds(Expires).ToStamp()}";
 #endif
-            var crypto = new CryptoHelper();
+            var hash = new HashHelper();
             var querys = req.RequestUri.GetQuerys();
             var headers = req.Headers.GetHeaders();
-            var signKey = crypto.HmacSha1(timestamp, SecretKey).ToLower();
+            var signKey = hash.HmacSha1(timestamp, SecretKey);
             var headerList = string.Join(";", headers.Select(k => k.Key));
             var httpHeaders = string.Join("&", headers.Select(x => $"{x.Key}={x.Value.ToEscape()}"));
             var urlParamList = string.Join(";", querys.Select(k => k.Key));
             var httpParameters = string.Join("&", querys.Select(x => $"{x.Key}={x.Value.ToEscape()}"));
             var httpString = $"{req.Method.ToString().ToLower()}\n{req.RequestUri.LocalPath}\n{httpParameters}\n{httpHeaders}\n";
-            var hashedHttpString = crypto.Sha1(httpString).ToLower();
+            var hashedHttpString = hash.Sha1(httpString);
             var stringToSign = $"{SignAlgorithm}\n{timestamp}\n{hashedHttpString}\n";
-            var signature = crypto.HmacSha1(stringToSign, signKey).ToLower();
+            var signature = hash.HmacSha1(stringToSign, signKey);
             var keys = new Dictionary<string, string>()
             {
                 { "q-sign-algorithm",   SignAlgorithm},

@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:12:20
-* 更新时间 ：2020/02/26 18:12:20
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/05/31 18:12:20
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -20,7 +20,6 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Kane.Extension
 {
@@ -85,165 +84,6 @@ namespace Kane.Extension
     /// </summary>
     public class CryptoHelper
     {
-        #region 32位MD5加密,【全小写】+ Md5(string value)
-        /// <summary>
-        /// 32位MD5加密,【全小写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <returns></returns>
-        public string Md5(string value)
-        {
-            using MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] data = md5.ComputeHash(value.ToBytes());
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-                sb.Append(Convert.ToString(data[i], 16).PadLeft(2, '0'));
-            return sb.ToString().PadLeft(32, '0');
-        }
-        #endregion
-
-        #region HMAC-MD5加密，【全大写】 + HmacMd5(string value, string key)
-        /// <summary>
-        /// HMAC-MD5加密，【全大写】
-        /// HMAC-MD5就可以用一把发送方和接收方都有的key进行计算，而没有这把key的第三方是无法计算出正确的散列值的，这样就可以防止数据被篡改
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <param name="key">密钥</param>
-        /// <returns></returns>
-        public string HmacMd5(string value, string key)
-        {
-            using HMACMD5 md5 = new HMACMD5(key.ToBytes());
-            byte[] byteOut = md5.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region SHA1加密，【全大写】 + Sha1(string value)
-        /// <summary>
-        /// SHA1加密，【全大写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <returns></returns>
-        public string Sha1(string value)
-        {
-            using SHA1 sha1 = SHA1.Create();
-            byte[] byteOut = sha1.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region SHA256加密，【全大写】 + Sha256(string value)
-        /// <summary>
-        /// SHA256加密，【全大写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <returns></returns>
-        public string Sha256(string value)
-        {
-            using SHA256 sha256 = SHA256.Create();
-            byte[] byteOut = sha256.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region SHA384加密，【全大写】 + Sha384(string value)
-        /// <summary>
-        /// SHA384加密，【全大写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <returns></returns>
-        public string Sha384(string value)
-        {
-            using SHA384 sha384 = SHA384.Create();
-            byte[] byteOut = sha384.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region SHA512加密，【全大写】 + Sha512(string value)
-        /// <summary>
-        /// SHA512加密，【全大写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <returns></returns>
-        public string Sha512(string value)
-        {
-            using SHA512 sha512 = SHA512.Create();
-            byte[] byteOut = sha512.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region HMACSHA1加密，【全大写】 + HMACSHA1(string value, string key)
-        /// <summary>
-        /// HMACSHA1加密，【全大写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <param name="key">密钥</param>
-        /// <returns></returns>
-        public string HmacSha1(string value, string key)
-        {
-            using HMACSHA1 hmac = new HMACSHA1(key.ToBytes());
-            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region HMACSHA256加密，【全大写】 + HMACSHA256(string value, string key)
-        /// <summary>
-        /// HMACSHA256加密，【全大写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <param name="key">密钥</param>
-        /// <returns></returns>
-        public string HmacSha256(string value, string key)
-        {
-            using HMACSHA256 hmac = new HMACSHA256(key.ToBytes());
-            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region HMACSHA384加密，【全大写】 + HMACSHA384(string value, string key)
-        /// <summary>
-        /// HMACSHA384加密，【全大写】
-        /// ###和在线加密的结果不一致###
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <param name="key">密钥</param>
-        /// <returns></returns>
-        public string HmacSha384(string value, string key)
-        {
-            using HMACSHA384 hmac = new HMACSHA384(key.ToBytes());
-            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
-        #region HMACSHA512加密，【全大写】 + HMACSHA512(string value, string key)
-        /// <summary>
-        /// HMACSHA512加密，【全大写】
-        /// </summary>
-        /// <param name="value">要哈希化的数据</param>
-        /// <param name="key">密钥</param>
-        /// <returns></returns>
-        public string HmacSha512(string value, string key)
-        {
-            using HMACSHA512 hmac = new HMACSHA512(key.ToBytes());
-            byte[] byteOut = hmac.ComputeHash(value.ToBytes());
-            string result = BitConverter.ToString(byteOut);
-            return result.Replace("-", "");
-        }
-        #endregion
-
         #region AES对称性加密算法 加密与解密
         // AES加密
         // AES（Advanced Encryption Standard）：对称性加密算法，高级加密标准，是下一代的加密算法标准，速度快，安全级别高；

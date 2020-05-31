@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:14:58
-* 更新时间 ：2020/03/22 22:14:58
-* 版 本 号 ：v1.0.1.0
+* 更新时间 ：2020/05/31 22:14:58
+* 版 本 号 ：v1.0.2.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -114,8 +114,8 @@ namespace Kane.Extension
             {
                 PublicKey = publicKey,
                 PrivateKey = privateKey,
-                Exponent = rsa.ExportParameters(false).Exponent.ByteToHex(),
-                Modulus = rsa.ExportParameters(false).Modulus.ByteToHex()
+                Exponent = rsa.ExportParameters(false).Exponent.BytesToHEX(),
+                Modulus = rsa.ExportParameters(false).Modulus.BytesToHEX()
             };
         }
         #endregion
@@ -147,7 +147,7 @@ namespace Kane.Extension
             var rawBytes = Encoding.UTF8.GetBytes(value);
             if (rawBytes.Length > maxLength) throw new Exception($"'{value}' is out of max length({maxLength}).");
             byte[] encryptBytes = rsa.Encrypt(rawBytes, padding);
-            return encryptBytes.ByteToHex();
+            return encryptBytes.BytesToHEX();
         }
         #endregion
 #else
@@ -164,7 +164,7 @@ namespace Kane.Extension
             RSAFromJson(rsa, publicKey);
             var rawBytes = Encoding.UTF8.GetBytes(value);
             byte[] encryptBytes = rsa.EncryptValue(rawBytes);
-            return encryptBytes.ByteToHex();
+            return encryptBytes.BytesToHEX();
         }
         #endregion
 #endif
@@ -192,7 +192,7 @@ namespace Kane.Extension
         {
             using RSA rsa = RSA.Create();
             RSAFromJson(rsa, privateKey);
-            byte[] valueBytes = StringEx.HexToByte(value);
+            byte[] valueBytes = StringEx.HexToBytes(value);
             byte[] outBytes = rsa.Decrypt(valueBytes, padding);
             return Encoding.UTF8.GetString(outBytes);
         }
@@ -227,7 +227,7 @@ namespace Kane.Extension
         {
             using RSA rsa = RSA.Create();
             RSAFromJson(rsa, privateKey);
-            byte[] valueBytes = StringEx.HexToByte(value);
+            byte[] valueBytes = StringEx.HexToBytes(value);
             byte[] outBytes = rsa.DecryptValue(valueBytes);
             return Encoding.UTF8.GetString(outBytes);
         }

@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/23 0:00:15
-* 更新时间 ：2020/3/21 18:00:15
-* 版 本 号 ：v1.0.2.0
+* 更新时间 ：2020/5/31 18:00:15
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -69,18 +69,18 @@ namespace Kane.CloudApi.Tencent
 
             try
             {
-                var crypto = new CryptoHelper();
+                var hash = new HashHelper();
                 var date = DateTime.UtcNow.ToString("yyyy-MM-dd");
                 string service = ServiceHost.Split('.')[0]; //service 为产品名，通常为域名前缀
                 var timestamp = DateTimeEx.TimeStamp();
-                string canonicalRequest = $"POST\n/\n\ncontent-type:application/json; charset=utf-8\nhost:{ServiceHost}\n\ncontent-type;host\n{crypto.Sha256(paramJson).ToLower()}";
-                string stringToSign = $"TC3-HMAC-SHA256\n{timestamp}\n{date}/{service}/tc3_request\n{crypto.Sha256(canonicalRequest).ToLower()}";
+                string canonicalRequest = $"POST\n/\n\ncontent-type:application/json; charset=utf-8\nhost:{ServiceHost}\n\ncontent-type;host\n{hash.Sha256(paramJson)}";
+                string stringToSign = $"TC3-HMAC-SHA256\n{timestamp}\n{date}/{service}/tc3_request\n{hash.Sha256(canonicalRequest)}";
 
-                byte[] secretDate = Common.HmacSHA256(date, "TC3".Add(SecretKey).ToBytes());
-                byte[] secretService = Common.HmacSHA256(service, secretDate);
-                byte[] secretSigning = Common.HmacSHA256("tc3_request", secretService);
-                byte[] signature = Common.HmacSHA256(stringToSign, secretSigning);
-                string authorization = $"TC3-HMAC-SHA256 Credential={SecretID}/{date}/{service}/tc3_request, SignedHeaders=content-type;host, Signature={signature.ByteToHex().ToLower()}";
+                byte[] secretDate = hash.HmacSha256Bytes(date, "TC3".Add(SecretKey));
+                byte[] secretService = hash.HmacSha256Bytes(service, secretDate);
+                byte[] secretSigning = hash.HmacSha256Bytes("tc3_request", secretService); 
+                byte[] signature = hash.HmacSha256Bytes(stringToSign, secretSigning);
+                string authorization = $"TC3-HMAC-SHA256 Credential={SecretID}/{date}/{service}/tc3_request, SignedHeaders=content-type;host, Signature={signature.BytesToHex()}";
 
                 using var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorization);

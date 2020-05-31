@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:26:06
-* 更新时间 ：2020/05/14 12:26:06
-* 版 本 号 ：v1.0.4.0
+* 更新时间 ：2020/05/31 12:26:06
+* 版 本 号 ：v1.0.5.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -19,7 +19,6 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -80,28 +79,31 @@ namespace Kane.Extension
         public static bool IsNotNull<T>(this T value) => value != null;
         #endregion
 
-        #region 字节数组转十六进制字符串 + ByteToHex(this byte[] value)
+        #region 字节数组转十六进制字符串【全小写】 + BytesToHex(this byte[] value)
         /// <summary>
-        /// 字节数组转十六进制字符串
+        /// 字节数组转十六进制字符串【全小写】，如果要大写，请使用<see cref="BytesToHEX"/>
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string ByteToHex(this byte[] value)
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < value.Length; i++)
-                sb.Append(value[i].ToString("X2"));
-            return sb.ToString();
-        }
+        /// <param name="value">要转的字节数组</param>
+        /// <returns>全小写</returns>
+        public static string BytesToHex(this byte[] value) => string.Concat(value.Select(k => k.ToString("x2")));
         #endregion
 
-        #region 十六进制字符串转字节数组 + HexToByte(string value)
+        #region 字节数组转十六进制字符串【全大写】 + BytesToHEX(this byte[] value)
+        /// <summary>
+        /// 字节数组转十六进制字符串【全大写】，如果要小写，请使用<see cref="BytesToHex"/>
+        /// </summary>
+        /// <param name="value">要转的字节数组</param>
+        /// <returns>全大写</returns>
+        public static string BytesToHEX(this byte[] value) => string.Concat(value.Select(k => k.ToString("X2")));
+        #endregion
+
+        #region 十六进制字符串转字节数组 + HexToBytes(this string value)
         /// <summary>
         /// 十六进制字符串转字节数组
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">要转的十六进制字符串</param>
         /// <returns></returns>
-        public static byte[] HexToByte(this string value)
+        public static byte[] HexToBytes(this string value)
         {
             value = value.Replace(" ", "");
             byte[] buffer = new byte[value.Length / 2];
@@ -162,7 +164,7 @@ namespace Kane.Extension
         /// </summary>
         /// <param name="value">要转的字节数组</param>
         /// <returns></returns>
-        public static string BytesToString(this byte[] value) => value.BytesToString(Encoding.UTF8);
+        public static string BytesToString(this byte[] value) => Encoding.UTF8.GetString(value);
         #endregion
 
         #region 字节数组转成字符串，编码方式可选 + BytesToString(this byte[] value, Encoding encoding)
@@ -258,8 +260,7 @@ namespace Kane.Extension
         /// <returns></returns>
         public static (bool, Uri) CheckUrl(this string value)
         {
-            if (Uri.TryCreate(value, UriKind.Absolute, out Uri result) && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps))
-                return (true, result);
+            if (Uri.TryCreate(value, UriKind.Absolute, out Uri result) && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps)) return (true, result);
             else return (false, null);
         }
         #endregion
@@ -311,50 +312,6 @@ namespace Kane.Extension
         /// <param name="str3">第四个字符串</param>
         /// <returns></returns>
         public static string Add(this string str0, string str1, string str2, string str3) => string.Concat(str0, str1, str2, str3);
-        #endregion
-
-        #region 检测字符串是否匹配任意字符串的开头【区分大小写和区分区域性】 + StartsWith(this string value, params string[] keys)
-        /// <summary>
-        /// 检测字符串是否匹配任意字符串的开头【区分大小写和区分区域性】
-        /// </summary>
-        /// <param name="value">要检测字符串</param>
-        /// <param name="keys">任意字符串</param>
-        /// <returns></returns>
-        public static bool StartsWith(this string value, params string[] keys) => keys.Any(key => value.StartsWith(key));
-        #endregion
-
-        #region 检测字符串是否匹配任意字符串的开头，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
-        /// <summary>
-        /// 检测字符串是否匹配任意字符串的开头，默认为【区分大小写】
-        /// </summary>
-        /// <param name="value">要检测字符串</param>
-        /// <param name="ignoreCase">是否忽略大小写</param>
-        /// <param name="keys">任意字符串</param>
-        /// <returns></returns>
-        public static bool StartsWith(this string value, bool ignoreCase = false, params string[] keys)
-            => ignoreCase ? keys.Any(key => value.StartsWith(key, true, CultureInfo.InvariantCulture)) : keys.Any(key => value.StartsWith(key));
-        #endregion
-
-        #region 检测字符串是否匹配任意字符串的结尾【区分大小写和区分区域性】 + StartsWith(this string value, params string[] keys)
-        /// <summary>
-        /// 检测字符串是否匹配任意字符串的结尾【区分大小写和区分区域性】
-        /// </summary>
-        /// <param name="value">要检测字符串</param>
-        /// <param name="keys">任意字符串</param>
-        /// <returns></returns>
-        public static bool EndsWith(this string value, params string[] keys) => keys.Any(key => value.EndsWith(key));
-        #endregion
-
-        #region 检测字符串是否匹配任意字符串的结尾，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
-        /// <summary>
-        /// 检测字符串是否匹配任意字符串的结尾，默认为【区分大小写】
-        /// </summary>
-        /// <param name="value">要检测字符串</param>
-        /// <param name="ignoreCase">是否忽略大小写</param>
-        /// <param name="keys">任意字符串</param>
-        /// <returns></returns>
-        public static bool EndsWith(this string value, bool ignoreCase = false, params string[] keys)
-            => ignoreCase ? keys.Any(key => value.EndsWith(key, true, null)) : keys.Any(key => value.EndsWith(key));
         #endregion
 
         #region 判断两个字符串是否相同，忽略大小写 + EqualsIgnoreCase(this string str0, string str1, bool strict = false)
@@ -455,6 +412,50 @@ namespace Kane.Extension
         }
         #endregion
 
+        #region 检测字符串是否匹配任意字符串的开头【区分大小写】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的开头【区分大小写】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="keys">多个字符串</param>
+        /// <returns></returns>
+        public static bool StartsWith(this string value, params string[] keys) => keys.Any(key => value.StartsWith(key));
+        #endregion
+
+        #region 检测字符串是否匹配任意字符串的开头，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的开头，默认为【忽略大小写】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="ignoreCase">是否忽略大小写</param>
+        /// <param name="keys">任意字符串</param>
+        /// <returns></returns>
+        public static bool StartsWith(this string value, bool ignoreCase = true, params string[] keys)
+            => ignoreCase ? keys.Any(key => value.StartsWith(key, StringComparison.OrdinalIgnoreCase)) : keys.Any(key => value.StartsWith(key));
+        #endregion
+
+        #region 检测字符串是否匹配任意字符串的结尾【区分大小写】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的结尾【区分大小写】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="keys">任意字符串</param>
+        /// <returns></returns>
+        public static bool EndsWith(this string value, params string[] keys) => keys.Any(key => value.EndsWith(key));
+        #endregion
+
+        #region 检测字符串是否匹配任意字符串的结尾，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
+        /// <summary>
+        /// 检测字符串是否匹配任意字符串的结尾，默认为【忽略大小写】
+        /// </summary>
+        /// <param name="value">要检测字符串</param>
+        /// <param name="ignoreCase">是否忽略大小写</param>
+        /// <param name="keys">任意字符串</param>
+        /// <returns></returns>
+        public static bool EndsWith(this string value, bool ignoreCase = true, params string[] keys)
+            => ignoreCase ? keys.Any(key => value.EndsWith(key, StringComparison.OrdinalIgnoreCase)) : keys.Any(key => value.EndsWith(key));
+        #endregion
+
         #region 用新的字符替换原字符串中指定位置和长度的字符 + Replace(this string value, int start, int length, char replaceChar = '*')
         /// <summary>
         /// 用新的字符替换原字符串中指定位置和长度的字符
@@ -471,6 +472,65 @@ namespace Kane.Extension
             if (length < 1) return value;
             return value.Remove(start, length).Insert(start, new string(replaceChar, length));
         }
+        #endregion
+
+        #region 查找并替换字符串，可查找多个目标【区分大小写】 + Replace(this string value, string newValue, params string[] keys)
+        /// <summary>
+        /// 查找并替换字符串，可查找多个目标【区分大小写】
+        /// </summary>
+        /// <param name="value">原字符串</param>
+        /// <param name="newValue">要替换的字符串</param>
+        /// <param name="keys">查找的关键词</param>
+        /// <returns></returns>
+        public static string Replace(this string value, string newValue, params string[] keys)
+        {
+            if (value.IsNullOrEmpty() || keys.Length == 0) return value;
+            foreach (var item in keys)
+                value = value.Replace(item, newValue);
+            return value;
+        }
+        #endregion
+
+#if NETCOREAPP
+        #region 查找并替换字符串，可查找多个目标，默认为【忽略大小写】 + Replace(this string value, string newValue, bool ignoreCase = true, params string[] keys)
+        /// <summary>
+        /// 查找并替换字符串，可查找多个目标，默认为【忽略大小写】
+        /// </summary>
+        /// <param name="value">原字符串</param>
+        /// <param name="newValue">要替换的字符串</param>
+        /// <param name="ignoreCase">是否忽略大小写</param>
+        /// <param name="keys">查找的目标</param>
+        /// <returns></returns>
+        public static string Replace(this string value, string newValue, bool ignoreCase = true, params string[] keys)
+        {
+            if (value.IsNullOrEmpty() || keys.Length == 0) return value;
+            foreach (var item in keys)
+                value = value.Replace(item, newValue, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+            return value;
+        }
+        #endregion
+#endif
+
+        #region 判断多个字符串是否出现在原字符串中【区分大小写】 + Contains(this string value, params string[] keys)
+        /// <summary>
+        /// 判断多个字符串是否出现在原字符串中【区分大小写】
+        /// </summary>
+        /// <param name="value">原字符串</param>
+        /// <param name="keys">要查找的多个字符串</param>
+        /// <returns></returns>
+        public static bool Contains(this string value, params string[] keys) => keys.Any(k => value.IndexOf(k) >= 0);
+        #endregion
+
+        #region 判断多个字符串是否出现在原字符串中，默认为【忽略大小写】 + Contains(this string value, bool ignoreCase = true, params string[] keys)
+        /// <summary>
+        /// 判断多个字符串是否出现在原字符串中，默认为【忽略大小写】
+        /// </summary>
+        /// <param name="value">原字符串</param>
+        /// <param name="ignoreCase">是否忽略大小写</param>
+        /// <param name="keys">要查找的多个字符串</param>
+        /// <returns></returns>
+        public static bool Contains(this string value, bool ignoreCase = true, params string[] keys)
+            => keys.Any(k => value.IndexOf(k, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) >= 0);
         #endregion
     }
 }
