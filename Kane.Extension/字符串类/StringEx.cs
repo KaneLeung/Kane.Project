@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:26:06
-* 更新时间 ：2020/05/31 12:26:06
-* 版 本 号 ：v1.0.5.0
+* 更新时间 ：2020/06/02 22:26:06
+* 版 本 号 ：v1.0.6.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -422,19 +422,17 @@ namespace Kane.Extension
         public static bool StartsWith(this string value, params string[] keys) => keys.Any(key => value.StartsWith(key));
         #endregion
 
-        #region 检测字符串是否匹配任意字符串的开头，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
+        #region 检测字符串是否匹配任意字符串的开头【忽略大小写】 + StartsWithIgnoreCase(this string value, params string[] keys)
         /// <summary>
-        /// 检测字符串是否匹配任意字符串的开头，默认为【忽略大小写】
+        /// 检测字符串是否匹配任意字符串的开头【忽略大小写】
         /// </summary>
         /// <param name="value">要检测字符串</param>
-        /// <param name="ignoreCase">是否忽略大小写</param>
         /// <param name="keys">任意字符串</param>
         /// <returns></returns>
-        public static bool StartsWith(this string value, bool ignoreCase = true, params string[] keys)
-            => ignoreCase ? keys.Any(key => value.StartsWith(key, StringComparison.OrdinalIgnoreCase)) : keys.Any(key => value.StartsWith(key));
+        public static bool StartsWithIgnoreCase(this string value, params string[] keys) => keys.Any(key => value.StartsWith(key, StringComparison.OrdinalIgnoreCase));
         #endregion
 
-        #region 检测字符串是否匹配任意字符串的结尾【区分大小写】 + StartsWith(this string value, params string[] keys)
+        #region 检测字符串是否匹配任意字符串的结尾【区分大小写】 + EndsWith(this string value, params string[] keys)
         /// <summary>
         /// 检测字符串是否匹配任意字符串的结尾【区分大小写】
         /// </summary>
@@ -444,16 +442,14 @@ namespace Kane.Extension
         public static bool EndsWith(this string value, params string[] keys) => keys.Any(key => value.EndsWith(key));
         #endregion
 
-        #region 检测字符串是否匹配任意字符串的结尾，默认为【区分大小写】 + StartsWith(this string value, params string[] keys)
+        #region 检测字符串是否匹配任意字符串的结尾【忽略大小写】 + EndsWithIgnoreCase(this string value, params string[] keys)
         /// <summary>
-        /// 检测字符串是否匹配任意字符串的结尾，默认为【忽略大小写】
+        /// 检测字符串是否匹配任意字符串的结尾【忽略大小写】
         /// </summary>
         /// <param name="value">要检测字符串</param>
-        /// <param name="ignoreCase">是否忽略大小写</param>
         /// <param name="keys">任意字符串</param>
         /// <returns></returns>
-        public static bool EndsWith(this string value, bool ignoreCase = true, params string[] keys)
-            => ignoreCase ? keys.Any(key => value.EndsWith(key, StringComparison.OrdinalIgnoreCase)) : keys.Any(key => value.EndsWith(key));
+        public static bool EndsWithIgnoreCase(this string value, params string[] keys) => keys.Any(key => value.EndsWith(key, StringComparison.OrdinalIgnoreCase));
         #endregion
 
         #region 用新的字符替换原字符串中指定位置和长度的字符 + Replace(this string value, int start, int length, char replaceChar = '*')
@@ -492,20 +488,19 @@ namespace Kane.Extension
         #endregion
 
 #if NETCOREAPP
-        #region 查找并替换字符串，可查找多个目标，默认为【忽略大小写】 + Replace(this string value, string newValue, bool ignoreCase = true, params string[] keys)
+        #region 查找并替换字符串，可查找多个目标【忽略大小写】 + ReplaceIgnoreCase(this string value, string newValue, params string[] keys)
         /// <summary>
-        /// 查找并替换字符串，可查找多个目标，默认为【忽略大小写】
+        /// 查找并替换字符串，可查找多个目标【忽略大小写】
         /// </summary>
         /// <param name="value">原字符串</param>
         /// <param name="newValue">要替换的字符串</param>
-        /// <param name="ignoreCase">是否忽略大小写</param>
         /// <param name="keys">查找的目标</param>
         /// <returns></returns>
-        public static string Replace(this string value, string newValue, bool ignoreCase = true, params string[] keys)
+        public static string ReplaceIgnoreCase(this string value, string newValue, params string[] keys)
         {
             if (value.IsNullOrEmpty() || keys.Length == 0) return value;
             foreach (var item in keys)
-                value = value.Replace(item, newValue, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+                value = value.Replace(item, newValue, StringComparison.OrdinalIgnoreCase);
             return value;
         }
         #endregion
@@ -518,19 +513,51 @@ namespace Kane.Extension
         /// <param name="value">原字符串</param>
         /// <param name="keys">要查找的多个字符串</param>
         /// <returns></returns>
-        public static bool Contains(this string value, params string[] keys) => keys.Any(k => value.IndexOf(k) >= 0);
+        public static bool Contains(this string value, params string[] keys) => keys.Any(key => value.IndexOf(key) >= 0);
         #endregion
 
-        #region 判断多个字符串是否出现在原字符串中，默认为【忽略大小写】 + Contains(this string value, bool ignoreCase = true, params string[] keys)
+        #region 判断多个字符串是否出现在原字符串中【忽略大小写】 + ContainsIgnoreCase(this string value, params string[] keys)
         /// <summary>
-        /// 判断多个字符串是否出现在原字符串中，默认为【忽略大小写】
+        /// 判断多个字符串是否出现在原字符串中【忽略大小写】
         /// </summary>
         /// <param name="value">原字符串</param>
-        /// <param name="ignoreCase">是否忽略大小写</param>
         /// <param name="keys">要查找的多个字符串</param>
         /// <returns></returns>
-        public static bool Contains(this string value, bool ignoreCase = true, params string[] keys)
-            => keys.Any(k => value.IndexOf(k, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) >= 0);
+        public static bool ContainsIgnoreCase(this string value, params string[] keys) => keys.Any(key => value.IndexOf(key, StringComparison.OrdinalIgnoreCase) >= 0);
         #endregion
+
+        #region 查找并移除字符串，可查找多个目标【区分大小写】 + Remove(this string value, params string[] keys)
+        /// <summary>
+        /// 查找并移除字符串，可查找多个目标【区分大小写】
+        /// </summary>
+        /// <param name="value">原字符串</param>
+        /// <param name="keys">查找的关键词</param>
+        /// <returns></returns>
+        public static string Remove(this string value, params string[] keys)
+        {
+            if (value.IsNullOrEmpty() || keys.Length == 0) return value;
+            foreach (var item in keys)
+                value = value.Replace(item, string.Empty);
+            return value;
+        }
+        #endregion
+
+#if NETCOREAPP
+        #region 查找并移除字符串，可查找多个目标【忽略大小写】 + RemoveIgnoreCase(this string value, params string[] keys)
+        /// <summary>
+        /// 查找并移除字符串，可查找多个目标【忽略大小写】
+        /// </summary>
+        /// <param name="value">原字符串</param>
+        /// <param name="keys">查找的目标</param>
+        /// <returns></returns>
+        public static string RemoveIgnoreCase(this string value, params string[] keys)
+        {
+            if (value.IsNullOrEmpty() || keys.Length == 0) return value;
+            foreach (var item in keys)
+                value = value.Replace(item, string.Empty, StringComparison.OrdinalIgnoreCase);
+            return value;
+        }
+        #endregion
+#endif
     }
 }

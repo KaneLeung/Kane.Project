@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/20 19:38:55
-* 更新时间 ：2020/5/05 12:28:55
-* 版 本 号 ：v1.0.2.0
+* 更新时间 ：2020/6/02 22:28:55
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -201,8 +201,8 @@ namespace Kane.Extension
         public bool IsSafeSql(string value)
         {
             if (value.IsNullOrWhiteSpace()) return false;
-            if (value.IsMatch(@"[-|;|,|\/|\(|\)|\[|\]|\}|\{|%|@|\*|!|\']") ||
-                value.IsMatch(@"select|insert|delete|from|count(|drop table|update|truncate|asc(|mid(|Char(|xp_cmdshell|exec master|netlocalgroup administrators|:|net user|""|or|and"))
+            if (value.IsMatch(@"[-|;|,|\/|\(|\)|\[|\]|\}|\{|%|@|\*|!|\']", RegexOptions.IgnoreCase) ||
+                value.IsMatch(@"select|insert|delete|from|count(|drop table|update|truncate|asc(|mid(|Char(|xp_cmdshell|exec master|netlocalgroup administrators|:|net user|""|or|and", RegexOptions.IgnoreCase))
             {
                 return true;
             }

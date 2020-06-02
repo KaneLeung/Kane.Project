@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:24:14
-* 更新时间 ：2020/05/05 13:24:14
-* 版 本 号 ：v1.0.2.0
+* 更新时间 ：2020/06/02 23:24:14
+* 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -26,15 +26,31 @@ namespace Kane.Extension
     /// </summary>
     public static class RegexEx
     {
-        #region 利用正则表达式替换字符串里的文字 + RegexReplce(this string value, string regex, string word)
+        #region 利用正则表达式替换字符串里的文字，区分大小写 + RegexReplace(this string value, string regex, string newValue)
         /// <summary>
-        /// 利用正则表达式替换字符串里的文字
+        /// 利用正则表达式替换字符串里的文字，区分大小写
         /// </summary>
         /// <param name="value">原字符串</param>
         /// <param name="regex">正则表达式</param>
-        /// <param name="word">要替换的字符串</param>
+        /// <param name="newValue">替换后的字符串</param>
         /// <returns></returns>
-        public static string RegexReplce(this string value, string regex, string word) => Regex.Replace(value, regex, word);
+        public static string RegexReplace(this string value, string regex, string newValue) => Regex.Replace(value, regex, newValue);
+        #endregion
+
+        #region 利用正则表达式替换多个关键词的文字，区分大小写 + RegexReplace(this string value, string newValue, params string[] keys)
+        /// <summary>
+        /// 利用正则表达式替换多个关键词的文字，区分大小写
+        /// <para>经测试，短的内容效率比<see cref="StringEx.Replace(string, string, string[])"/>略低</para>
+        /// </summary>
+        /// <param name="value">原字符串</param>
+        /// <param name="newValue">替换后的字符串</param>
+        /// <param name="keys">要替换的关键词</param>
+        /// <returns></returns>
+        public static string RegexReplace(this string value, string newValue, params string[] keys)
+        {
+            if (value.IsNullOrEmpty() || keys.Length < 1) return value;
+            return Regex.Replace(value, $"({string.Join("|", keys)})", newValue);
+        }
         #endregion
 
         #region 利用正则表达式查找某字符串出现的次数 + RegexCount(this string value, string pattern)
@@ -56,7 +72,7 @@ namespace Kane.Extension
         /// <returns>如果正则表达式找到匹配项，则为【True】；否则，为【False】</returns>
         public static bool IsMatch(this string value, string pattern)
         {
-            if (value == null) return false;
+            if (value.IsNullOrEmpty()) return false;
             return Regex.IsMatch(value, pattern);
         }
         #endregion
@@ -71,7 +87,7 @@ namespace Kane.Extension
         /// <returns>如果正则表达式找到匹配项，则为【True】；否则，为【False】</returns>
         public static bool IsMatch(this string value, string pattern, RegexOptions options)
         {
-            if (value == null) return false;
+            if (value.IsNullOrEmpty()) return false;
             return Regex.IsMatch(value, pattern, options);
         }
         #endregion

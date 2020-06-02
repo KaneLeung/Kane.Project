@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/5/5 15:27:09
-* 更新时间 ：2020/5/5 15:27:09
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/06/02 22:52:09
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -37,11 +37,11 @@ namespace Kane.Extension
         /// <typeparam name="T">类型</typeparam>
         /// <param name="source">集合</param>
         /// <param name="tableName">表名</param>
-        /// <exception cref="ArgumentNullException">源集合对象为空</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>源集合对象为空</exception>
         public static DataTable ToDataTable<T>(this IEnumerable<T> source, string tableName = "")
         {
             var type = typeof(T);
-            if (source == null) throw new ArgumentNullException(nameof(source), $"源【{type.Name}】集合对象不可为空！");
+            source.ThrowIfNull(nameof(source), $"源【{type.Name}】数据表不可为空！");
             int index = 0;
             var properties = type.GetProperties();
             var result = tableName.IsNullOrEmpty() ? new DataTable() : new DataTable(tableName);
@@ -60,19 +60,19 @@ namespace Kane.Extension
             }
             return result;
         }
-#endregion
+        #endregion
 
-#region DataTable转换为泛型集合 + ToList<T>(this DataTable dataTable)
+        #region DataTable转换为泛型集合 + ToList<T>(this DataTable dataTable)
         /// <summary>
         /// DataTable转换为泛型集合
         /// </summary>
         /// <typeparam name="T">类型</typeparam>
         /// <param name="dataTable">数据表</param>
-        /// <exception cref="ArgumentNullException">源数据表不可为空</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="dataTable"/>源数据表不可为空</exception>
         public static IEnumerable<T> ToList<T>(this DataTable dataTable)
         {
             var type = typeof(T);
-            if (dataTable == null) throw new ArgumentNullException(nameof(dataTable), $"源【{type.Name}】数据表不可为空！");
+            dataTable.ThrowIfNull(nameof(dataTable), $"源【{type.Name}】数据表不可为空！");
             var properties = type.GetProperties();
             var constructors = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
             var noParamCtor = constructors.Single(k => k.GetParameters().Length == 0);
@@ -96,6 +96,6 @@ namespace Kane.Extension
             }
             return result;
         }
-#endregion
+        #endregion
     }
 }

@@ -30,12 +30,12 @@ namespace Kane.Extension
     public static class XmlHelper
     {
         #region 将Stream反序列化成对象 + ToObject<T>(this Stream stream) where T : class, new()
-            /// <summary>
-            /// 将Stream反序列化成对象
-            /// </summary>
-            /// <typeparam name="T">要反序列化成对象类型</typeparam>
-            /// <param name="stream">要反序列化的Stream</param>
-            /// <returns></returns>
+        /// <summary>
+        /// 将Stream反序列化成对象
+        /// </summary>
+        /// <typeparam name="T">要反序列化成对象类型</typeparam>
+        /// <param name="stream">要反序列化的Stream</param>
+        /// <returns></returns>
         public static T ToObject<T>(this Stream stream) where T : class, new()
         {
             stream.Seek(0, SeekOrigin.Begin);
