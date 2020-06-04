@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/11/3 22:29:46
-* 更新时间 ：2019/12/31 22:29:46
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/06/01 12:29:46
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -34,8 +34,9 @@ namespace Kane.WinForm
         /// </summary>
         /// <param name="path">完整的路径 + 应用程序的文件名</param>
         /// <param name="autoRun">是否自动运行，为false时，取消自动运行</param>
+        /// <param name="isAdmin">是否为本机所有用户，还是当前用户</param>
         /// <returns></returns>
-        public static bool SetAutoRun(string path, bool autoRun)
+        public static bool SetAutoRun(string path, bool autoRun,bool isAdmin = true)
         {
             RegistryKey reg = null;
             var state = false;
@@ -43,8 +44,16 @@ namespace Kane.WinForm
             {
                 if (!File.Exists(path)) throw new Exception("该文件不存在!");
                 var fileName = Path.GetFileName(path);
-                reg = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                if (reg == null) reg = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
+                if (isAdmin)
+                {
+                    reg = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                    if (reg == null) reg = Registry.LocalMachine.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
+                }
+                else
+                {
+                    reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                    if (reg == null) reg = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
+                }
                 if (autoRun) reg.SetValue(fileName, $"{path} -auto");
                 else reg.SetValue(fileName, false);
                 state = true;
