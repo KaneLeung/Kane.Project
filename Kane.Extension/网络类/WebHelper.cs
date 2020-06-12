@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/1/15 16:38:55
-* 更新时间 ：2020/3/21 15:38:55
-* 版 本 号 ：v1.0.3.0
+* 更新时间 ：2020/6/10 09:38:55
+* 版 本 号 ：v1.0.4.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -217,6 +217,37 @@ namespace Kane.Extension
         /// <returns></returns>
         public static Uri Append(this Uri uri, params string[] paths)
             => new Uri(paths.Aggregate(uri.AbsoluteUri, (current, path) => $"{current.TrimEnd('/')}/{path.TrimStart('/')}"));
+        #endregion
+
+        #region 根据UserAgent判断用户的操作系统 + GetOSName(string userAgent)
+        /// <summary>
+        /// 根据UserAgent判断用户的操作系统
+        /// </summary>
+        /// <param name="userAgent">UserAgent字符串</param>
+        /// <returns></returns>
+        public static string GetOSName(string userAgent)
+        {
+            string temp = "未知";
+            if (userAgent.Contains("NT 10.0")) temp = "Windows 10";
+            else if (userAgent.Contains("NT 6.3")) temp = "Windows 8.1";
+            else if (userAgent.Contains("NT 6.2")) temp = "Windows 8";
+            else if (userAgent.Contains("NT 6.1")) temp = "Windows 7";
+            else if (userAgent.Contains("NT 6.0")) temp = "Windows Vista/Server 2008";
+            else if (userAgent.Contains("NT 5.2")) temp = userAgent.Contains("64") ? "Windows XP" : "Windows Server 2003";
+            else if (userAgent.Contains("NT 5.1")) temp = "Windows XP";
+            else if (userAgent.Contains("NT 5")) temp = "Windows 2000";
+            //else if (userAgent.Contains("NT 4")) temp = "Windows NT4";
+            //else if (userAgent.Contains("Me")) temp = "Windows Me";
+            //else if (userAgent.Contains("98")) temp = "Windows 98";
+            //else if (userAgent.Contains("95")) temp = "Windows 95";
+            else if (userAgent.Contains("Android")) temp = "Android";
+            else if (userAgent.Contains("iPhone") || userAgent.Contains("iPad")) temp = "IOS";
+            else if (userAgent.Contains("Mac")) temp = "Mac";
+            else if (userAgent.Contains("Unix")) temp = "UNIX";
+            else if (userAgent.Contains("Linux")) temp = "Linux";
+            else if (userAgent.Contains("SunOS")) temp = "SunOS";
+            return temp;
+        }
         #endregion
     }
 }

@@ -10,13 +10,15 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:24:14
-* 更新时间 ：2020/06/02 23:24:14
-* 版 本 号 ：v1.0.3.0
+* 更新时间 ：2020/06/10 13:24:14
+* 版 本 号 ：v1.0.4.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Kane.Extension
@@ -89,6 +91,35 @@ namespace Kane.Extension
         {
             if (value.IsNullOrEmpty()) return false;
             return Regex.IsMatch(value, pattern, options);
+        }
+        #endregion
+
+        #region 利用正则表达式，返回第一个匹配项 + Match(this string value, string pattern)
+        /// <summary>
+        /// 利用正则表达式，返回第一个匹配项
+        /// </summary>
+        /// <param name="value">要搜索匹配项的字符串</param>
+        /// <param name="pattern">正则表达式</param>
+        /// <returns></returns>
+        public static string Match(this string value, string pattern)
+        {
+            if (value.IsNullOrEmpty()) return string.Empty;
+            return Regex.Match(value, pattern).Value;
+        }
+        #endregion
+
+        #region 利用正则表达式，返回匹配的所有项 + Matches(this string value, string pattern)
+        /// <summary>
+        /// 利用正则表达式，返回匹配的所有项
+        /// </summary>
+        /// <param name="value">要搜索匹配项的字符串</param>
+        /// <param name="pattern">正则表达式</param>
+        /// <returns></returns>
+        public static IEnumerable<string> Matches(this string value, string pattern)
+        {
+            if (value.IsNullOrEmpty()) return new string[] { };
+            MatchCollection matches = Regex.Matches(value, pattern);
+            return from Match match in matches select match.Value;
         }
         #endregion
     }

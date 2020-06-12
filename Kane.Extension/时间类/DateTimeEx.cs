@@ -10,14 +10,15 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:17:28
-* 更新时间 ：2020/05/16 13:17:28
-* 版 本 号 ：v1.0.7.0
+* 更新时间 ：2020/06/10 09:17:28
+* 版 本 号 ：v1.0.8.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
 using System;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Kane.Extension
@@ -416,36 +417,53 @@ namespace Kane.Extension
         public static int MaxWeekIndex(this DateTime datetime) => WeekIndex(new DateTime(datetime.Year, 12, 31), false);
         #endregion
 
-        #region 将日期时间转成常用的日期时间格式字符串 + ToString(this DateTime datetime, DateTimeFormat format)
+        #region 将日期时间转成常用的日期时间格式字符串，默认不移除【秒】 + ToString(this DateTime datetime, DateTimeFormat format, bool removeSecond = false)
         /// <summary>
-        /// 将日期时间转成常用的日期时间格式字符串
+        /// 将日期时间转成常用的日期时间格式字符串，默认不移除【秒】
         /// <para>https://docs.microsoft.com/zh-cn/dotnet/api/system.globalization.cultureinfo.createspecificculture?view=netcore-3.1</para>
         /// </summary>
         /// <param name="datetime">要转的日期时间</param>
         /// <param name="format">格式枚举类</param>
+        /// <param name="removeSecond">是否移除【秒】</param>
         /// <returns></returns>
-        public static string ToString(this DateTime datetime, DateTimeFormat format) => format switch
+        public static string ToString(this DateTime datetime, DateTimeFormat format, bool removeSecond = false) => format switch
         {
-            DateTimeFormat.Long => datetime.ToString("yyyy-MM-dd HH:mm:ss"),
-            DateTimeFormat.Short => datetime.ToString("yyyy-M-d H:m:s"),
-            DateTimeFormat.LongDTWeek => datetime.ToString("yyyy年MM月dd日 HH:mm:ss dddd", new CultureInfo("zh-CN")),
-            DateTimeFormat.ShortDTWeek => datetime.ToString("yyyy年M月d日 H:m:s ddd", new CultureInfo("zh-CN")),
-            DateTimeFormat.LongDTShortWeek => datetime.ToString("yyyy年MM月dd日 HH:mm:ss ddd", new CultureInfo("zh-CN")),
-            DateTimeFormat.ShortDTLongWeek => datetime.ToString("yyyy年M月d日 H:m:s dddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.Long => datetime.ToString(removeSecond ? "yyyy-MM-dd HH:mm" : "yyyy-MM-dd HH:mm:ss"),
+            DateTimeFormat.Short => datetime.ToString(removeSecond ? "yyyy-M-d H:m" : "yyyy-M-d H:m:s"),
+            DateTimeFormat.LongDTWeek => datetime.ToString(removeSecond ? "yyyy年MM月dd日 HH:mm dddd" : "yyyy年MM月dd日 HH:mm:ss dddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.ShortDTWeek => datetime.ToString(removeSecond ? "yyyy年M月d日 H:m ddd" : "yyyy年M月d日 H:m:s ddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.LongDTShortWeek => datetime.ToString(removeSecond ? "yyyy年MM月dd日 HH:mm ddd" : "yyyy年MM月dd日 HH:mm:ss ddd", new CultureInfo("zh-CN")),
+            DateTimeFormat.ShortDTLongWeek => datetime.ToString(removeSecond ? "yyyy年M月d日 H:m dddd" : "yyyy年M月d日 H:m:s dddd", new CultureInfo("zh-CN")),
             DateTimeFormat.LongDateWeek => datetime.ToString("yyyy年MM月dd日 dddd", new CultureInfo("zh-CN")),
             DateTimeFormat.ShortDateWeek => datetime.ToString("yyyy年M月d日 ddd", new CultureInfo("zh-CN")),
             DateTimeFormat.LongDateShortWeek => datetime.ToString("yyyy年MM月dd日 ddd", new CultureInfo("zh-CN")),
             DateTimeFormat.ShortDateLongWeek => datetime.ToString("yyyy年M月d日 ddddd", new CultureInfo("zh-CN")),
-            DateTimeFormat.LongDT => datetime.ToString("yyyy年MM月dd日 HH:mm:ss"),
-            DateTimeFormat.ShortDT => datetime.ToString("yyyy年M月d日 H:m:s"),
+            DateTimeFormat.LongDT => datetime.ToString(removeSecond ? "yyyy年MM月dd日 HH:mm" : "yyyy年MM月dd日 HH:mm:ss"),
+            DateTimeFormat.ShortDT => datetime.ToString(removeSecond ? "yyyy年M月d日 H:m" : "yyyy年M月d日 H:m:s"),
             DateTimeFormat.LongDate => datetime.ToString("yyyy年MM月dd日"),
             DateTimeFormat.ShortDate => datetime.ToString("yyyy年M月d日"),
-            DateTimeFormat.LongTime => datetime.ToString("HH:mm:ss"),
-            DateTimeFormat.ShortTime => datetime.ToString("H:m:s"),
+            DateTimeFormat.LongTime => datetime.ToString(removeSecond ? "HH:mm" : "HH:mm:ss"),
+            DateTimeFormat.ShortTime => datetime.ToString(removeSecond ? "H:m" : "H:m:s"),
             DateTimeFormat.LongWeek => datetime.ToString("dddd", new CultureInfo("zh-CN")),
             DateTimeFormat.ShortWeek => datetime.ToString("ddd", new CultureInfo("zh-CN")),
             _ => datetime.ToString(),//05/16/2020 10:38:18
         };
+        #endregion
+
+        #region 计算Action花费的时间 + RunTime(Action action)
+        /// <summary>
+        /// 计算Action花费的时间
+        /// </summary>
+        /// <param name="action">要计算的Action</param>
+        /// <returns></returns>
+        public static TimeSpan RunTime(Action action)
+        {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            action();
+            watch.Stop();
+            return watch.Elapsed;
+        } 
         #endregion
     }
 }

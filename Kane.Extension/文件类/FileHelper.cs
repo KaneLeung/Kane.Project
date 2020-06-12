@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/30 0:01:37
-* 更新时间 ：2020/05/02 12:31:37
-* 版 本 号 ：v1.0.4.0
+* 更新时间 ：2020/06/11 12:31:37
+* 版 本 号 ：v1.0.5.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -34,7 +34,7 @@ namespace Kane.Extension
         /// <summary>
         /// 通过文件头两字节判断文件类型,会有类型不同，但值相同的情况
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">文件全路径</param>
         /// <returns></returns>
         public static FileExt GetFileExt(string path)
         {
@@ -73,7 +73,7 @@ namespace Kane.Extension
         /// <returns></returns>
         private static List<string> GetPathAllFiles(string path, List<string> files = null, string pattern = "")
         {
-            if (files == null) files = new List<string>();
+            files ??= new List<string>();
             string[] subPaths = pattern.IsNullOrEmpty() ? Directory.GetDirectories(path) : Directory.GetDirectories(path, pattern);
             foreach (var item in subPaths)
             {
@@ -87,11 +87,11 @@ namespace Kane.Extension
         #region 递归获取目录下所有文件，可根据通配符来进行过滤。 + GetPathAllFiles(string path, string pattern = "")
         /// <summary>
         /// 递归获取目录下所有文件，可根据通配符来进行过滤。 
-        /// 例如, searchPattern字符串 "*t" path搜索以字母 "t" 结尾的所有名称。 
-        /// 字符串 "s* "path搜索以字母 "s" 开头的所有名称。 searchPattern
-        /// *红星   此位置中的零个或多个字符。
-        /// ? (问号)	此位置中的零个或一个字符。
-        /// https://docs.microsoft.com/zh-cn/dotnet/api/system.io.directory.getdirectories?view=netcore-3.0#System_IO_Directory_GetDirectories_System_String_System_String_System_IO_SearchOption_
+        /// <para>pattern字符串，例如,"*t" path搜索以字母"t"结尾的所有名称。</para>
+        /// <para>字符串"s*"path搜索以字母"s"开头的所有名称</para>
+        /// <para>[*红星]此位置中的零个或多个字符</para>
+        /// <para>[?问号]此位置中的零个或一个字符</para>
+        /// <para>https://docs.microsoft.com/zh-cn/dotnet/api/system.io.directory.getdirectories?view=netcore-3.0#System_IO_Directory_GetDirectories_System_String_System_String_System_IO_SearchOption_</para>
         /// </summary>
         /// <param name="path">要获取文件的目录</param>
         /// <param name="pattern">与目录的名称匹配的搜索字符串。 此参数可以包含有效文本和通配符的组合，但不支持正则表达式。</param>
@@ -103,7 +103,7 @@ namespace Kane.Extension
         /// <summary>
         /// 校验文件名是否符合Window文件命名规范
         /// </summary>
-        /// <param name="filename"></param>
+        /// <param name="filename">文件名</param>
         /// <returns></returns>
         public static bool CheckFilename(string filename)
         {
@@ -191,7 +191,6 @@ namespace Kane.Extension
             ToBigFile(ms, path, bufferSize);
         }
         #endregion
-
 #if !NET40
         #region 字节数组异步保存大文件，可设置缓存大小，默认为【1M】 + ToBigFileAsync(this byte[] bytes, string path, int bufferSize = 1)
         /// <summary>
@@ -262,6 +261,133 @@ namespace Kane.Extension
             fileStream.Seek(0, SeekOrigin.Begin);
             fileStream.Read(bytes, 0, bytes.Length);
             return bytes;
+        }
+        #endregion
+
+        #region 判断目录是否存在，不存在则创建 + CreateIfNotExist(string path)
+        /// <summary>
+        /// 判断目录是否存在，不存在则创建
+        /// </summary>
+        /// <param name="path">要判断的目录</param>
+        /// <returns>目录是否存在</returns>
+        public static bool CreateIfNotExist(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region 判断文件是否存在，如果存在则删除 + DeleteIfExist(string path)
+        /// <summary>
+        /// 判断文件是否存在，如果存在则删除
+        /// </summary>
+        /// <param name="path">文件全路径</param>
+        /// <returns></returns>
+        public static bool DeleteIfExist(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                return true;
+            }
+            return false;
+        } 
+        #endregion
+
+        #region 递归复制文件夹及文件夹内的文件 + Copy(string sourcePath, string targetPath, bool overwrite = false, params string[] patterns)
+        /// <summary>
+        /// 递归复制文件夹及文件夹内的文件
+        /// <para>pattern字符串，例如,"*t" path搜索以字母"t"结尾的所有名称。</para>
+        /// <para>字符串"s*"path搜索以字母"s"开头的所有名称</para>
+        /// <para>[*红星]此位置中的零个或多个字符</para>
+        /// <para>[?问号]此位置中的零个或一个字符</para>
+        /// </summary>
+        /// <param name="sourcePath">源目录</param>
+        /// <param name="targetPath">目标目录</param>
+        /// <param name="overwrite">是否覆盖</param>
+        /// <param name="patterns">与目录的名称匹配的搜索字符串。 此参数可以包含有效文本和通配符的组合，但不支持正则表达式。</param>
+        /// <returns>共复制文件数</returns>
+        public static int Copy(string sourcePath, string targetPath, bool overwrite = false, params string[] patterns)
+        {
+            var count = 0;
+            sourcePath.ThrowIfNull(nameof(sourcePath), "源目录不能为空");
+            targetPath.ThrowIfNull(nameof(targetPath), "目标目录不能为空");
+            sourcePath.ThrowDirNotExist("源目录不存在");
+            CreateIfNotExist(targetPath);
+            string[] dirs = Directory.GetDirectories(sourcePath);
+            foreach (string dir in dirs)
+                count += Copy(dir, targetPath + dir.Substring(dir.LastIndexOf("\\", StringComparison.Ordinal)), overwrite, patterns);
+            if (patterns != null && patterns.Length > 0)
+            {
+                foreach (string pattern in patterns)
+                {
+                    string[] files = Directory.GetFiles(sourcePath, pattern);
+                    foreach (string file in files)
+                    {
+                        var targetFile = targetPath.Add(file.Substring(file.LastIndexOf("\\", StringComparison.Ordinal)));
+                        if (overwrite || !File.Exists(targetFile))
+                        {
+                            File.Copy(file, targetFile, overwrite);
+                            count++;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                string[] files = Directory.GetFiles(sourcePath);
+                foreach (string file in files)
+                {
+                    var targetFile = targetPath.Add(file.Substring(file.LastIndexOf("\\", StringComparison.Ordinal)));
+                    if (overwrite || !File.Exists(targetFile))
+                    {
+                        File.Copy(file, targetFile, overwrite);
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+        #endregion
+
+        #region 递归删除文件夹及文件夹内的文件 + Delete(string path, bool deleteItself = true)
+        /// <summary>
+        /// 递归删除文件夹及文件夹内的文件
+        /// </summary>
+        /// <param name="path">要删除的目录</param>
+        /// <param name="deleteItself">是否删除自身目录</param>
+        /// <returns>(bool success, int count)，success是否全部删除成功，count删除文件数</returns>
+        public static (bool success, int count) Delete(string path, bool deleteItself = true)
+        {
+            path.ThrowIfNull(nameof(path), "目录路径不能为空");
+            bool success = false;
+            int count = 0;
+            DirectoryInfo info = new DirectoryInfo(path);
+            if (info.Exists)
+            {
+                foreach (FileInfo fileInfo in info.GetFiles())//删除目录下所有文件
+                {
+                    fileInfo.Attributes = FileAttributes.Normal;
+                    fileInfo.Delete();
+                    count++;
+                }
+                foreach (DirectoryInfo subDirectory in info.GetDirectories())//递归删除所有子目录
+                {
+                    var temp = Delete(subDirectory.FullName);
+                    count += temp.count;
+                }
+                if (deleteItself)//删除目录自身
+                {
+                    info.Attributes = FileAttributes.Normal;
+                    info.Delete();
+                }
+                success = true;
+            }
+            return (success, count);
         }
         #endregion
     }

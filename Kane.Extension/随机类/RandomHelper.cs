@@ -29,6 +29,10 @@ namespace Kane.Extension
     /// </summary>
     public static class RandomHelper
     {
+#if NETCOREAPP
+        static RandomHelper() => Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);//NetCore中使用GB2312编码
+#endif
+
         #region 产生随机字符串，可设定类型，也可以排除不要的字符 + RandCode(int length, RandMethod method = RandMethod.All, params char[] exceptChar)
         /// <summary>
         /// 产生随机字符串，可设定类型，也可以排除不要的字符
@@ -50,7 +54,7 @@ namespace Kane.Extension
                 charList.AddRange(new char[] { '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '~', '`', '|', '}', '{', '[', ']', '\\', ':', ';', '?', '>', '<', ',', '.', '/', '-', '=' });
             if (exceptChar.Length > 0) charList = charList.Except(exceptChar).ToList();
             StringBuilder result = new StringBuilder();
-            Random random = new Random(DateTime.Now.Millisecond);
+            Random random = new Random(Guid.NewGuid().GetHashCode());
             int charCount = charList.Count;
             for (int i = 0; i < length; i++)
                 result.Append(charList[random.Next(0, charCount)]);
@@ -60,14 +64,11 @@ namespace Kane.Extension
 
         #region Guid转换为纯数字 + ToNumeric(this Guid guid)
         /// <summary>
-        /// Guid转换为纯数字
+        /// Guid转换为纯数字，通常为16位长
         /// </summary>
+        /// <param name="guid">Guid对象</param>
         /// <returns></returns>
-        public static string ToNumeric(this Guid guid)
-        {
-            var buffer = guid.ToByteArray();
-            return BitConverter.ToInt64(buffer, 0).ToString();
-        }
+        public static long ToNumeric(this Guid guid) => BitConverter.ToInt64(guid.ToByteArray(), 0);
         #endregion
 
         #region 获取一个UUID，默认为全【大写】 + UUID(bool uppercase = true)
@@ -77,6 +78,34 @@ namespace Kane.Extension
         /// <param name="uppercase">是否全【大写】</param>
         /// <returns></returns>
         public static string UUID(bool uppercase = true) => uppercase ? Guid.NewGuid().ToString("N").ToUpper() : Guid.NewGuid().ToString("N");
+        #endregion
+
+        #region 随机生成【GB2312】内的汉字字符串 + RandomChinese(int length)
+        /// <summary>
+        /// 随机生成【GB2312】内的汉字字符串
+        /// </summary>
+        /// <param name="length">生成的字符串长度</param>
+        /// <returns></returns>
+        public static string RandomChinese(int length)
+        {
+            var chars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };//汉字编码的组成元素，十六进制数
+            var result = new StringBuilder();
+            //每循环一次产生一个含两个元素的十六进制字节数组，并放入bytes数组中
+            //汉字由四个区位码组成，1、2位作为字节数组的第一个元素，3、4位作为第二个元素
+            Random random = new Random(Guid.NewGuid().GetHashCode());//如果直接使用new Random()连续生成时会出现相同结果
+            for (int i = 0; i < length; i++)
+            {
+                int index1 = random.Next(11, 14);
+                int index2 = index1 == 13 ? random.Next(0, 7) : random.Next(0, 16);
+                int index3 = random.Next(10, 16);
+                int index4 = index3 == 10 ? random.Next(1, 16) : (index3 == 15 ? random.Next(0, 15) : random.Next(0, 16));
+                //定义两个字节变量存储产生的随机汉字区位码
+                byte prefix = Convert.ToByte(new string(new char[] { chars[index1], chars[index2] }), 16);
+                byte postfix = Convert.ToByte(new string(new char[] { chars[index3], chars[index4] }), 16);
+                result.Append(Encoding.GetEncoding("GB2312").GetString(new byte[] { prefix, postfix }));
+            }
+            return result.ToString();
+        }
         #endregion
     }
 }

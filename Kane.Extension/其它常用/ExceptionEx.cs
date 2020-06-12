@@ -37,8 +37,7 @@ namespace Kane.Extension
         /// <param name="message">异常消息</param>
         public static void ThrowIfNull<T>(this T value, string paramName, string message = "")
         {
-            if ((value is string str && str.IsNullOrEmpty()) || value.IsNull())
-                throw new ArgumentNullException(paramName, message);
+            if ((value is string str && str.IsNullOrEmpty()) || value.IsNull()) throw new ArgumentNullException(paramName, message);
         }
         #endregion
 

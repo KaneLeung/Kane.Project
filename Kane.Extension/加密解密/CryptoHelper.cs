@@ -82,6 +82,7 @@ namespace Kane.Extension
     /// <summary>
     /// 常用加解密类扩展
     /// </summary>
+    [Obsolete]
     public class CryptoHelper
     {
         #region AES对称性加密算法 加密与解密

@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/25 23:24:13
-* 更新时间 ：2020/2/25 23:24:13
-* 版 本 号 ：v1.0.0.0
+* 更新时间 ：2020/06/10 11:24:13
+* 版 本 号 ：v1.0.1.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
 *******************************************************************
@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Kane.Extension
 {
@@ -43,7 +44,7 @@ namespace Kane.Extension
             => condition ? query.Where(predicate) : query;
         #endregion
 
-        #region OrderIf,满足条件进行【升序】排序 + OrderIf<TSource, TKey>(this IQueryable<TSource> query, bool condition, Expression<Func<TSource, TKey>> keySelector)
+        #region OrderIf，满足条件进行【升序】排序 + OrderIf<TSource, TKey>(this IQueryable<TSource> query, bool condition, Expression<Func<TSource, TKey>> keySelector)
         /// <summary>
         /// OrderIf,满足条件进行【升序】排序
         /// </summary>
@@ -57,7 +58,7 @@ namespace Kane.Extension
             => condition ? query.OrderBy(keySelector) : query;
         #endregion
 
-        #region OrderDescIf,满足条件进行【降序】排序 + OrderDescIf<TSource, TKey>(this IQueryable<TSource> query, bool condition, Expression<Func<TSource, TKey>> keySelector)
+        #region OrderDescIf，满足条件进行【降序】排序 + OrderDescIf<TSource, TKey>(this IQueryable<TSource> query, bool condition, Expression<Func<TSource, TKey>> keySelector)
         /// <summary>
         /// OrderDescIf,满足条件进行【降序】排序
         /// </summary>
@@ -82,6 +83,46 @@ namespace Kane.Extension
         /// <returns></returns>
         public static List<TResult> SelectList<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
             => source.Select(selector).ToList();
+        #endregion
+
+        #region 根据属性名进行排序，默认为【升序】 + OrderBy<TSource>(this IQueryable<TSource> source, string property, bool descending = false) where TSource : class
+        /// <summary>
+        /// 根据属性名进行排序，默认为【升序】
+        /// </summary>
+        /// <typeparam name="TSource">数据元素类型</typeparam>
+        /// <param name="source">数据源</param>
+        /// <param name="property">属性名</param>
+        /// <param name="descending">是否降序</param>
+        /// <returns></returns>
+        public static IQueryable<TSource> OrderBy<TSource>(this IQueryable<TSource> source, string property, bool descending = false) where TSource : class
+        {
+            ParameterExpression param = Expression.Parameter(typeof(TSource), "k");
+            PropertyInfo pi = typeof(TSource).GetProperty(property);
+            MemberExpression selector = Expression.MakeMemberAccess(param, pi);
+            LambdaExpression exp = Expression.Lambda(selector, param);
+            string methodName = descending ? "OrderByDescending" : "OrderBy";
+            MethodCallExpression resultExp = Expression.Call(typeof(Queryable), methodName, new Type[] { typeof(TSource), pi.PropertyType }, source.Expression, exp);
+            return source.Provider.CreateQuery<TSource>(resultExp);
+        }
+        #endregion
+
+        #region 根据属性名进行【降序】排序 + OrderByDesc<TSource>(this IQueryable<TSource> source, string property) where TSource : class
+        /// <summary>
+        /// 根据属性名进行【降序】排序
+        /// </summary>
+        /// <typeparam name="TSource">数据元素类型</typeparam>
+        /// <param name="source">数据源</param>
+        /// <param name="property">属性名</param>
+        /// <returns></returns>
+        public static IQueryable<TSource> OrderByDesc<TSource>(this IQueryable<TSource> source, string property) where TSource : class
+        {
+            ParameterExpression param = Expression.Parameter(typeof(TSource), "k");
+            PropertyInfo pi = typeof(TSource).GetProperty(property);
+            MemberExpression selector = Expression.MakeMemberAccess(param, pi);
+            LambdaExpression exp = Expression.Lambda(selector, param);
+            MethodCallExpression resultExp = Expression.Call(typeof(Queryable), "OrderByDescending", new Type[] { typeof(TSource), pi.PropertyType }, source.Expression, exp);
+            return source.Provider.CreateQuery<TSource>(resultExp);
+        }
         #endregion
     }
 }

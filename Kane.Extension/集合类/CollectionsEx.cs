@@ -19,6 +19,7 @@
 #endregion
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Linq;
 using System.Reflection;
@@ -30,6 +31,13 @@ namespace Kane.Extension
     /// </summary>
     public static class CollectionsEx
     {
+        #region 判断集合是否为Null或空集合 + IsNullOrEmpty<T>(this IEnumerable<T> collection)
+        /// <summary>
+        /// 判断集合是否为Null或空集合
+        /// </summary>
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> collection) => collection == null || !collection.Any();
+        #endregion
+
         #region 泛型集合转换为DataTable + ToDataTable<T>(this IEnumerable<T> source, string tableName = "")
         /// <summary>
         /// 泛型集合转换为DataTable
@@ -95,6 +103,92 @@ namespace Kane.Extension
                 result.Add(item);
             }
             return result;
+        }
+        #endregion
+
+        #region 如果条件成功，则向集合添加元素 + AddIf<T>(this ICollection<T> collection, bool flag, T item)
+        /// <summary>
+        /// 如果条件成功，则向集合添加元素
+        /// </summary>
+        /// <typeparam name="T">集合类型</typeparam>
+        /// <param name="collection">原集合</param>
+        /// <param name="flag">条件</param>
+        /// <param name="item">添加的元素</param>
+        /// <returns></returns>
+        public static bool AddIf<T>(this ICollection<T> collection, bool flag, T item)
+        {
+            collection.ThrowIfNull(nameof(collection), $"集合不能为Null");
+            if (flag)
+            {
+                collection.Add(item);
+                return true;
+            }
+            else return false;
+        }
+        #endregion
+
+        #region 如果条件成功，则向集合添加元素 + AddIf<T>(this ICollection<T> collection, Func<bool> func, T item)
+        /// <summary>
+        /// 如果条件成功，则向集合添加元素
+        /// </summary>
+        /// <typeparam name="T">集合类型</typeparam>
+        /// <param name="collection">原集合</param>
+        /// <param name="func">条件委托</param>
+        /// <param name="item">添加的元素</param>
+        /// <returns></returns>
+        public static bool AddIf<T>(this ICollection<T> collection, Func<bool> func, T item)
+        {
+            collection.ThrowIfNull(nameof(collection), $"集合不能为Null");
+            if (func())
+            {
+                collection.Add(item);
+                return true;
+            }
+            else return false;
+        }
+        #endregion
+
+        #region 如果条件成功，则向集合添加元素集合 + AddIf<T>(this ICollection<T> collection, bool flag, IEnumerable<T> items)
+        /// <summary>
+        /// 如果条件成功，则向集合添加元素集合
+        /// </summary>
+        /// <typeparam name="T">集合类型</typeparam>
+        /// <param name="collection">原集合</param>
+        /// <param name="flag">条件</param>
+        /// <param name="items">添加的元素集合</param>
+        /// <returns></returns>
+        public static bool AddIf<T>(this ICollection<T> collection, bool flag, IEnumerable<T> items)
+        {
+            collection.ThrowIfNull(nameof(collection), $"集合不能为Null");
+            if (flag)
+            {
+                foreach (var item in items)
+                    collection.Add(item);
+                return true;
+            }
+            else return false;
+        }
+        #endregion
+
+        #region 如果条件成功，则向集合添加元素集合 + AddIf<T>(this ICollection<T> collection, Func<bool> func, IEnumerable<T> items)
+        /// <summary>
+        /// 如果条件成功，则向集合添加元素集合
+        /// </summary>
+        /// <typeparam name="T">集合类型</typeparam>
+        /// <param name="collection">原集合</param>
+        /// <param name="func">条件委托</param>
+        /// <param name="items">添加的元素集合</param>
+        /// <returns></returns>
+        public static bool AddIf<T>(this ICollection<T> collection, Func<bool> func, IEnumerable<T> items)
+        {
+            collection.ThrowIfNull(nameof(collection), $"集合不能为Null");
+            if (func())
+            {
+                foreach (var item in items)
+                    collection.Add(item);
+                return true;
+            }
+            else return false;
         }
         #endregion
     }

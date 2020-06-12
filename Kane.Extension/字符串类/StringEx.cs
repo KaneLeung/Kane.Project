@@ -10,8 +10,8 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2019/10/16 23:26:06
-* 更新时间 ：2020/06/02 22:26:06
-* 版 本 号 ：v1.0.6.0
+* 更新时间 ：2020/06/11 09:26:06
+* 版 本 号 ：v1.0.7.0
 *******************************************************************
 * Copyright @ Kane Leung 2019. All rights reserved.
 *******************************************************************
@@ -559,5 +559,117 @@ namespace Kane.Extension
         }
         #endregion
 #endif
+
+        #region 利用相似度计算公式，比较两个字符串相似度 + Similarity(this string source, string target)
+        /// <summary>
+        /// 利用相似度计算公式，比较两个字符串相似度
+        /// <para>相似度计算公式是 相似度=Kq*q/(Kq*q+Kr*r+Ks*s)其中(Kq>0,Kr>=0,Ka>=0)</para>
+        /// <para>其中，q是源字符串和目标字符串中都存在的单词的总数，s是源字符串中存在，目标字符串中不存在的单词总数，r是目标字符串中存在，源字符串中不存在的单词总数.</para>
+        /// <para>Kq，Kr和Ks分别是q，r，s的权重，根据实际的计算情况，我们设Kq=2，Kr=Ks=1</para>
+        /// </summary>
+        /// <param name="source">源字符串</param>
+        /// <param name="target">目标字符串</param>
+        /// <returns></returns>
+        public static double Similarity(this string source, string target)
+        {
+            if (source.IsNullOrEmpty() || target.IsNullOrEmpty()) return default;
+            const double kq = 2, kr = 1, ks = 1;
+            char[] sourceChars = source.ToCharArray();
+            char[] targetChars = target.ToCharArray();
+            int q = sourceChars.Intersect(targetChars).Count();//获取交集数量
+            int s = sourceChars.Length - q, r = targetChars.Length - q;
+            return kq * q / (kq * q + kr * r + ks * s);
+        }
+        #endregion
+
+        #region 编辑距离算法Levenshtein Distance + LevenshteinDistance(string source, string target)
+        /// <summary>
+        /// 编辑距离算法Levenshtein Distance
+        /// <para>编辑距离，又称Levenshtein距离（也叫做Edit Distance），是指两个字串之间，由一个转成另一个所需的最少编辑操作次数，如果它们的距离越大，说明它们越是不同。</para>
+        /// <para>许可的编辑操作包括将一个字符替换成另一个字符，插入一个字符，删除一个字符。</para>
+        /// </summary>
+        /// <param name="source">源字符串</param>
+        /// <param name="target">目标字符串</param>
+        /// <returns></returns>
+        private static int LevenshteinDistance(string source, string target)
+        {
+            int cell = source.Length;
+            int row = target.Length;
+            if (cell == 0) return row;
+            if (row == 0) return cell;
+            int[,] matrix = new int[row + 1, cell + 1];
+            for (var i = 0; i <= cell; i++)
+            {
+                matrix[0, i] = i;
+            }
+            for (var j = 1; j <= row; j++)
+            {
+                matrix[j, 0] = j;
+            }
+            for (var i = 0; i < row; i++)
+            {
+                for (var j = 0; j < cell; j++)
+                {
+                    int tmp = source[j].Equals(target[i]) ? 0 : 1;
+                    matrix[i + 1, j + 1] = Math.Min(Math.Min(matrix[i, j] + tmp, matrix[i + 1, j] + 1), matrix[i, j + 1] + 1);
+                }
+            }
+            return matrix[row, cell];
+        }
+        #endregion
+
+        #region 最长公共子序列算法【LongestCommonSubsequence】 + LongestCommonSubsequence(string source, string target)
+        /// <summary>
+        /// 最长公共子序列算法【LongestCommonSubsequence】
+        /// <para>其定义是，一个序列S，如果分别是两个或多个已知序列的子序列，且是所有符合此条件序列中最长的，则S称为已知序列的最长公共子序列。而最长公共子串(要求连续)和最长公共子序列是不同的.</para>
+        /// </summary>
+        /// <param name="source">源字符串</param>
+        /// <param name="target">目标字符串</param>
+        /// <returns></returns>
+        private static int LongestCommonSubsequence(string source, string target)
+        {
+            if (source.IsNullOrEmpty() || target.IsNullOrEmpty()) return 0;
+            int maxLength = Math.Max(target.Length, source.Length);
+            int[,] matrix = new int[maxLength + 1, maxLength + 1];
+            for (int i = 0; i < source.Length; i++)
+            {
+                for (int j = 0; j < target.Length; j++)
+                {
+                    if (source[i].Equals(target[j])) matrix[i + 1, j + 1] = matrix[i, j] + 1;
+                    else matrix[i + 1, j + 1] = 0;
+                }
+            }
+            return (from temp in matrix.Cast<int>() select temp).Max<int>();
+        }
+        #endregion
+
+        #region 利用编辑距离【Levenshtein Distance】算法，比较两个字符串相似度 + SimilarityLD(this string source, string target)
+        /// <summary>
+        /// 利用编辑距离【Levenshtein Distance】算法，比较两个字符串相似度
+        /// </summary>
+        /// <param name="source">源字符串</param>
+        /// <param name="target">目标字符串</param>
+        /// <returns></returns>
+        public static double SimilarityLD(this string source, string target)
+        {
+            int ld = LevenshteinDistance(source, target);
+            return 1 - (double)ld / Math.Max(source.Length, target.Length);
+        }
+        #endregion
+
+        #region 利用编辑距离【Levenshtein Distance】算法 和 最长公共子序列算法【LongestCommonSubsequence】，比较两个字符串相似度 + SimilarityLCS(this string source, string target)
+        /// <summary>
+        /// 利用编辑距离【Levenshtein Distance】算法 和 最长公共子序列算法【LongestCommonSubsequence】，比较两个字符串相似度
+        /// </summary>
+        /// <param name="source">源字符串</param>
+        /// <param name="target">目标字符串</param>
+        /// <returns></returns>
+        public static double SimilarityLCS(this string source, string target)
+        {
+            var ld = LevenshteinDistance(source, target);
+            var lcs = LongestCommonSubsequence(source, target);
+            return ((double)lcs) / (ld + lcs);
+        }
+        #endregion
     }
 }

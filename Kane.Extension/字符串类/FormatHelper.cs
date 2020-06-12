@@ -10,7 +10,7 @@
 * CLR 版本 ：4.0.30319.42000
 * 作　　者 ：Kane Leung
 * 创建时间 ：2020/2/20 19:38:55
-* 更新时间 ：2020/6/02 22:28:55
+* 更新时间 ：2020/6/12 09:28:55
 * 版 本 号 ：v1.0.3.0
 *******************************************************************
 * Copyright @ Kane Leung 2020. All rights reserved.
@@ -208,6 +208,25 @@ namespace Kane.Extension
             }
             return false;
         }
+        #endregion
+
+        #region 判断字符串是否为数值 + IsNumeric(string value)
+        /// <summary>
+        /// 判断字符串是否为数值，如【0】【123】【0.123】【+0.123】【-0.123】【+123.123】【-123.132】
+        /// <para>注意，如果是小数，前导零不能少</para>
+        /// </summary>
+        /// <param name="value">要检测的字符串</param>
+        /// <returns></returns>
+        public bool IsNumeric(string value) => value.IsMatch(@"^[-+]?\d+[.]?\d*$");
+        #endregion
+
+        #region 判断字符串是否为整数 + IsInteger(string value)
+        /// <summary>
+        /// 判断字符串是否为整数，如【0】【1】【123】【+123】【-123】
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool IsInteger(string value) => value.IsMatch(@"^[-+]?\d+$");
         #endregion
     }
 }
