@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-#if (NETCOREAPP3_0 || NETCOREAPP3_1)
+#if NETCOREAPP3_1
 using System.Text.Json;
 #else
 using Newtonsoft.Json;
@@ -43,7 +43,7 @@ namespace Kane.Extension
         /// 默认分割的字符，默认为【:】半角冒号
         /// </summary>
         public static char SplitChar = ':';
-#if (NETCOREAPP3_0 || NETCOREAPP3_1)
+#if NETCOREAPP3_1
         /// <summary>
         /// 字符串转JsonDocument时设置的参数，可设置深度
         /// <para>【MaxDepth】深度默认为64</para>
@@ -120,7 +120,7 @@ namespace Kane.Extension
         }
         #endregion
 
-#if (NETCOREAPP3_0 || NETCOREAPP3_1)
+#if NETCOREAPP3_1
         #region 根据关键词，获取对应的值 + GetValue<T>(string keys, T returnValue = default)
         /// <summary>
         /// 根据关键词，获取对应的值，关键词可用 Key1:Key2:Key3进行遍历，

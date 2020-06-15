@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net40;net45;net46;net47;net48</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net40;net45;net46;net47;net48</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Kane.WinForm.snk</AssemblyOriginatorKeyFile>
@@ -21,14 +21,10 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageIconUrl>https://raw.githubusercontent.com/KaneLeung/Kane.Project/master/ProjectIcon.png</PackageIconUrl>
   </PropertyGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
-    <Reference Include="System.Windows.Forms">
-      <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\3.0.0\ref\netcoreapp3.0\System.Windows.Forms.dll</HintPath>
-    </Reference>
-    <PackageReference Include="System.Resources.Extensions" Version="4.7.0" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
     <Reference Include="System.Windows.Forms">

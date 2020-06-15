@@ -17,7 +17,7 @@
 *******************************************************************
 -----------------------------------------------------------------*/
 #endregion
-#if (NETCOREAPP3_0 || NETCOREAPP3_1)
+#if NETCOREAPP3_1
 using System.Text.Json.Serialization;
 #else
 using Newtonsoft.Json;

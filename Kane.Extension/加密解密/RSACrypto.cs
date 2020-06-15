@@ -20,7 +20,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-#if (NETCOREAPP3_0 || NETCOREAPP3_1)
+#if NETCOREAPP3_1
 using Kane.Extension.Json;
 #else
 using Kane.Extension.JsonNet;
