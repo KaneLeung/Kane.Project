@@ -27,6 +27,11 @@ namespace Kane.Extension
 {
     /// <summary>
     /// RSA非对称加密解密帮助类
+    /// <para>查阅资料得知，注意要使用System.Security.Cryptography.RSA.Create() 工厂方法</para>
+    /// <para>使用它之后，在 Windows 上创建的是 System.Security.Cryptography.RSACng 的实例</para>
+    /// <para>在 Mac 与 Linux 上创建的是 System.Security.Cryptography.RSAOpenSsl 的实例，它们都继承自 System.Security.Cryptography.RSA 抽象类。</para>
+    /// <para>Java 常用的 key 格式是 PKCS#8，JavaScript 一般使用 PKCS#1</para>
+    /// <para>【.NET Core 3.0】和【.NET Standard 2.1】以后增加了对 PKCS#1 和 PKCS#8 Key 导入和导出支持</para>
     /// </summary>
     public class RsaHelper
     {
