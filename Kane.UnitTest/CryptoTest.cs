@@ -33,9 +33,9 @@ namespace Kane.UnitTest
         {
             string key = "Fa410cOr=+)^*()d";
             string data = "Copyright @ Kane Leung 2020. All rights reserved.";
-            var crypto = new CryptoHelper();
-            var encryptValue = crypto.DesEncrypt(data, key);
-            var decryptValue = crypto.DesDecrypt(encryptValue, key);
+            var des = new DesHelper();
+            var encryptValue = des.Encrypt(data, key);
+            var decryptValue = des.Decrypt(encryptValue, key);
             Assert.AreEqual(data, decryptValue);
         }
     }
