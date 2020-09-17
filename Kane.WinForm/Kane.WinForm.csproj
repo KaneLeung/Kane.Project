@@ -27,7 +27,7 @@
     <Reference Include="System.Windows.Forms">
       <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\3.1.0\ref\netcoreapp3.1\System.Windows.Forms.dll</HintPath>
     </Reference>
-    <PackageReference Include="System.Resources.Extensions" Version="4.7.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="4.7.1" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
   </ItemGroup>
 
