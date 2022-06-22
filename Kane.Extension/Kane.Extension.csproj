@@ -24,13 +24,13 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.1' OR '$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net40'">
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <Reference Include="System.Web">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Web.dll</HintPath>
@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net45'">
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <Reference Include="System.Web">
@@ -47,7 +47,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net46'">
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <Reference Include="System.Web">
@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net47'">
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <Reference Include="System.Web">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Web.dll</HintPath>
@@ -64,7 +64,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <Reference Include="System.Web">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Web.dll</HintPath>
